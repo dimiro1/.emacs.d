@@ -16,6 +16,9 @@
 
 (require 'cl)
 
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
@@ -89,6 +92,11 @@
 (global-set-key (kbd "C-c p") 'fiplr-find-file)
 (global-set-key (kbd "C-c s") 'magit-status)
 
+(global-set-key (kbd "C-M-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "C-M-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "C-M-<down>") 'shrink-window)
+(global-set-key (kbd "C-M-<up>") 'enlarge-window)
+
 ;; Custom Editor
 (if (equal system-type 'darwin)
     (set-frame-font "PragmataPro-12") ;; Using in my Macbook
@@ -97,12 +105,37 @@
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 
-(defvar hour-of-day (nth 2 (decode-time)))
+;; Color Theme
+(defvar current-theme nil
+  "Holds the current theme value.
+I have to do this because I think I can not get the current enabled theme from an emacs primitive")
 
-;; Use a different color theme at night
-(if (and (> hour-of-day 6) (< hour-of-day 18))
-    (load-theme 'atom-dark)
-  (load-theme 'atom-one-dark t))
+(defun is-daylight ()
+  "Check if the current time is daylight"
+  (let ((hour-of-day (nth 2 (decode-time))))
+    (if (and (> hour-of-day 6) (< hour-of-day 18))
+	t
+      nil)))
+
+(defun change-theme (theme)
+  "Change the current theme only if it is not already activated"
+  (if (not (eq current-theme theme))
+      (progn
+	(setq current-theme theme)
+	(load-theme current-theme))))
+  
+(defun auto-change-theme ()
+  "Change Color Theme of emacs based on the hour of the day"
+  (progn
+    (if (is-daylight)
+	(change-theme 'atom-dark)
+      (change-theme 'atom-one-dark))))
+
+(auto-change-theme) ;; Running on startup
+
+;; Run periodically the change-color-theme function
+;; (* 5 60) 5 minutes
+(run-with-timer 0 5 'auto-change-theme)
 
 (setq inhibit-startup-screen t)
 (menu-bar-mode -1)
@@ -116,6 +149,3 @@
   kept-new-versions 6
   kept-old-versions 2
   version-control t)
-
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
