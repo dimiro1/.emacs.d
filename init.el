@@ -14,6 +14,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(require 'cl)
+
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
@@ -31,46 +33,27 @@
 (package-initialize)
 
 ;; Install packages
-(unless (package-installed-p 'cider)
-  (package-install 'cider))
+(defvar packages '(
+		   groovy-mode
+		   cider
+		   paredit
+		   ac-nrepl
+		   linum-relative
+		   neotree
+		   yasnippet
+		   hl-todo
+		   auto-complete
+		   majapahit-theme
+		   gotham-theme
+		   monokai-theme
+		   atom-dark-theme
+		   magit
+		   atom-one-dark-theme)
+  "Packages to install")
 
-(unless (package-installed-p 'paredit)
-  (package-install 'paredit))
 
-(unless (package-installed-p 'ac-nrepl)
-  (package-install 'ac-nrepl))
-
-(unless (package-installed-p 'linum-relative)
-  (package-install 'linum-relative))
-
-(unless (package-installed-p 'neotree)
-  (package-install 'neotree))
-
-(unless (package-installed-p 'yasnippet)
-  (package-install 'yasnippet))
-
-(unless (package-installed-p 'hl-todo)
-  (package-install 'hl-todo))
-
-(unless (package-installed-p 'auto-complete)
-  (package-install 'auto-complete))
-
-;; Themes
-(unless (package-installed-p 'majapahit-theme)
-  (package-install 'majapahit-theme))
-
-(unless (package-installed-p 'gotham-theme)
-  (package-install 'gotham-theme))
-
-(unless (package-installed-p 'monokai-theme)
-  (package-install 'monokai-theme))
-
-(unless (package-installed-p 'atom-dark-theme)
-  (package-install 'atom-dark-theme))
-
-(unless (package-installed-p 'atom-one-dark-theme)
-  (package-install 'atom-one-dark-theme))
-
+(loop for pkg in packages
+      unless (package-installed-p pkg) do (package-install pkg))
 
 ;; minor modes
 (require 'linum-relative)
@@ -107,13 +90,17 @@
 (global-set-key (kbd "C-c s") 'magit-status)
 
 ;; Custom Editor
-(set-frame-font "PragmataPro-13")
+(if (equal system-type 'darwin)
+    (set-frame-font "PragmataPro-12") ;; Using in my Macbook
+  (set-frame-font "PragmataPro-11"))  ;; Using in my Gnu/Linux machine with Full HD Resolution
+
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 (load-theme 'atom-dark t)
 (setq inhibit-startup-screen t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(show-paren-mode)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs-saves")))
