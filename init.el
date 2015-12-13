@@ -120,10 +120,16 @@
   "Holds the current theme value.
 I have to do this because I think I can not get the current enabled theme from an emacs primitive")
 
+(defvar beginning-of-daylight 5
+  "When does daytime start?")
+
+(defvar end-of-daylight 18
+  "When does daytime ends?")
+
 (defun is-daylight ()
   "Check if the current time is daylight"
   (let ((hour-of-day (nth 2 (decode-time))))
-    (if (and (> hour-of-day 6) (< hour-of-day 18))
+    (if (and (> hour-of-day beginning-of-daylight) (< hour-of-day end-of-daylight))
 	t
       nil)))
 
@@ -131,6 +137,7 @@ I have to do this because I think I can not get the current enabled theme from a
   "Change the current theme only if it is not already activated"
   (if (not (eq current-theme theme))
       (progn
+	(message "Changing theme to %s" theme)
 	(setq current-theme theme)
 	(load-theme current-theme))))
   
