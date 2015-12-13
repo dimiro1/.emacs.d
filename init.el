@@ -14,17 +14,30 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(require 'cl)
-
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
-
+;; The first thing to do
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
+;; Update env
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
+
+;; Load custom first
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+
+;; Turn off mouse interface early in startup to avoid momentary display
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(show-paren-mode)
+
+;; No splash screen
+(setq inhibit-startup-screen t)
+
+;; Common LISP
+(require 'cl)
 
 ;; Packages
 (require 'package)
@@ -102,9 +115,6 @@
     (set-frame-font "PragmataPro-12") ;; Using in my Macbook
   (set-frame-font "PragmataPro-11"))  ;; Using in my Gnu/Linux machine with Full HD Resolution
 
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
-
 ;; Color Theme
 (defvar current-theme nil
   "Holds the current theme value.
@@ -134,13 +144,8 @@ I have to do this because I think I can not get the current enabled theme from a
 (auto-change-theme) ;; Running on startup
 
 ;; Run periodically the change-color-theme function
-;; (* 5 60) 5 minutes
-(run-with-timer 0 5 'auto-change-theme)
-
-(setq inhibit-startup-screen t)
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(show-paren-mode)
+;; Every 60 seconds
+(run-with-timer 0 60 'auto-change-theme)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs-saves")))
