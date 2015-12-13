@@ -96,7 +96,14 @@
 
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
-(load-theme 'atom-dark t)
+
+(defvar hour-of-day (nth 2 (decode-time)))
+
+;; Use a different color theme at night
+(if (and (> hour-of-day 6) (< hour-of-day 18))
+    (load-theme 'atom-dark)
+  (load-theme 'atom-one-dark t))
+
 (setq inhibit-startup-screen t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
