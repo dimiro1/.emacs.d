@@ -50,6 +50,7 @@
 
 ;; Install packages
 (defvar packages '(
+		   thrift
 		   groovy-mode
 		   cider
 		   paredit
