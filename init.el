@@ -50,6 +50,7 @@
 
 ;; Install packages
 (defvar packages '(
+		   web-mode
 		   thrift
 		   groovy-mode
 		   cider
@@ -65,6 +66,7 @@
 		   monokai-theme
 		   atom-dark-theme
 		   magit
+		   fiplr
 		   atom-one-dark-theme)
   "Packages to install")
 
@@ -136,18 +138,16 @@ I have to do this because I think I can not get the current enabled theme from a
 
 (defun change-theme (theme)
   "Change the current theme only if it is not already activated"
-  (if (not (eq current-theme theme))
-      (progn
-	(message "Changing theme to %s" theme)
-	(setq current-theme theme)
-	(load-theme current-theme))))
+  (unless (eq current-theme theme)
+    (message "Changing theme to %s" theme)
+    (setq current-theme theme)
+    (load-theme current-theme)))
   
 (defun auto-change-theme ()
   "Change Color Theme of emacs based on the hour of the day"
-  (progn
-    (if (is-daylight)
-	(change-theme 'atom-dark)
-      (change-theme 'atom-one-dark))))
+  (if (is-daylight)
+      (change-theme 'atom-dark)
+    (change-theme 'atom-one-dark)))
 
 (auto-change-theme) ;; Running on startup
 
