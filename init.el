@@ -80,7 +80,12 @@
 (setq linum-relative-current-symbol "")
 (setq linum-relative-format "%3s ")
 
-(ido-mode)
+(setq ido-use-filename-at-point 'guess)
+(setq ido-create-new-buffer 'always)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode t)
+
 (global-linum-mode t)
 (global-hl-todo-mode t)
 (column-number-mode)
@@ -118,6 +123,7 @@
     (set-frame-font "PragmataPro-12") ;; Using in my Macbook
   (set-frame-font "PragmataPro-11"))  ;; Using in my Gnu/Linux machine with Full HD Resolution
 
+(setq-default line-spacing 3)
 ;; Color Theme
 
 (defvar enable-auto-color-theme nil
