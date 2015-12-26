@@ -67,12 +67,21 @@
 		   atom-dark-theme
 		   magit
 		   fiplr
-		   atom-one-dark-theme)
+		   atom-one-dark-theme
+		   rainbow-delimiters)
   "Packages to install")
 
 
 (loop for pkg in packages
       unless (package-installed-p pkg) do (package-install pkg))
+
+;; Hooks
+
+(add-hook 'clojure-mode-hook #'paredit-mode)
+(add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+
+(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+(add-hook 'emacs-lispmode-hook #'rainbow-delimiters-mode)
 
 ;; minor modes
 (require 'linum-relative)
@@ -90,6 +99,8 @@
 (global-hl-todo-mode t)
 (column-number-mode)
 
+(windmove-default-keybindings)
+
 ;; Auto complete
 (global-auto-complete-mode t)
 
@@ -101,6 +112,7 @@
 
 ;; Yasnippet
 (require 'yasnippet)
+(yas-global-mode 1)
 
 ;; cider-clojure
 (require 'cider)
@@ -124,13 +136,17 @@
   (set-frame-font "PragmataPro-11"))  ;; Using in my Gnu/Linux machine with Full HD Resolution
 
 (setq-default line-spacing 3)
+
 ;; Color Theme
 
 (defvar enable-auto-color-theme nil
   "Enable or disable the auto color theme feature")
 
-(defvar default-color-theme 'atom-one-dark
+(defvar default-color-theme 'monokai
   "The color theme to load case enable-auto-color-theme is false")
+
+(defvar night-theme 'atom-one-dark-theme)
+(defvar day-theme default-color-theme)
 
 (defvar current-theme nil
   "Holds the current theme value.
@@ -151,6 +167,11 @@ I have to do this because I think I can not get the current enabled theme from a
 
 (defun change-theme (theme)
   "Change the current theme only if it is not already activated"
+  (interactive
+   (list
+    (intern (completing-read "Load custom theme: "
+			     (mapcar 'symbol-name
+				     (custom-available-themes))))))
   (unless (eq current-theme theme)
     (message "Changing theme to %s" theme)
     (setq current-theme theme)
@@ -160,15 +181,16 @@ I have to do this because I think I can not get the current enabled theme from a
   "Change Color Theme of emacs based on the hour of the day"
   (if (eq enable-auto-color-theme t)
       (if (is-daylight)
-	  (change-theme 'atom-dark)
-	(change-theme 'atom-one-dark))
-    (change-theme default-color-theme)))
+	  (change-theme day-theme)
+	(change-theme night-theme))))
 
-(auto-change-theme) ;; Running on startup
-
-;; Run periodically the change-color-theme function
-;; Every 60 seconds
-(run-with-timer 0 60 'auto-change-theme)
+(if (eq enable-auto-color-theme t)
+    (progn
+      (auto-change-theme)
+      ;; Run periodically the change-color-theme function
+      ;; Every 60 seconds
+      (run-with-timer 0 60 'auto-change-theme))
+  (change-theme default-color-theme))
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs-saves")))
