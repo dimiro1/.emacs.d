@@ -60,7 +60,7 @@
 		   neotree
 		   yasnippet
 		   hl-todo
-		   auto-complete
+		   company
 		   majapahit-theme
 		   gotham-theme
 		   monokai-theme
@@ -68,6 +68,7 @@
 		   magit
 		   fiplr
 		   atom-one-dark-theme
+		   scala-mode2
 		   rainbow-delimiters)
   "Packages to install")
 
@@ -81,31 +82,41 @@
 (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
 
 (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
-(add-hook 'emacs-lispmode-hook #'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
 
 ;; minor modes
+;; Linum relative
 (require 'linum-relative)
 (linum-relative-global-mode)
 (setq linum-relative-current-symbol "")
 (setq linum-relative-format "%3s ")
 
+;; Ido
 (setq ido-use-filename-at-point 'guess)
 (setq ido-create-new-buffer 'always)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode t)
 
+;; linum
 (global-linum-mode t)
 (global-hl-todo-mode t)
 (column-number-mode)
 
+;; Fiplr
+(setq fiplr-root-markers '(".git"
+			   "project.clj"))
+
+(setq fiplr-ignored-globs '((directories (".svn" ".git" ".hg" "CVS" "build" "target"))
+                            (files ("*.pyc" "*.pyo" "*.exe" "*.dll" "*.obj""*.o" "*.a" "*.lib" "*.so" "*.dylib"
+				"*.ncb" "*.sdf" "*.suo" "*.pdb" "*.idb" ".DS_Store" "*.class" "*.psd" "*.db"
+				"*.jpg" "*.jpeg" "*.png" "*.gif" "*.ttf" "*.tga" "*.dds" "*.ico"
+				"*.eot" "*.pdf" "*.swf" "*.jar" "*.zip"))))
+
 (windmove-default-keybindings)
 
 ;; Auto complete
-(global-auto-complete-mode t)
-
-(require 'auto-complete)
-(require 'auto-complete-config)
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; NEO Tree
 (global-set-key [f8] 'neotree-toggle)
@@ -129,6 +140,8 @@
 (global-set-key (kbd "C-M-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "C-M-<down>") 'shrink-window)
 (global-set-key (kbd "C-M-<up>") 'enlarge-window)
+
+(global-set-key (kbd "M-TAB") #'company-complete)
 
 ;; Custom Editor
 (if (equal system-type 'darwin)
