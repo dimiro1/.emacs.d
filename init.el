@@ -36,6 +36,9 @@
 ;; No splash screen
 (setq inhibit-startup-screen t)
 
+;; No Bold
+(set-face-bold-p 'bold nil)
+
 ;; Common LISP
 (require 'cl)
 
@@ -64,11 +67,14 @@
 		   majapahit-theme
 		   gotham-theme
 		   monokai-theme
+		   railscasts-theme
 		   atom-dark-theme
 		   magit
 		   fiplr
 		   atom-one-dark-theme
 		   scala-mode2
+		   markdown-mode+
+		   elpy
 		   rainbow-delimiters)
   "Packages to install")
 
@@ -89,7 +95,7 @@
 (require 'linum-relative)
 (linum-relative-global-mode)
 (setq linum-relative-current-symbol "")
-(setq linum-relative-format "%3s ")
+(setq linum-relative-format "%3s")
 
 ;; Ido
 (setq ido-use-filename-at-point 'guess)
@@ -103,15 +109,21 @@
 (global-hl-todo-mode t)
 (column-number-mode)
 
+;; ELPY
+(elpy-enable)
+
 ;; Fiplr
 (setq fiplr-root-markers '(".git"
-			   "project.clj"))
+			   "project.clj"
+			   "build.gradle"))
 
 (setq fiplr-ignored-globs '((directories (".svn" ".git" ".hg" "CVS" "build" "target"))
-                            (files ("*.pyc" "*.pyo" "*.exe" "*.dll" "*.obj""*.o" "*.a" "*.lib" "*.so" "*.dylib"
-				"*.ncb" "*.sdf" "*.suo" "*.pdb" "*.idb" ".DS_Store" "*.class" "*.psd" "*.db"
-				"*.jpg" "*.jpeg" "*.png" "*.gif" "*.ttf" "*.tga" "*.dds" "*.ico"
-				"*.eot" "*.pdf" "*.swf" "*.jar" "*.zip"))))
+                            (files ("*.pyc" "*.pyo" "*.exe" "*.dll" "*.obj""*.o"
+				    "*.a" "*.lib" "*.so" "*.dylib" "*.ncb" "*.sdf"
+				    "*.suo" "*.pdb" "*.idb" ".DS_Store" "*.class"
+				    "*.psd" "*.db" "*.jpg" "*.jpeg" "*.png" "*.gif"
+				    "*.ttf" "*.tga" "*.dds" "*.ico" "*.eot" "*.pdf"
+				    "*.swf" "*.jar" "*.zip"))))
 
 (windmove-default-keybindings)
 
@@ -145,17 +157,17 @@
 
 ;; Custom Editor
 (if (equal system-type 'darwin)
-    (set-frame-font "PragmataPro-12") ;; Using in my Macbook
+    (set-frame-font "PragmataPro-12") ;; Using in my Macbook 0
   (set-frame-font "PragmataPro-11"))  ;; Using in my Gnu/Linux machine with Full HD Resolution
 
-(setq-default line-spacing 3)
+(setq-default line-spacing 2)
 
 ;; Color Theme
 
 (defvar enable-auto-color-theme nil
   "Enable or disable the auto color theme feature")
 
-(defvar default-color-theme 'monokai
+(defvar default-color-theme 'railscasts
   "The color theme to load case enable-auto-color-theme is false")
 
 (defvar night-theme 'atom-one-dark-theme)
