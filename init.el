@@ -76,6 +76,7 @@
 		   jbeans-theme
 		   darcula-theme
 		   go-mode
+		   go-guru
 		   flycheck
 		   rainbow-delimiters
 		   exec-path-from-shell)
@@ -137,15 +138,14 @@
 
 (add-hook 'go-mode-hook (lambda ()
                           (set (make-local-variable 'company-backends) '(company-go))
-                          (company-mode)))
+                          (company-mode)
+						  (go-guru-hl-identifier-mode)))
 
 ;; NEO Tree
 (global-set-key [f8] 'neotree-toggle)
 
 ;; Custom Keybindings
 (global-set-key (kbd "C-c l") 'goto-line)
-(global-set-key (kbd "C-c d") 'dash-at-point)
-(global-set-key (kbd "C-c E") 'Dash-at-point-with-docset)
 (global-set-key (kbd "C-c p") 'fiplr-find-file)
 (global-set-key (kbd "C-c s") 'magit-status)
 (global-set-key (kbd "C-c c") 'magit-push-current)
@@ -156,6 +156,11 @@
 (global-set-key (kbd "C-M-<up>") 'enlarge-window)
 
 (global-set-key (kbd "M-TAB") #'company-complete)
+
+;; (global-set-key [s-left] 'windmove-left)
+;; (global-set-key [s-right] 'windmove-right)
+;; (global-set-key [s-up] 'windmove-up)
+;; (global-set-key [s-down] 'windmove-down)
 
 (setq-default line-spacing 2)
 (setq-default default-tab-width 4)
