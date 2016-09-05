@@ -1,4 +1,6 @@
-;; My Emacs Config
+;;; .emacs.d --- My Emacs Config
+;;; Commentary:
+
 ;; Copyright (C) 2015 Claudemiro Alves Feitosa Neto <dimiro1@gmail.com>
 ;; 
 ;; This program is free software: you can redistribute it and/or modify
@@ -14,14 +16,12 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Code:
+
 ;; The first thing to do
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
-
-;; Update env
-(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-(setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;; Load custom first
 (setq custom-file "~/.emacs.d/custom.el")
@@ -37,10 +37,11 @@
 (setq inhibit-startup-screen t)
 
 ;; No Bold
-(set-face-bold-p 'bold nil)
+(set-face-bold 'bold nil)
 
 ;; Common LISP
-(require 'cl)
+
+(eval-when-compile (require 'cl))
 
 ;; Packages
 (require 'package)
@@ -52,18 +53,17 @@
 (package-initialize)
 
 ;; Install packages
-(defvar packages '(
+(defvar my-packages '(
 		   web-mode
 		   thrift
-		   groovy-mode
 		   cider
 		   paredit
 		   ac-nrepl
 		   linum-relative
 		   neotree
-		   yasnippet
 		   hl-todo
 		   company
+		   company-go
 		   majapahit-theme
 		   gotham-theme
 		   monokai-theme
@@ -72,21 +72,26 @@
 		   magit
 		   fiplr
 		   atom-one-dark-theme
-		   scala-mode2
 		   markdown-mode+
-		   elpy
-		   rainbow-delimiters)
-  "Packages to install")
+		   jbeans-theme
+		   darcula-theme
+		   go-mode
+		   flycheck
+		   rainbow-delimiters
+		   exec-path-from-shell)
+  "Packages to install.")
 
 
-(loop for pkg in packages
+(loop for pkg in my-packages
       unless (package-installed-p pkg) do (package-install pkg))
 
+;; env
+(when (memq window-system '(mac ns))
+  (setq-default exec-path-from-shell-check-startup-files nil)
+  (setq-default exec-path-from-shell-variables '("PATH" "GOPATH"))
+  (exec-path-from-shell-initialize))
+
 ;; Hooks
-
-(add-hook 'clojure-mode-hook #'paredit-mode)
-(add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
-
 (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
 (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
 
@@ -95,13 +100,13 @@
 (require 'linum-relative)
 (linum-relative-global-mode)
 (setq linum-relative-current-symbol "")
-(setq linum-relative-format "%3s")
+(setq linum-relative-format "%3s ")
 
 ;; Ido
-(setq ido-use-filename-at-point 'guess)
-(setq ido-create-new-buffer 'always)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
+(setq-default ido-use-filename-at-point 'guess)
+(setq-default ido-create-new-buffer 'always)
+(setq-default ido-enable-flex-matching t)
+(setq-default ido-everywhere t)
 (ido-mode t)
 
 ;; linum
@@ -109,36 +114,33 @@
 (global-hl-todo-mode t)
 (column-number-mode)
 
-;; ELPY
-(elpy-enable)
+;; Flycheck
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Fiplr
-(setq fiplr-root-markers '(".git"
+(setq-default fiplr-root-markers '(".git"
 			   "project.clj"
 			   "build.gradle"))
 
-(setq fiplr-ignored-globs '((directories (".svn" ".git" ".hg" "CVS" "build" "target"))
-                            (files ("*.pyc" "*.pyo" "*.exe" "*.dll" "*.obj""*.o"
-				    "*.a" "*.lib" "*.so" "*.dylib" "*.ncb" "*.sdf"
-				    "*.suo" "*.pdb" "*.idb" ".DS_Store" "*.class"
-				    "*.psd" "*.db" "*.jpg" "*.jpeg" "*.png" "*.gif"
-				    "*.ttf" "*.tga" "*.dds" "*.ico" "*.eot" "*.pdf"
-				    "*.swf" "*.jar" "*.zip"))))
+(setq-default fiplr-ignored-globs '((directories (".svn" ".git" ".hg" "CVS" "build" "target"))
+									(files ("*.pyc" "*.pyo" "*.exe" "*.dll" "*.obj""*.o"
+											"*.a" "*.lib" "*.so" "*.dylib" "*.ncb" "*.sdf"
+											"*.suo" "*.pdb" "*.idb" ".DS_Store" "*.class"
+											"*.psd" "*.db" "*.jpg" "*.jpeg" "*.png" "*.gif"
+											"*.ttf" "*.tga" "*.dds" "*.ico" "*.eot" "*.pdf"
+											"*.swf" "*.jar" "*.zip"))))
 
 (windmove-default-keybindings)
 
 ;; Auto complete
 (add-hook 'after-init-hook 'global-company-mode)
 
+(add-hook 'go-mode-hook (lambda ()
+                          (set (make-local-variable 'company-backends) '(company-go))
+                          (company-mode)))
+
 ;; NEO Tree
 (global-set-key [f8] 'neotree-toggle)
-
-;; Yasnippet
-(require 'yasnippet)
-(yas-global-mode 1)
-
-;; cider-clojure
-(require 'cider)
 
 ;; Custom Keybindings
 (global-set-key (kbd "C-c l") 'goto-line)
@@ -155,67 +157,12 @@
 
 (global-set-key (kbd "M-TAB") #'company-complete)
 
-;; Custom Editor
-(if (equal system-type 'darwin)
-    (set-frame-font "PragmataPro-12") ;; Using in my Macbook 0
-  (set-frame-font "PragmataPro-11"))  ;; Using in my Gnu/Linux machine with Full HD Resolution
-
 (setq-default line-spacing 2)
+(setq-default default-tab-width 4)
 
 ;; Color Theme
 
-(defvar enable-auto-color-theme nil
-  "Enable or disable the auto color theme feature")
-
-(defvar default-color-theme 'railscasts
-  "The color theme to load case enable-auto-color-theme is false")
-
-(defvar night-theme 'atom-one-dark-theme)
-(defvar day-theme default-color-theme)
-
-(defvar current-theme nil
-  "Holds the current theme value.
-I have to do this because I think I can not get the current enabled theme from an emacs primitive")
-
-(defvar beginning-of-daylight 5
-  "When does daytime start?")
-
-(defvar end-of-daylight 18
-  "When does daytime ends?")
-
-(defun is-daylight ()
-  "Check if the current time is daylight"
-  (let ((hour-of-day (nth 2 (decode-time))))
-    (if (and (> hour-of-day beginning-of-daylight) (< hour-of-day end-of-daylight))
-	t
-      nil)))
-
-(defun change-theme (theme)
-  "Change the current theme only if it is not already activated"
-  (interactive
-   (list
-    (intern (completing-read "Load custom theme: "
-			     (mapcar 'symbol-name
-				     (custom-available-themes))))))
-  (unless (eq current-theme theme)
-    (message "Changing theme to %s" theme)
-    (setq current-theme theme)
-    (load-theme current-theme)))
-  
-(defun auto-change-theme ()
-  "Change Color Theme of emacs based on the hour of the day"
-  (if (eq enable-auto-color-theme t)
-      (if (is-daylight)
-	  (change-theme day-theme)
-	(change-theme night-theme))))
-
-(if (eq enable-auto-color-theme t)
-    (progn
-      (auto-change-theme)
-      ;; Run periodically the change-color-theme function
-      ;; Every 60 seconds
-      (run-with-timer 0 60 'auto-change-theme))
-  (change-theme default-color-theme))
+(load-theme 'darcula)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs-saves")))
@@ -224,3 +171,9 @@ I have to do this because I think I can not get the current enabled theme from a
   kept-new-versions 6
   kept-old-versions 2
   version-control t)
+
+;; Custom Editor
+(set-frame-font "FiraMono-10")
+
+(provide 'init)
+;;; init.el ends here
