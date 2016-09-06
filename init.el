@@ -1,7 +1,7 @@
 ;;; .emacs.d --- My Emacs Config
 ;;; Commentary:
 
-;; Copyright (C) 2015 Claudemiro Alves Feitosa Neto <dimiro1@gmail.com>
+;; Copyright (C) 2015,2016 Claudemiro Alves Feitosa Neto <dimiro1@gmail.com>
 ;; 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,9 +56,7 @@
 (defvar my-packages '(
 		   web-mode
 		   thrift
-		   cider
 		   paredit
-		   ac-nrepl
 		   linum-relative
 		   neotree
 		   hl-todo
@@ -77,6 +75,7 @@
 		   darcula-theme
 		   go-mode
 		   go-guru
+		   go-rename
 		   flycheck
 		   rainbow-delimiters
 		   exec-path-from-shell)
@@ -87,14 +86,10 @@
       unless (package-installed-p pkg) do (package-install pkg))
 
 ;; env
-(when (memq window-system '(mac ns))
+(when (memq window-system '(mac ns x))
   (setq-default exec-path-from-shell-check-startup-files nil)
-  (setq-default exec-path-from-shell-variables '("PATH" "GOPATH"))
+  (setq-default exec-path-from-shell-variables '("PATH" "GOPATH" "GOROOT"))
   (exec-path-from-shell-initialize))
-
-;; Hooks
-(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
-(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
 
 ;; minor modes
 ;; Linum relative
@@ -120,8 +115,8 @@
 
 ;; Fiplr
 (setq-default fiplr-root-markers '(".git"
-			   "project.clj"
-			   "build.gradle"))
+								   "project.clj"
+								   "build.gradle"))
 
 (setq-default fiplr-ignored-globs '((directories (".svn" ".git" ".hg" "CVS" "build" "target"))
 									(files ("*.pyc" "*.pyo" "*.exe" "*.dll" "*.obj""*.o"
@@ -132,6 +127,12 @@
 											"*.swf" "*.jar" "*.zip"))))
 
 (windmove-default-keybindings)
+(electric-pair-mode)
+
+;; Hooks
+(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'before-save-hook #'gofmt-before-save)
 
 ;; Auto complete
 (add-hook 'after-init-hook 'global-company-mode)
@@ -140,6 +141,7 @@
                           (set (make-local-variable 'company-backends) '(company-go))
                           (company-mode)
 						  (go-guru-hl-identifier-mode)))
+
 
 ;; NEO Tree
 (global-set-key [f8] 'neotree-toggle)
@@ -178,7 +180,7 @@
   version-control t)
 
 ;; Custom Editor
-(set-frame-font "FiraMono-10")
+(set-frame-font "Inconsolata-12")
 
 (provide 'init)
 ;;; init.el ends here
