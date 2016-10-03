@@ -64,6 +64,7 @@
 		   company-go
 		   majapahit-theme
 		   gotham-theme
+		   ample-zen-theme
 		   monokai-theme
 		   railscasts-theme
 		   atom-dark-theme
@@ -169,7 +170,7 @@
 
 ;; Color Theme
 
-(load-theme 'darcula)
+(load-theme 'ample-zen)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs-saves")))
@@ -180,7 +181,7 @@
   version-control t)
 
 ;; Custom Editor
-(set-frame-font "Inconsolata-12")
+(set-frame-font "PragmataPro-12")
 
 (provide 'init)
 ;;; init.el ends here
