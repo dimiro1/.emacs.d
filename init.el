@@ -58,7 +58,7 @@
 		   thrift
 		   paredit
 		   linum-relative
-		   neotree
+		   helm
 		   hl-todo
 		   company
 		   company-go
@@ -98,6 +98,12 @@
 (linum-relative-global-mode)
 (setq linum-relative-current-symbol "")
 (setq linum-relative-format "%3s ")
+
+;; Helm
+
+(require 'helm-config)
+(global-set-key (kbd "M-x") 'helm-M-x)
+
 
 ;; Ido
 (setq-default ido-use-filename-at-point 'guess)
@@ -144,9 +150,6 @@
 						  (go-guru-hl-identifier-mode)))
 
 
-;; NEO Tree
-(global-set-key [f8] 'neotree-toggle)
-
 ;; Custom Keybindings
 (global-set-key (kbd "C-c l") 'goto-line)
 (global-set-key (kbd "C-c p") 'fiplr-find-file)
@@ -170,7 +173,7 @@
 
 ;; Color Theme
 
-(load-theme 'ample-zen)
+(load-theme 'dark-laptop)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs-saves")))
@@ -181,7 +184,7 @@
   version-control t)
 
 ;; Custom Editor
-(set-frame-font "PragmataPro-12")
+(set-frame-font "Inconsolata-13")
 
 (provide 'init)
 ;;; init.el ends here
