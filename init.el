@@ -55,7 +55,6 @@
 ;; Install packages
 (defvar my-packages '(
 		   web-mode
-		   thrift
 		   paredit
 		   linum-relative
 		   helm
@@ -63,6 +62,7 @@
 		   company
 		   company-go
 		   majapahit-theme
+		   dracula-theme
 		   gotham-theme
 		   color-theme-modern
 		   ample-zen-theme
@@ -124,7 +124,8 @@
 ;; Fiplr
 (setq-default fiplr-root-markers '(".git"
 								   "project.clj"
-								   "build.gradle"))
+								   "build.gradle"
+								   "Gopkg.toml"))
 
 (setq-default fiplr-ignored-globs '((directories (".svn" ".git" ".hg" "CVS" "build" "target"))
 									(files ("*.pyc" "*.pyo" "*.exe" "*.dll" "*.obj""*.o"
@@ -174,7 +175,7 @@
 
 ;; Color Theme
 
-(load-theme 'atom-dark)
+(load-theme 'dracula)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs-saves")))
@@ -185,7 +186,7 @@
   version-control t)
 
 ;; Custom Editor
-(set-frame-font "FiraMono-11")
+(set-frame-font "Inconsolata-14")
 ;;(set-frame-font "Liberation Mono-11")
 
 (provide 'init)
