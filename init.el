@@ -24,7 +24,7 @@
 ;;; List of Custom Packages
 ;; This variable contains a list of custom configuration modules to be loaded.
 ;; Each entry corresponds to a feature or functionality managed in a separate file.
-(setq my-packages
+(defvar my-packages
       '(
 	my-straight    ;; Important: This must come first
 	my-common      ;; Common Configurations
@@ -36,14 +36,22 @@
 	my-paredit     ;; Paredit Config
 	my-treesit     ;; Tree-sitter Configuration
 	my-lsp         ;; Language Server
+	my-gotest      ;; Setup golang testing support
 	my-which-key   ;; Which-Key
 	my-copilot     ;; GitHub Copilot
 	my-keybindings ;; Custom Keybindings
-	))
+	)
+      "My personal list of internal packages to load."
+      )
 
+;;; Load Custom Packages
+;; Iterates through the list of custom packages (`my-packages`) and attempts to load each one.
+;; Provides informative messages on success or failure.
 (dolist (pkg my-packages)
   (condition-case err
       (when (locate-library (symbol-name pkg))
         (require pkg)
         (message "Package %s loaded successfully" pkg))
-    (error (message "Failed to load %s: %s" pkg err))))
+    (error (message "Failed to load %s: %s" pkg err))
+    (:success (message "Package %s processed successfully without errors" pkg))))
+

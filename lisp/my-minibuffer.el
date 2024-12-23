@@ -11,6 +11,9 @@
 (use-package vertico
   :straight t
   :ensure t
+  :config
+  (setopt vertico-cycle t)
+  (setopt vertico-resize nil)
   :hook (after-init . vertico-mode))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.

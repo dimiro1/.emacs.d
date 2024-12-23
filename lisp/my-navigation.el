@@ -17,6 +17,10 @@
 	      ("s-p" . projectile-command-map)
 	      ("C-c p" . projectile-command-map)))
 
+(use-package consult
+  :straight t
+  :bind ("C-c b" . consult-buffer))
+
 ;;; Avy Configuration
 ;; Avy is a powerful navigation package that allows you to jump to visible text
 ;; in the current window quickly using a minimal number of keystrokes.
@@ -31,5 +35,22 @@
    ("M-g w"   . avy-goto-word-1) ;; Jump to the beginning of a word
    ("M-g e"   . avy-goto-word-0) ;; Jump to any part of a word
    ("C-c C-j" . avy-resume)))        ;; Resume the last Avy command
+
+;; Dired Configuration
+(use-package dired
+  :ensure nil
+  :commands (dired)
+  :hook ((dired-mode . dired-hide-details-mode)
+	 (dired-mode . hl-line-mode))
+  :config
+  (setopt dired-recursive-copies 'always)
+  (setopt dired-recursive-deletes 'always)
+  (setopt delete-by-moving-to-trash t)
+  (setopt dired-dwim-target t))
+
+;; The built-in `recentf-mode' keeps track of recently visited files.
+(use-package emacs
+  :ensure nil
+  :hook (after-init . recentf-mode))
 
 (provide 'my-navigation)
