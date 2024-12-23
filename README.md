@@ -25,7 +25,7 @@ This repository contains my personal Emacs configuration, designed for modularit
 
 - Clone this repository into your `.emacs.d` directory:
 ```bash
-git clone https://github.com/yourusername/emacs-config.git ~/.emacs.d
+git clone https://github.com/dimiro1/.emacs.d.git ~/.emacs.d
 ```
 
 - Install Emacs (version 29+ is recommended).
