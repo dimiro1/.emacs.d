@@ -23,29 +23,32 @@ This repository contains my personal Emacs configuration, designed for modularit
 
 ## **Installation**
 
-1. Clone this repository into your `.emacs.d` directory:
-   ```bash
-   git clone https://github.com/yourusername/emacs-config.git ~/.emacs.d
+- Clone this repository into your `.emacs.d` directory:
+```bash
+git clone https://github.com/yourusername/emacs-config.git ~/.emacs.d
+```
 
-	2.	Install Emacs (version 29+ is recommended).
-	3.	Launch Emacs. On the first run, the configuration will:
-	•	Install straight.el automatically.
-	•	Download and configure all required packages.
+- Install Emacs (version 29+ is recommended).
+- Launch Emacs. On the first run, the configuration will:
+  - Install straight.el automatically.
+  - Download and configure all required packages.
 
 Usage
 
 Key Features:
-	•	Open Init File: Quickly edit your init.el file with C-c i.
-	•	Git Commands: Launch Magit with C-x g.
-	•	Project Navigation: Use C-c p for projectile commands.
-	•	Language-Specific Features:
-	•	company-mode for code completion.
-	•	eglot for LSP support.
+
+- Open Init File: Quickly edit your init.el file with C-c i.
+- Git Commands: Launch Magit with C-x g.
+- Project Navigation: Use C-c p for projectile commands.
+- Language-Specific Features:
+- company-mode for code completion.
+- eglot for LSP support.
 
 File Structure
 
 The configuration is split into multiple files for modularity:
 
+```
 .
 ├── init.el             # Entry point for the configuration
 ├── lisp/
@@ -56,3 +59,4 @@ The configuration is split into multiple files for modularity:
 │   ├── my-company.el   # Company-mode configuration
 │   ├── my-paredit.el   # Paredit for Lisp editing
 │   └── ...             # Additional modules
+```
