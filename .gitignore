@@ -15,6 +15,7 @@ transient/
 straight/
 history
 projectile-bookmarks.eld
+bookmarks
 
 # Org-mode
 .org-id-locations

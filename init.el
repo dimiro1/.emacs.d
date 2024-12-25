@@ -24,7 +24,7 @@
 ;;; List of Custom Packages
 ;; This variable contains a list of custom configuration modules to be loaded.
 ;; Each entry corresponds to a feature or functionality managed in a separate file.
-(defvar my-packages
+(defvar-local my-packages
   '(
     my-straight	       ;; Important: This must come first
     my-common	       ;; Common Configurations
