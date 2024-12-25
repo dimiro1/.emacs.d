@@ -1,4 +1,3 @@
-
 ;;; Vertico: Vertical completion system for Emacs.
 ;;; Provides a clean vertical list of completion candidates in the minibuffer.
 ;;; Example: Typing `M-x find` shows:
