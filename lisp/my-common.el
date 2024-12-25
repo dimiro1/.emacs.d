@@ -40,17 +40,15 @@
   ;; Disable the startup screen
   (setopt inhibit-startup-screen t)
   ;; Remove menu bar, tool bar, and scroll bar
-  (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   ;; Highlight matching parentheses
   (show-paren-mode t))
 
-;;; Font and Spacing
+;;; Text Spacing
 (use-package emacs
   :init
-  (set-frame-font "Comic Code-13")
-  ;; (setopt line-spacing 2) ;; Uncomment to adjust line spacing
+  (setopt line-spacing 2)
   (setopt default-tab-width 2))
 
 ;;; CamelCase Support
