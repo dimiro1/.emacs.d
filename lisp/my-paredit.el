@@ -7,7 +7,6 @@
 ;; - Deleting a parenthesis ensures the expression remains valid.
 (use-package paredit
   :straight t
-  :ensure t
   :hook (emacs-lisp-mode . paredit-mode))
 
 (provide 'my-paredit)

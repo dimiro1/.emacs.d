@@ -27,7 +27,8 @@
      "51fa6edfd6c8a4defc2681e4c438caf24908854c12ea12a1fbfd4d055a9647a3"
      "0517759e6b71f4ad76d8d38b69c51a5c2f7196675d202e3c2507124980c3c2a3"
      "7dc1dd6fae32c5840715cecebed8c5a58e43fc855d729d289a770f58f4cbf2c8" default))
- '(package-selected-packages nil))
+ '(package-selected-packages nil)
+ '(straight-use-package-by-default t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

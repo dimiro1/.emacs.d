@@ -9,7 +9,6 @@
 ;;; Use arrow keys or bindings to navigate.
 (use-package vertico
   :straight t
-  :ensure t
   :config
   (setopt vertico-cycle t)
   (setopt vertico-resize nil)
@@ -42,7 +41,6 @@
 ;;; Enhances context and usability.
 (use-package marginalia
   :straight t
-  :ensure t
   :hook (after-init . marginalia-mode))
 
 (provide 'my-minibuffer)

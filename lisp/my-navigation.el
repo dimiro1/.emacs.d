@@ -8,10 +8,9 @@
 ;;; Projectile Configuration
 ;; Projectile is a project management tool for navigating and interacting with projects.
 ;; Example: Use `C-c p f` to find files in a project or `C-c p p` to switch projects.
-;; :straight t and :ensure t ensure installation, and `projectile-mode` is enabled globally.
+;; :straight t ensure installation, and `projectile-mode` is enabled globally.
 (use-package projectile
   :straight t
-  :ensure t
   :init (projectile-mode t)
   :bind (:map projectile-mode-map
 	      ("s-p" . projectile-command-map)
@@ -38,7 +37,6 @@
 
 ;; Dired Configuration
 (use-package dired
-  :ensure nil
   :commands (dired)
   :hook ((dired-mode . dired-hide-details-mode)
 	 (dired-mode . hl-line-mode))
@@ -50,7 +48,6 @@
 
 ;; The built-in `recentf-mode' keeps track of recently visited files.
 (use-package emacs
-  :ensure nil
   :hook (after-init . recentf-mode))
 
 (provide 'my-navigation)

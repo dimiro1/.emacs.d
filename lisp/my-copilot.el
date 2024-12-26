@@ -5,7 +5,6 @@
   :straight (:host github
              :repo "copilot-emacs/copilot.el"
              :files ("*.el")) ;; Install from the official GitHub repository
-  :ensure t
   :init (copilot-mode)
   :bind
   (:map copilot-completion-map
