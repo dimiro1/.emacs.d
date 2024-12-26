@@ -12,6 +12,8 @@ SessionDesktop.el
 .cache/
 recentf
 transient/
+tree-sitter/
+projects
 straight/
 history
 projectile-bookmarks.eld

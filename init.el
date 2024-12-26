@@ -35,11 +35,12 @@
     my-colorscheme     ;; Theme Configuration
     my-paredit	       ;; Paredit Config
     my-treesit	       ;; Tree-sitter Configuration
-    my-lsp	           ;; Language Server
+    my-lsp	       ;; Language Server
     my-gotest	       ;; Setup golang testing support
     my-which-key       ;; Which-Key
     my-copilot	       ;; GitHub Copilot
     my-keybindings     ;; Custom Keybindings
+    my-modes           ;; Extra modes
     )
   "My personal list of internal packages to load.")
 
