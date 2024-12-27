@@ -38,7 +38,7 @@
     my-lsp	       ;; Language Server
     my-gotest	       ;; Setup golang testing support
     my-which-key       ;; Which-Key
-    my-copilot	       ;; GitHub Copilot
+    my-llm	       ;; LLM Integration
     my-keybindings     ;; Custom Keybindings
     my-modes           ;; Extra modes
     )

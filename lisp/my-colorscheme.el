@@ -13,6 +13,6 @@
   :straight t)
 
 ;;; Load Theme
-(load-theme 'gruvbox :no-confirm)
+(load-theme 'catppuccin :no-confirm)
 
 (provide 'my-colorscheme)
