@@ -3,6 +3,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auth-sources
+   '("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" macos-keychain-internet
+     macos-keychain-generic))
  '(avy-keys '(97 114 115 116 103 109 110 101 105))
  '(copilot-chat-model "claude-3.5-sonnet")
  '(custom-safe-themes

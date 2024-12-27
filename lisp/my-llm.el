@@ -13,30 +13,39 @@
         ("C-TAB"   . copilot-accept-completion-by-word)   ;; Accept the suggestion word by word
         ("C-<tab>" . copilot-accept-completion-by-word))) ;; Same as above, alternate binding
 
+
 (use-package gptel
   :config
+  ;; Set the GPT model to use
   (setopt gptel-model 'claude-3-5-sonnet-20241022)
+
+  ;; Adding the Anthropic API key to the macOS Keychain
+  ;;
+  ;; This configuration fetches the Anthropic API key from the macOS Keychain.
+  ;; To add the key to the keychain:
+  ;; 1. Open the Terminal.
+  ;; 2. Run the following command:
+  ;;
+  ;;    security add-internet-password -a "Bearer" -s "https://api.anthropic.com" -w "<YOUR_API_KEY>"
+  ;;
+  ;; Replace `<YOUR_API_KEY>` with your actual Anthropic API key.
+  ;; Note: This is the same password used by the Zed editor for accessing the Anthropic API.
+
+  ;; Function to retrieve the API key from the macOS Keychain
+  (defun get-anthropic-password ()
+    "Retrieve the Anthropic API key from the macOS Keychain."
+    (let ((entry (nth 0 (auth-source-search
+                         :host "https://api.anthropic.com"
+                         :user "Bearer"
+                         :max 1))))
+      (when entry
+        (funcall (plist-get entry :secret)))))
+
+  ;; Configure gptel to use the key retrieved from the macOS Keychain
   (setopt gptel-backend
-	  (gptel-make-anthropic "Claude"
-	    :stream t
-	    :key
-	    (with-temp-buffer
-	      (insert-file-contents
-	       (expand-file-name "llm-token" user-emacs-directory)
-	       (buffer-string))))))
-
-
-(use-package gptel
-  :config
-  (setopt gptel-model 'claude-3-5-sonnet-20241022)
-  (when-let* ((token-file (expand-file-name "llm-token" user-emacs-directory))
-              ((file-exists-p token-file)))
-    (setopt gptel-backend
-            (gptel-make-anthropic "Claude"
-              :stream t
-              :key (with-temp-buffer
-                     (insert-file-contents token-file)
-                     (string-trim (buffer-string)))))))
-
+          (gptel-make-anthropic "Claude"
+            :stream t
+            :key (or (get-anthropic-password)
+                     (error "Anthropic API key not found in macOS Keychain")))))
 
 (provide 'my-llm)
