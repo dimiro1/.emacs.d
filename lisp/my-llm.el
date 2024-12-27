@@ -13,7 +13,6 @@
         ("C-TAB"   . copilot-accept-completion-by-word)   ;; Accept the suggestion word by word
         ("C-<tab>" . copilot-accept-completion-by-word))) ;; Same as above, alternate binding
 
-
 ;;; GPTel Configuration
 ;; GPTel enables interaction with Large Language Models (LLMs) directly within Emacs.
 ;; It supports ChatGPT and other LLM services, allowing AI-assisted conversations.
