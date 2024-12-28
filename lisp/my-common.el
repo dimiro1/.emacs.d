@@ -66,7 +66,7 @@
 ;;; Custom File Loading
 (use-package emacs
   :init
-  (setopt custom-file "~/.emacs.d/custom.el")
+  (setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
   (load custom-file))
 
 ;;; Backup Settings

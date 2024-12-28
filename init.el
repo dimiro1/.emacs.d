@@ -26,21 +26,22 @@
 ;; Each entry corresponds to a feature or functionality managed in a separate file.
 (defvar-local my-packages
   '(
-    my-straight	       ;; Important: This must come first
-    my-common	       ;; Common Configurations
+    my-straight        ;; Important: This must come first
+    my-common          ;; Common Configurations
     my-minibuffer      ;; Minibuffer Config
-    my-company	       ;; Completion Framework
-    my-magit	       ;; Git Integration
+    my-company         ;; Completion Framework
+    my-magit           ;; Git Integration
     my-navigation      ;; File Navigation
     my-colorscheme     ;; Theme Configuration
-    my-paredit	       ;; Paredit Config
-    my-treesit	       ;; Tree-sitter Configuration
-    my-lsp	       ;; Language Server
+    my-paredit         ;; Paredit Config
+    my-treesit         ;; Tree-sitter Configuration
+    my-lsp             ;; Language Server
     my-gotest	       ;; Setup golang testing support
     my-which-key       ;; Which-Key
-    my-llm	       ;; LLM Integration
-    my-keybindings     ;; Custom Keybindings
+    my-llm             ;; LLM Integration
     my-modes           ;; Extra modes
+    my-misc            ;; Uncategorized packages
+    my-keybindings     ;; Custom Keybindings
     )
   "My personal list of internal packages to load.")
 
