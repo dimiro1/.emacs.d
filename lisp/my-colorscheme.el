@@ -13,6 +13,6 @@
   :straight t)
 
 ;;; Load Theme
-(load-theme 'modus-vivendi-deuteranopia :no-confirm)
+(load-theme 'modus-operandi-tinted :no-confirm)
 
 (provide 'my-colorscheme)
