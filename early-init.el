@@ -3,3 +3,7 @@
 ;; to prevent package.el from loading packages automatically.
 (setopt package-enable-at-startup nil)
 
+;; Allow computing statistics for use-package.
+;; You can check the stats by using M-x use-package-report
+(setopt use-package-compute-statistics t)
+
