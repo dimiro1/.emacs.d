@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;;; Eglot Configuration (LSP Client)
 (use-package emacs
   :hook (before-save . (lambda ()

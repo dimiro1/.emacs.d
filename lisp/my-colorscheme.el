@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;;; Theme Configuration
 
 ;; Gruvbox Theme: Retro theme with medium to high contrast (dark and light variants)

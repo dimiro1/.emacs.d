@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;;; Conditional Configuration for `which-key`
 ;; Enable and configure `which-key`, a helpful package that displays available keybindings
 ;; in a popup. The configuration differs based on the Emacs version:

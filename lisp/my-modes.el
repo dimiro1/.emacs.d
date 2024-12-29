@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Install Markdown mode
 (use-package markdown-mode)
 

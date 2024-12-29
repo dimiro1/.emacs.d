@@ -8,6 +8,8 @@
 ;;; Projectile Configuration
 ;; Projectile is a project management tool for navigating and interacting with projects.
 ;; Example: Use `C-c p f` to find files in a project or `C-c p p` to switch projects.
+;;; -*- lexical-binding: t; -*-
+
 ;; :straight t ensure installation, and `projectile-mode` is enabled globally.
 (use-package projectile
   :straight t
@@ -37,7 +39,7 @@
 
 ;; Dired Configuration
 (use-package dired
-  :commands (dired)
+  :straight (:type built-in)
   :hook ((dired-mode . dired-hide-details-mode)
 	 (dired-mode . hl-line-mode))
   :config

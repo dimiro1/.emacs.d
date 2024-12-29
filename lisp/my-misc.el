@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;;; XID Configuration
 ;; Generates globally unique IDs (xid github.com/rs/xid)
 ;; Usage: C-c x i d → cto6h99m65j2ggqeebc0

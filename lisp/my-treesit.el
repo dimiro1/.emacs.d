@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;;; Tree-sitter Configuration
 ;; Define language parsers and their source repositories for Tree-sitter.
 (setopt treesit-language-source-alist

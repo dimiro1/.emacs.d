@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;;; Paredit Configuration
 ;; Paredit is a minor mode for editing Lisp code. It ensures the structural
 ;; integrity of s-expressions by automatically managing parentheses.

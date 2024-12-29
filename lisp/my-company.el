@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Company (Complete Anything) provides in-buffer, context-aware completion.
 (use-package company
   :straight t
