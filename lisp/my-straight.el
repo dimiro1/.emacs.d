@@ -1,5 +1,6 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Straight.el Bootstrap
-(setopt package-enable-at-startup nil)
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -15,5 +16,9 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+
+;; See: https://github.com/radian-software/straight.el/issues/1146
+(straight-use-package 'project)
 
 (provide 'my-straight)
