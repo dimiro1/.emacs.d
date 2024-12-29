@@ -1,4 +1,6 @@
-;;; Character Encoding
+;;; -*- lexical-binding: t; -*-
+
+;;; Core Encoding and Terminal Settings
 (use-package emacs
   :init
   (set-terminal-coding-system 'utf-8)
@@ -7,86 +9,73 @@
   :hook
   (term-mode . term-line-mode)) ;; Enable line mode in term-mode
 
-;;; Open init.el Configuration
-;; This block defines a custom function to quickly open the user's init.el file
-;; for editing. It also binds the function to "C-c i" for easy access.
+;;; UI and Display Settings
 (use-package emacs
   :init
-  (defun open-init-file ()
-    "Open the init.el file quickly."
-    (interactive)
-    (find-file (expand-file-name "init.el" user-emacs-directory)))
-  :bind (("C-c i" . open-init-file)))
-
-;;; UI Preferences
-(use-package emacs
-  :init
-  ;; Highlight current line
-  (global-hl-line-mode 1)
-  ;; Auto-wrap lines longer than 80 characters
+  ;; General UI preferences
+  (global-hl-line-mode t)
   (setopt fill-column 80)
-  (auto-fill-mode 1)
-  ;; Show trailing whitespace
+  (auto-fill-mode t)
   (setopt show-trailing-whitespace t)
-  ;; Delete selected text when typing
-  (delete-selection-mode 1)
-  ;; Confirm before quitting Emacs
+  (delete-selection-mode t)
   (setopt confirm-kill-emacs 'y-or-n-p)
   ;; Smooth scrolling
-  (setopt scroll-step 1
-          scroll-conservatively 10000)
-  ;; Make Emacs start in fullscreen mode
+  (setopt scroll-step 1 scroll-conservatively 10000)
+  ;; Fullscreen and startup
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
-  ;; Disable the startup screen
   (setopt inhibit-startup-screen t)
-  ;; Remove menu bar, tool bar, and scroll bar
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
-  ;; Highlight matching parentheses
-  (show-paren-mode t))
-
-;;; Text Spacing
-(use-package emacs
-  :init
-  (setopt line-spacing 2)
-  (setopt default-tab-width 2))
-
-;;; CamelCase Support
-(use-package emacs
-  :init
-  (subword-mode t)) ;; Enable navigation within CamelCase words
-
-;;; Display Settings
-(use-package emacs
-  :init
+  ;; Line numbers and columns
   (setopt display-line-numbers-type 'relative)
   (global-display-line-numbers-mode t)
-  (column-number-mode t)) ;; Show column numbers
+  (column-number-mode t)
+  ;; Matching parentheses
+  (show-paren-mode t))
 
-;;; Custom File Loading
+;; Open init.el quickly
+(defun open-init-file ()
+  "Open the init.el file quickly."
+  (interactive)
+  (find-file (expand-file-name "init.el" user-emacs-directory)))
+
+(use-package emacs
+  :bind (("C-c i" . open-init-file)))
+
+;;; File and Backup Management
 (use-package emacs
   :init
-  (setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (load custom-file))
-
-;;; Backup Settings
-(use-package emacs
-  :init
+  ;; Backup settings
   (setopt backup-directory-alist `(("." . "~/.emacs-saves"))
           backup-by-copying t
           delete-old-versions t
           kept-new-versions 6
           kept-old-versions 2
-          version-control t))
+          version-control t)
+  ;; Custom file
+  (setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (load custom-file))
 
-;;; Path Settings
+;;; Spacing and Indentation
+(use-package emacs
+  :init
+  (setopt line-spacing 2)
+  (setopt default-tab-width 2))
+
+;;; CamelCase Navigation
+(use-package emacs
+  :init
+  (subword-mode t)) ;; Enable CamelCase navigation
+
+;;; Repeat Mode
+(use-package emacs
+  :hook
+  (after-init . repeat-mode)) ;; Enable repeat mode
+
+;;; Paths and Environment
 (use-package emacs
   :init
   (add-to-list 'exec-path (concat (getenv "HOME") "/go/bin"))
   (add-to-list 'exec-path (concat (getenv "HOME") "/.cargo/bin")))
 
-;;; Repeat Mode
-(use-package emacs
-  :init
-  :hook (after-init . repeat-mode)) ;; Enable repeat mode
 (provide 'my-common)
