@@ -24,11 +24,7 @@
   ;; Fullscreen and startup
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
   (setopt inhibit-startup-screen t)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
   ;; Line numbers and columns
-  (setopt display-line-numbers-type 'relative)
-  (global-display-line-numbers-mode t)
   (column-number-mode t)
   ;; Matching parentheses
   (show-paren-mode t))

@@ -42,6 +42,7 @@
       my-llm         ;; LLM Integration
       my-modes       ;; Extra modes
       my-misc        ;; Uncategorized packages
+      my-snippets    ;; Snippets
       my-keybindings ;; Custom Keybindings
       )
   "My personal list of internal packages to load.")
