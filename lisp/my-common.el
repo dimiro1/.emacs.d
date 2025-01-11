@@ -40,23 +40,24 @@
 
 ;;; File and Backup Management
 (use-package emacs
-  :init
+  :custom
   ;; Backup settings
-  (setopt backup-directory-alist `(("." . "~/.emacs-saves"))
+  (backup-directory-alist `(("." . "~/.emacs-saves"))
           backup-by-copying t
           delete-old-versions t
           kept-new-versions 6
           kept-old-versions 2
           version-control t)
   ;; Custom file
-  (setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (custom-file (expand-file-name "custom.el" user-emacs-directory))
+  :config
   (load custom-file))
 
 ;;; Spacing and Indentation
 (use-package emacs
-  :init
-  (setopt line-spacing 2)
-  (setopt default-tab-width 2))
+  :custom
+  (line-spacing 2)
+  (default-tab-width 2))
 
 ;;; CamelCase Navigation
 (use-package emacs

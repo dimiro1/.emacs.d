@@ -46,12 +46,12 @@
 (use-package dired
   :straight (:type built-in)
   :hook ((dired-mode . dired-hide-details-mode)
-	 (dired-mode . hl-line-mode))
-  :config
-  (setopt dired-recursive-copies 'always)
-  (setopt dired-recursive-deletes 'always)
-  (setopt delete-by-moving-to-trash t)
-  (setopt dired-dwim-target t))
+         (dired-mode . hl-line-mode))
+  :custom
+  (dired-recursive-copies 'always)  ; Allow recursive copies
+  (dired-recursive-deletes 'always) ; Allow recursive deletes
+  (delete-by-moving-to-trash t)     ; Delete files by moving them to trash
+  (dired-dwim-target t))            ; Enable "do what I mean" target selection
 
 ;; The built-in `recentf-mode' keeps track of recently visited files.
 (use-package emacs

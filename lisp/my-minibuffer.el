@@ -11,9 +11,9 @@
 ;;; Use arrow keys or bindings to navigate.
 (use-package vertico
   :straight t
-  :config
-  (setopt vertico-cycle t)
-  (setopt vertico-resize nil)
+  :custom
+  (vertico-cycle t)
+  (vertico-resize nil)
   :hook (after-init . vertico-mode))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
