@@ -22,7 +22,9 @@
   :straight t
   :bind
   ("C-c b" . consult-buffer)
-  ("C-c g" . consult-ripgrep)
+  ("C-c s" . consult-ripgrep)
+  ("C-c o" . consult-outline)
+  ("C-c l" . consult-line-multi)
   ("C-c r" . consult-recent-file))
 
 ;;; Avy Configuration
@@ -38,7 +40,7 @@
    ("M-g l"   . avy-goto-line)	 ;; Jump to a specific line
    ("M-g w"   . avy-goto-word-1) ;; Jump to the beginning of a word
    ("M-g e"   . avy-goto-word-0) ;; Jump to any part of a word
-   ("C-c C-j" . avy-resume)))        ;; Resume the last Avy command
+   ("C-c C-j" . avy-resume)))    ;; Resume the last Avy command
 
 ;; Dired Configuration
 (use-package dired

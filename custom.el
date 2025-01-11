@@ -20,6 +20,7 @@
  '(display-battery-mode t)
  '(display-line-numbers-type 'relative)
  '(global-display-line-numbers-mode t)
+ '(modus-themes-to-toggle '(modus-operandi-tinted modus-vivendi-tinted))
  '(package-selected-packages nil)
  '(scroll-bar-mode nil)
  '(straight-use-package-by-default t)
