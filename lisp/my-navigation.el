@@ -20,7 +20,10 @@
 
 (use-package consult
   :straight t
-  :bind ("C-c b" . consult-buffer))
+  :bind
+  ("C-c b" . consult-buffer)
+  ("C-c g" . consult-ripgrep)
+  ("C-c r" . consult-recent-file))
 
 ;;; Avy Configuration
 ;; Avy is a powerful navigation package that allows you to jump to visible text
