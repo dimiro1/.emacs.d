@@ -10,7 +10,7 @@
 ;;;
 ;;; Use arrow keys or bindings to navigate.
 (use-package vertico
-  :straight t
+  :ensure t
   :custom
   (vertico-cycle t)
   (vertico-resize nil)
@@ -23,7 +23,7 @@
 
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
-  :straight t
+  :ensure t
   :custom
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
@@ -42,7 +42,7 @@
 ;;;
 ;;; Enhances context and usability.
 (use-package marginalia
-  :straight t
+  :ensure t
   :hook (after-init . marginalia-mode))
 
 (provide 'my-minibuffer)

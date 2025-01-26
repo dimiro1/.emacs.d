@@ -2,15 +2,13 @@
 
 ;;; rg Configuration
 ;; rg (Ripgrep) integrates the ripgrep search tool with Emacs for fast, recursive searches.
-;; :straight t ensures installation via straight.el.
 (use-package rg
-  :straight t)
+  :ensure t)
 
 ;;; Projectile Configuration
 ;; Projectile is a project management tool for navigating and interacting with projects.
-;; :straight t ensure installation, and `projectile-mode` is enabled globally.
 (use-package projectile
-  :straight t
+  :ensure t
   :init (projectile-mode t)
   :bind (:map projectile-mode-map
 	      ("s-p" . projectile-command-map)
@@ -18,7 +16,7 @@
 	      ("C-x p" . projectile-command-map)))
 
 (use-package consult
-  :straight t
+  :ensure t
   :bind
   ("C-x b" . consult-buffer)
   ("C-c b" . consult-buffer)
@@ -31,7 +29,7 @@
 ;; Avy is a powerful navigation package that allows you to jump to visible text
 ;; in the current window quickly using a minimal number of keystrokes.
 (use-package avy
-  :straight t ;; Ensure Avy is installed via straight.el
+  :ensure t
   :config
   (avy-setup-default) ;; Set up Avy's default configurations
   :bind
@@ -44,7 +42,6 @@
 
 ;; Dired Configuration
 (use-package dired
-  :straight (:type built-in)
   :hook ((dired-mode . dired-hide-details-mode)
          (dired-mode . hl-line-mode))
   :custom

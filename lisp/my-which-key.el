@@ -11,7 +11,7 @@
 ;;   Assumes `which-key` is already available (e.g., pre-installed) and enables it directly.
 (if (< emacs-major-version 30)
     (use-package which-key ;; Emacs < 30: Use `use-package` to install and configure `which-key`
-      :straight t
+      :ensure t
       :hook (after-init . which-key-mode))
   (use-package emacs ;; Emacs 30+: Assume `which-key` is available and enable it directly
     :hook (after-init . which-key-mode)))

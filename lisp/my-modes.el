@@ -1,7 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 
 ;; Install Markdown mode
-(use-package markdown-mode)
+(use-package markdown-mode
+  :ensure t)
 
 ;; Ensure Org Babel recognizes Go code
 (use-package emacs

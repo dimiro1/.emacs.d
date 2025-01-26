@@ -4,9 +4,8 @@
 ;; Copilot for Emacs integrates GitHub Copilot, an AI-powered code completion tool.
 ;; It provides context-aware suggestions as you type, helping you write code faster.
 (use-package copilot
-  :straight (:host github
-		   :repo "copilot-emacs/copilot.el"
-		   :files ("*.el")) ;; Install from the official GitHub repository
+  :ensure t
+  :vc (:url "https://github.com/copilot-emacs/copilot.el")
   :init (copilot-mode)
   :bind
   (:map copilot-completion-map
@@ -40,6 +39,7 @@
 ;; GPTel enables interaction with Large Language Models (LLMs) directly within Emacs.
 ;; It supports ChatGPT and other LLM services, allowing AI-assisted conversations.
 (use-package gptel
+  :ensure t
   :custom
   (gptel-model 'claude-3-5-sonnet-20241022) ;; Set the GPT model to use
   :config

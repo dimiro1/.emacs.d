@@ -17,6 +17,14 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(require 'package)
+
+;; Add MELPA to the list of package archives
+(setopt package-archives
+		'(("gnu"   . "https://elpa.gnu.org/packages/")
+          ("melpa" . "https://melpa.org/packages/")
+          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+
 ;;; Add Custom `lisp` Directory to Load Path
 (use-package emacs
   :init
@@ -27,7 +35,6 @@
 ;; Each entry corresponds to a feature or functionality managed in a separate file.
 (defvar-local my-packages
     '(
-      my-straight    ;; Important: This must come first
       my-common      ;; Common Configurations
       my-minibuffer  ;; Minibuffer Config
       my-company     ;; Completion Framework
