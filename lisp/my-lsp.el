@@ -3,7 +3,16 @@
 ;;; Eglot Configuration (LSP Client)
 (use-package emacs
   :hook (before-save . (lambda ()
-                         (when (bound-and-true-p eglot--managed-mode)
+                         (when (eglot-managed-p)
+                           ;; Try to organize imports first, but don't stop execution if it fails.
+                           ;; Some LSP servers may not support "source.organizeImports",
+                           ;; causing an error. `ignore-errors` ensures that the process
+                           ;; continues even if this action fails.
+                           (when (fboundp 'eglot-code-action-organize-imports)
+                             (ignore-errors
+                               (call-interactively #'eglot-code-action-organize-imports)))
+
+                           ;; Always format the buffer, even if organizing imports failed.
                            (eglot-format)))))
 
 ;;; Go Programming Support
