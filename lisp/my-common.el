@@ -75,4 +75,12 @@
   (add-to-list 'exec-path (concat (getenv "HOME") "/go/bin"))
   (add-to-list 'exec-path (concat (getenv "HOME") "/.cargo/bin")))
 
+
+;;; Safe .dir-locals.el
+(use-package emacs
+  :config
+  (customize-set-variable 'safe-local-variable-values
+    '((go-test-go-command . "encore")
+      (go-run-go-command . "encore"))))
+
 (provide 'my-common)
