@@ -9,17 +9,18 @@
 ;;; find-library
 ;;;
 ;;; Use arrow keys or bindings to navigate.
+
 (use-package vertico
   :ensure t
   :custom
   (vertico-cycle t)
-  (vertico-resize nil)
-  :hook (after-init . vertico-mode))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
   :init
-  :hook (after-init . savehist-mode))
+  (vertico-mode))
+  
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+	:init
+	:hook (after-init . savehist-mode))
 
 ;; Optionally use the `orderless' completion style.
 (use-package orderless

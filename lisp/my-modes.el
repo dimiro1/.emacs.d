@@ -10,5 +10,4 @@
   (with-eval-after-load 'org
     (add-to-list 'org-src-lang-modes '("go" . go-ts))))
 
-
 (provide 'my-modes)

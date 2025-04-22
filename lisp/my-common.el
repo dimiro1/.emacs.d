@@ -21,6 +21,8 @@
   (setopt confirm-kill-emacs 'y-or-n-p)
   ;; Smooth scrolling
   (setopt scroll-step 1 scroll-conservatively 10000)
+  (pixel-scroll-mode t)
+  (pixel-scroll-precision-mode t)
   ;; Fullscreen and startup
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
   (setopt inhibit-startup-screen t)
@@ -28,6 +30,12 @@
   (column-number-mode t)
   ;; Matching parentheses
   (show-paren-mode t))
+
+(use-package display-line-numbers
+  :hook (prog-mode . display-line-numbers-mode)
+  :custom
+  (display-line-numbers-type 'relative)  ; for relative line numbers
+  (display-line-numbers-width-start t))  ; auto-adjust width
 
 ;; Open init.el quickly
 (defun open-init-file ()
@@ -51,7 +59,7 @@
   ;; Custom file
   (custom-file (expand-file-name "custom.el" user-emacs-directory))
   :config
-  (load custom-file))
+  (load custom-file :no-error-if-file-is-missing))
 
 ;;; Spacing and Indentation
 (use-package emacs
@@ -75,12 +83,31 @@
   (add-to-list 'exec-path (concat (getenv "HOME") "/go/bin"))
   (add-to-list 'exec-path (concat (getenv "HOME") "/.cargo/bin")))
 
-
 ;;; Safe .dir-locals.el
 (use-package emacs
   :config
   (customize-set-variable 'safe-local-variable-values
     '((go-test-go-command . "encore")
       (go-run-go-command . "encore"))))
+
+;; Display project name and relative file path in mode-line
+;; Format: "project-name:path/to/file.ext"
+;; Falls back to abbreviated path for files outside projects
+;; and regular buffer name for non-file buffers
+(use-package emacs
+  :custom
+  (mode-line-buffer-identification
+   '(:eval (if buffer-file-name
+               (let* ((project (project-current))
+                      (file-path (buffer-file-name))
+                      (rel-path (if project
+									(concat
+                                     (project-name project)
+                                     ":"
+                                     (file-relative-name file-path
+														 (project-root project)))
+                                  (abbreviate-file-name file-path))))
+                 (format "%s" rel-path))
+             (format "%s" (buffer-name))))))
 
 (provide 'my-common)

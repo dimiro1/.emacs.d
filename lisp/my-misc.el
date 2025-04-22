@@ -6,11 +6,13 @@
 (use-package xid
   :ensure t
   :demand t
-  :vc (:url "http://github.com/dimiro1/xid.el")
+  :vc (:url "http://github.com/dimiro1/xid.el" :rev :newest)
   :bind ( "C-c x i d" . xid-insert ))
 
+;;; Carbon.now
+;; Integrates with carbon.now service to simplify taking coding "screeshots".
 (use-package carbonnow
   :ensure t
-  :vc (:url "http://github.com/dimiro1/carbonnow"))
+  :vc (:url "http://github.com/dimiro1/carbonnow" :rev :newest))
 
 (provide 'my-misc)

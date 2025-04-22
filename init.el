@@ -19,15 +19,10 @@
 
 (require 'package)
 
-;; Add MELPA to the list of package archives
-(setopt package-archives
-		'(("gnu"   . "https://elpa.gnu.org/packages/")
-          ("melpa" . "https://melpa.org/packages/")
-          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
 ;;; Add Custom `lisp` Directory to Load Path
 (use-package emacs
   :init
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")) ; Add MELPA to the list of package archives
   (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory)))
 
 ;;; List of Custom Packages
@@ -35,22 +30,24 @@
 ;; Each entry corresponds to a feature or functionality managed in a separate file.
 (defvar-local my-packages
     '(
-      my-common      ;; Common Configurations
-      my-minibuffer  ;; Minibuffer Config
-      my-company     ;; Completion Framework
-      my-magit       ;; Git Integration
-      my-navigation  ;; File Navigation
-      my-colorscheme ;; Theme Configuration
-      my-paredit     ;; Paredit Config
-      my-treesit     ;; Tree-sitter Configuration
-      my-lsp         ;; Language Server
-      my-gotest      ;; Setup golang testing support
-      my-which-key   ;; Which-Key
-      my-llm         ;; LLM Integration
-      my-modes       ;; Extra modes
-      my-misc        ;; Uncategorized packages
-      my-snippets    ;; Snippets
-      my-keybindings ;; Custom Keybindings
+      my-common      ; Common Configurations
+      my-colorscheme ; Theme Configuration
+      my-minibuffer  ; Minibuffer Config
+      my-company     ; Completion Framework
+      my-magit       ; Git Integration
+      my-navigation  ; File Navigation
+      my-paredit     ; Paredit Config
+      my-treesit     ; Tree-sitter Configuration
+      my-languages   ; Programming Languages
+      my-gotest      ; Setup golang testing support
+      my-which-key   ; Which-Key
+      my-llm         ; LLM Integration
+	  my-neotree     ; NEOtree
+      my-modes       ; Extra modes
+      my-misc        ; Uncategorized packages
+      my-snippets    ; Snippets
+      my-keybindings ; Custom Keybindings
+	  my-evil        ; Evil mode
       )
   "My personal list of internal packages to load.")
 

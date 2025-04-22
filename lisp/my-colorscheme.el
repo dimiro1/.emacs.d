@@ -14,7 +14,13 @@
 (use-package doom-themes
   :ensure t)
 
+(use-package apropospriate-theme
+  :ensure t)
+
+(use-package catppuccin-theme
+  :ensure t)
+
 ;;; Load Theme
-(load-theme 'doom-one :no-confirm)
+(load-theme 'doom-vibrant :no-confirm)
 
 (provide 'my-colorscheme)

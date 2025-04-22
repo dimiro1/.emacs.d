@@ -5,16 +5,6 @@
 (use-package rg
   :ensure t)
 
-;;; Projectile Configuration
-;; Projectile is a project management tool for navigating and interacting with projects.
-(use-package projectile
-  :ensure t
-  :init (projectile-mode t)
-  :bind (:map projectile-mode-map
-	      ("s-p" . projectile-command-map)
-	      ("C-c p" . projectile-command-map)
-	      ("C-x p" . projectile-command-map)))
-
 (use-package consult
   :ensure t
   :bind
@@ -24,6 +14,51 @@
   ("C-c o" . consult-outline)
   ("C-c s l" . consult-line-multi)
   ("C-c f r" . consult-recent-file))
+
+(use-package consult-project-extra
+  :ensure t
+  :bind
+  (("C-c p f" . consult-project-extra-find)
+   ("C-c p o" . consult-project-extra-find-other-window)))
+
+(use-package consult-eglot
+  :ensure t)
+
+(use-package embark
+  :ensure t
+
+  :bind
+  (("C-," . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setopt prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc. You may adjust the
+  ;; Eldoc strategy, if you want to see the documentation from
+  ;; multiple providers. Beware that using this can be a little
+  ;; jarring since the message shown in the minibuffer can be more
+  ;; than one line, causing the modeline to move up and down:
+
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;;; Avy Configuration
 ;; Avy is a powerful navigation package that allows you to jump to visible text

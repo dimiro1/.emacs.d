@@ -28,6 +28,11 @@
   :mode ("\\.rs\\'" . rust-ts-mode)
   :hook (rust-ts-mode . eglot-ensure))
 
+;;; Lua programming language support
+(use-package lua-ts-mode
+  :mode (("\\.lua\\'" . lua-ts-mode))
+  :hook (lua-ts-mode . eglot-ensure))
+
 ;;; Eglot-Specific Configuration
 ;; Configures Eglot to use `rust-analyzer` for Rust files, invoked via `rustup`.
 (use-package eglot
@@ -35,4 +40,4 @@
   (add-to-list 'eglot-server-programs
                '((rust-ts-mode rust-mode) . ("rustup" "run" "stable" "rust-analyzer"))))
 
-(provide 'my-lsp)
+(provide 'my-languages)
