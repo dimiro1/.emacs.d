@@ -19,7 +19,6 @@
 	 "a372fd35724ebb25694e8f977fde62af3e9dd5e31d71005968545042419fa47d"
 	 "0b41a4a9f81967daacd737f83d3eac7e3112d642e3f786cf7613de4da97a830a"
 	 "bf4d25079f7d052cb656e099d9c2af9fb61ee377e8e72b7f13cecf8dffb74f92" default))
- '(display-battery-mode t)
  '(go-ts-mode-indent-offset 4)
  '(markdown-code-lang-modes
    '(("ocaml" . tuareg-mode) ("elisp" . emacs-lisp-mode) ("ditaa" . artist-mode)
@@ -30,18 +29,11 @@
  '(markdown-fontify-code-blocks-natively t)
  '(modus-themes-to-toggle '(modus-operandi-tinted modus-vivendi-tinted))
  '(org-agenda-files (directory-files-recursively "~/org" "\\.org$"))
- '(package-selected-packages
-   '(all-the-icons apropospriate-theme avy carbonnow catppuccin-theme company
-				   consult consult-eglot consult-project-extra copilot
-				   doom-modeline doom-themes drag-stuff embark embark-consult
-				   evil evil-collection evil-surround gotest gptel
-				   kanagawa-themes magit marginalia markdown-mode move-text
-				   neotree orderless paredit projectile rg standard-themes
-				   vertico wgrep-xref xid yasnippet-snippets))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
-   '((xid :url "http://github.com/dimiro1/xid.el")
-	 (copilot :url "https://github.com/copilot-emacs/copilot.el")
-	 (carbonnow :url "http://github.com/dimiro1/carbonnow")))
+   '((carbonnow :url "http://github.com/dimiro1/carbonnow")
+	 (xid :url "http://github.com/dimiro1/xid.el")
+	 (copilot :url "https://github.com/copilot-emacs/copilot.el")))
  '(ring-bell-function 'ignore)
  '(scroll-bar-mode nil)
  '(tab-width 4)
@@ -52,4 +44,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 120 :width normal :foundry "nil" :family "JetBrains Mono")))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 120 :width normal :foundry "nil" :family "Rec Mono Casual")))))

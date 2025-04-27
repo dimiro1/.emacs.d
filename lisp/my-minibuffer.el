@@ -16,7 +16,7 @@
   (vertico-cycle t)
   :init
   (vertico-mode))
-  
+
   ;; Persist history over Emacs restarts. Vertico sorts by history position.
   (use-package savehist
 	:init

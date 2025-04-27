@@ -31,7 +31,6 @@
   (define-key my-help-map "l" 'view-lossage)  ;; Show recent keystrokes
   (define-key my-help-map "r" 'reload-init-file)  ;; Custom function defined below
 
-
   ;; File and search operations
   (define-key my-leader-map "f" 'consult-find)
   (define-key my-leader-map "s" 'consult-outline)
@@ -65,11 +64,20 @@
   (evil-define-key 'normal 'global (kbd "gI") 'eglot-find-implementation)
   (evil-define-key 'normal 'global (kbd "gi") 'eglot-find-implementation)
 
+  ;; avy (go to any word)
+  (evil-define-key 'normal 'global (kbd "gw") 'avy-goto-char)
+
   ;; Workspace commands
   (define-key my-workspace-map "a" 'eglot-add-workspace-folder)
   (define-key my-workspace-map "r" 'eglot-remove-workspace-folder)
   (define-key my-workspace-map "v" 'split-window-right)
   (define-key my-workspace-map "s" 'split-window-below)
+  (define-key my-workspace-map "d" 'delete-window)
+  (define-key my-workspace-map "D" 'delete-other-windows)
+  (define-key my-workspace-map "n" 'windmove-left)
+  (define-key my-workspace-map "i" 'windmove-right)
+  (define-key my-workspace-map "e" 'windmove-down)
+  (define-key my-workspace-map "u" 'windmove-up)
 
   ;; Code actions and refactoring
   (define-key my-leader-map "a" 'eglot-code-actions)
@@ -84,10 +92,10 @@
   (define-key my-leader-map "i" 'consult-imenu)  ;; Changed from S to i for consistency
 
   ;; Navigation
-  (define-key evil-normal-state-map (kbd "C-w h") 'windmove-left)
-  (define-key evil-normal-state-map (kbd "C-w l") 'windmove-right)
-  (define-key evil-normal-state-map (kbd "C-w j") 'windmove-down)
-  (define-key evil-normal-state-map (kbd "C-w k") 'windmove-up)
+  (define-key evil-normal-state-map (kbd "C-w n") 'windmove-left)
+  (define-key evil-normal-state-map (kbd "C-w i") 'windmove-right)
+  (define-key evil-normal-state-map (kbd "C-w e") 'windmove-down)
+  (define-key evil-normal-state-map (kbd "C-w u") 'windmove-up)
 
   ;; Enable auto-indentation
   (electric-indent-mode 1)
@@ -104,35 +112,6 @@
   :ensure t
   :config
   (global-evil-surround-mode 1))
-
-(use-package doom-modeline
-  :ensure t
-  :init
-  (doom-modeline-mode 1)
-  :custom
-  ;; Configure how mode line looks
-  (doom-modeline-height 25)
-  (doom-modeline-bar-width 3)
-  (doom-modeline-persp-name t)
-  (doom-modeline-persp-icon t)
-  (doom-modeline-window-width-limit 85)
-  (doom-modeline-project-detection 'project)
-  (doom-modeline-buffer-file-name-style 'relative-to-project)
-  ;; Evil state display customization
-  (doom-modeline-modal-icon t)
-  (doom-modeline-modal t))
-
-;; Optional: Make the modeline more colorful for different Evil states
-(use-package all-the-icons
-  :ensure t)
-
-;; If you want custom colors for different evil states
-(setopt evil-normal-state-tag   (propertize " <N> " 'face '(:foreground "green"))
-		evil-emacs-state-tag    (propertize " <E> " 'face '(:foreground "orange"))
-		evil-insert-state-tag   (propertize " <I> " 'face '(:foreground "red"))
-		evil-motion-state-tag   (propertize " <M> " 'face '(:foreground "blue"))
-		evil-visual-state-tag   (propertize " <V> " 'face '(:foreground "purple"))
-		evil-operator-state-tag (propertize " <O> " 'face '(:foreground "cyan")))
 
 (use-package consult
   :ensure t

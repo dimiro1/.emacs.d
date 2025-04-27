@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; -*-
+ ;;; -*- lexical-binding: t; -*-
 ;;; .emacs.d --- My Emacs Config
 ;;; Commentary:
 
@@ -33,7 +33,7 @@
       my-common      ; Common Configurations
       my-colorscheme ; Theme Configuration
       my-minibuffer  ; Minibuffer Config
-      my-company     ; Completion Framework
+	  my-completion  ; completion framekork
       my-magit       ; Git Integration
       my-navigation  ; File Navigation
       my-paredit     ; Paredit Config
@@ -41,7 +41,6 @@
       my-languages   ; Programming Languages
       my-gotest      ; Setup golang testing support
       my-which-key   ; Which-Key
-      my-llm         ; LLM Integration
 	  my-neotree     ; NEOtree
       my-modes       ; Extra modes
       my-misc        ; Uncategorized packages
