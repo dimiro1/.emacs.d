@@ -11,6 +11,7 @@
   (define-prefix-command 'my-workspace-map)
   (define-prefix-command 'my-project-map)
   (define-prefix-command 'my-help-map)
+  (define-prefix-command 'my-quit-map)
 
   ;; Set up leader key
   (evil-set-leader 'normal (kbd "SPC"))
@@ -18,6 +19,10 @@
   (define-key my-leader-map "w" my-workspace-map)
   (define-key my-leader-map "p" my-project-map)
   (define-key my-leader-map "h" my-help-map)
+  (define-key my-leader-map "q" my-quit-map)
+
+  ;; Quit commands
+  (define-key my-quit-map "q" 'save-buffers-kill-terminal)
 
   ;; Help commands
   (define-key my-help-map "f" 'describe-function)
