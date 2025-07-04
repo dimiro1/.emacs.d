@@ -14,6 +14,6 @@
   :ensure t)
 
 ;;; Load Theme
-(load-theme 'doom-horizon :no-confirm)
+(load-theme 'doom-ayu-dark :no-confirm)
 
 (provide 'my-colorscheme)

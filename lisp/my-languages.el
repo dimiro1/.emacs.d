@@ -33,6 +33,11 @@
   :mode (("\\.lua\\'" . lua-ts-mode))
   :hook (lua-ts-mode . eglot-ensure))
 
+(use-package typescript-ts-mode
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . typescript-ts-mode))
+  :hook (typescript-ts-mode . eglot-ensure))
+
 ;;; Eglot-Specific Configuration
 ;; Configures Eglot to use `rust-analyzer` for Rust files, invoked via `rustup`.
 (use-package eglot

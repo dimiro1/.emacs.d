@@ -29,7 +29,14 @@
  '(markdown-fontify-code-blocks-natively t)
  '(modus-themes-to-toggle '(modus-operandi-tinted modus-vivendi-tinted))
  '(org-agenda-files (directory-files-recursively "~/org" "\\.org$"))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(all-the-icons apropospriate-theme avy carbonnow catppuccin-theme company
+				   consult consult-eglot consult-project-extra copilot
+				   doom-modeline doom-themes drag-stuff eglot embark
+				   embark-consult evil evil-collection evil-surround gotest
+				   gptel kanagawa-themes magit marginalia markdown-mode
+				   move-text neotree orderless paredit projectile rg
+				   standard-themes vertico wgrep-xref xid yasnippet-snippets))
  '(package-vc-selected-packages
    '((carbonnow :url "http://github.com/dimiro1/carbonnow")
 	 (xid :url "http://github.com/dimiro1/xid.el")
