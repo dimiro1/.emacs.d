@@ -1,3 +1,5 @@
+;;; my-completion.el --- Completion framework configuration  -*- lexical-binding: t; -*-
+
 (use-package emacs
   :custom
   (completion-styles '(basic flex))

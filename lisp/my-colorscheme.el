@@ -14,6 +14,6 @@
   :ensure t)
 
 ;;; Load Theme
-(load-theme 'doom-ayu-dark :no-confirm)
+(load-theme 'catppuccin :no-confirm)
 
 (provide 'my-colorscheme)

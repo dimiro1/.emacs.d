@@ -1,3 +1,5 @@
+;;; custom.el --- Emacs customization file  -*- lexical-binding: t; -*-
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -30,13 +32,10 @@
  '(modus-themes-to-toggle '(modus-operandi-tinted modus-vivendi-tinted))
  '(org-agenda-files (directory-files-recursively "~/org" "\\.org$"))
  '(package-selected-packages
-   '(all-the-icons apropospriate-theme avy carbonnow catppuccin-theme company
-				   consult consult-eglot consult-project-extra copilot
-				   doom-modeline doom-themes drag-stuff eglot embark
-				   embark-consult evil evil-collection evil-surround gotest
-				   gptel kanagawa-themes magit marginalia markdown-mode
-				   move-text neotree orderless paredit projectile rg
-				   standard-themes vertico wgrep-xref xid yasnippet-snippets))
+   '(avy carbonnow catppuccin-theme consult-eglot consult-project-extra doom-themes
+		 eat evil-collection evil-surround gotest magit marginalia markdown-mode
+		 move-text neotree orderless paredit rg standard-themes vertico vterm
+		 xid yasnippet-snippets))
  '(package-vc-selected-packages
    '((carbonnow :url "http://github.com/dimiro1/carbonnow")
 	 (xid :url "http://github.com/dimiro1/xid.el")
@@ -51,4 +50,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 120 :width normal :foundry "nil" :family "Rec Mono Casual")))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 130 :width normal :foundry "nil" :family "Berkeley Mono")))))

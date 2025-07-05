@@ -15,4 +15,9 @@
   :ensure t
   :vc (:url "http://github.com/dimiro1/carbonnow" :rev :newest))
 
+;; Vterm terminal
+;; Install a more capable terminal emulator
+(use-package vterm
+  :ensure t)
+
 (provide 'my-misc)
