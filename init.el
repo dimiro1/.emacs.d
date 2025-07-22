@@ -1,63 +1,118 @@
-;;; -*- lexical-binding: t; -*-
-;;; .emacs.d --- My Emacs Config
+;;; init.el --- Claudemiro Emacs Configuration Entry Point  -*- lexical-binding: t; -*-
+
 ;;; Commentary:
-
-;; Copyright (C) 2015,2016,2024 Claudemiro Alves Feitosa Neto <dimiro1@gmail.com>
 ;;
-;; This program is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; Claudemiro's modular Emacs configuration entry point.
 ;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-(require 'package)
+;;; Code:
 
 ;;; Add Custom `lisp` Directory to Load Path
-(use-package emacs
-  :init
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")) ; Add MELPA to the list of package archives
-  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory)))
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
-;;; List of Custom Packages
-;; This variable contains a list of custom configuration modules to be loaded.
-;; Each entry corresponds to a feature or functionality managed in a separate file.
-(defvar-local my-packages
-    '(
-      my-common      ; Common Configurations
-      my-colorscheme ; Theme Configuration
-      my-minibuffer  ; Minibuffer Config
-	  my-completion  ; completion framekork
-      my-magit       ; Git Integration
-      my-navigation  ; File Navigation
-      my-paredit     ; Paredit Config
-      my-treesit     ; Tree-sitter Configuration
-      my-languages   ; Programming Languages
-      my-gotest      ; Setup golang testing support
-      my-which-key   ; Which-Key
-	  my-neotree     ; NEOtree
-      my-modes       ; Extra modes
-      my-misc        ; Uncategorized packages
-      my-snippets    ; Snippets
-      my-keybindings ; Custom Keybindings
-	  my-evil        ; Evil mode
-      )
-  "My personal list of internal packages to load.")
+;;; Core Configuration Modules
+;; Load configuration modules in dependency order with documentation
 
-;;; Load Custom Packages
-;; Iterates through the list of custom packages (`my-packages`) and attempts to load each one.
-;; Provides informative messages on success or failure.
-(dolist (pkg my-packages)
-  (condition-case err
-      (when (locate-library (symbol-name pkg))
-        (require pkg)
-        (message "Package %s loaded successfully" pkg))
-    (error (message "Failed to load %s: %s" pkg err))
-    (:success (message "Package %s processed successfully without errors" pkg))))
+;; Package Management - package.el setup for package management
+;; Provides: Package installation from ELPA/MELPA archives
+;; This must be loaded first as other modules depend on it
+(require 'cafn-packages)
 
+;; Core Editor - Fundamental editing behavior and user interface
+;; Provides: Encoding, indentation, UI settings, scrolling, line numbers, fonts, which-key
+;; Load early to establish core editing environment
+(require 'cafn-editor)
+
+;; Color Scheme - Theme configuration and management
+;; Provides: Multiple theme options with easy switching
+;; Currently using Catppuccin theme
+(require 'cafn-colorscheme)
+
+;; File Management - File handling, backups, and persistence
+;; Provides: Backup configuration, custom file handling, auto-save
+(require 'cafn-files)
+
+;; Environment Setup - System integration and external tools
+;; Provides: PATH configuration, shell integration, external tool setup
+(require 'cafn-environment)
+
+;; Mode Line - Custom mode-line with project information
+;; Provides: Enhanced mode-line, project display, buffer identification
+(require 'cafn-modeline)
+
+;;; Enhanced Editing Features
+
+;; Minibuffer Enhancement - Better minibuffer interaction
+;; Provides: Enhanced minibuffer behavior and completion
+(require 'cafn-minibuffer)
+
+;; Completion Framework - Text completion and suggestions
+;; Provides: Built-in completion configuration with flex matching and Corfu UI
+;; Combines both the native completion system and modern in-buffer completion
+(require 'cafn-completion)
+
+;; Programming Languages - Language-specific configurations and LSP
+;; Provides: Go, Rust, TypeScript, Markdown, Emacs Lisp support with eglot LSP integration
+;; Includes: Go testing, Paredit for Lisp editing, Org Babel language support
+;; Requires: External LSP servers to be installed
+(require 'cafn-languages)
+
+;; Navigation - File and project navigation tools
+;; Provides: Enhanced file finding and buffer switching
+(require 'cafn-navigation)
+
+;; Version Control - Git integration and workflow tools
+;; Provides: Magit configuration, Git workflow enhancements
+(require 'cafn-magit)
+
+;;; Specialized Tools
+
+;; Tree-sitter - Modern syntax highlighting and code analysis
+;; Provides: Enhanced syntax highlighting, code folding, structural editing
+;; Note: Requires Emacs 29+ with tree-sitter support
+(require 'cafn-treesit)
+
+;; Code Snippets - Template system for common code patterns
+;; Provides: YASnippet configuration, custom snippets
+(require 'cafn-snippets)
+
+;;; User Interface Enhancements
+
+;; NEOTree - File explorer sidebar
+;; Provides: Tree-based file navigation, project exploration
+(require 'cafn-neotree)
+
+;; Evil Mode - Vim-like editing experience
+;; Provides: Modal editing, Vim keybindings, hybrid editing modes
+;; Comment out this line if you prefer Emacs keybindings
+(require 'cafn-evil)
+
+;;; Additional Features
+
+;; Markdown Support - Enhanced Markdown editing
+;; Provides: Syntax highlighting, code block support, GitHub flavored markdown
+(require 'cafn-markdown)
+
+;; Org Mode - Productivity and note-taking
+;; Provides: Agenda files, enhanced org mode experience
+(require 'cafn-org)
+
+;; Custom Keybindings - Personal keybinding preferences
+;; Provides: Custom shortcuts, workflow optimizations
+;; Note: Loaded last to override any conflicting bindings
+(require 'cafn-keybindings)
+
+;;; Post-initialization
+
+;; Report startup time
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs loaded in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract (current-time) cafn--startup-time)))
+                     gcs-done)))
+
+;;; Configuration Complete
+(message "CAFN Emacs configuration loaded successfully!")
+
+;;; init.el ends here

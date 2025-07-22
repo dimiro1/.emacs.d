@@ -1,4 +1,10 @@
-;;; -*- lexical-binding: t; -*-
+;;; cafn-treesit.el --- Tree-sitter configuration  -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;;
+;; Tree-sitter language parser configuration.
+;;
+;;; Code:
 
 ;;; Tree-sitter Configuration
 ;; Define language parsers and their source repositories for Tree-sitter.
@@ -13,4 +19,5 @@
       (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
       (yaml       "https://github.com/ikatyang/tree-sitter-yaml")))
 
-(provide 'my-treesit)
+(provide 'cafn-treesit)
+;;; cafn-treesit.el ends here

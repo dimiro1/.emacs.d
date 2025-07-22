@@ -1,4 +1,10 @@
-;;; -*- lexical-binding: t; -*-
+;;; cafn-keybindings.el --- Custom keybindings and shortcuts  -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;;
+;; Custom keybindings and shortcuts.
+;;
+;;; Code:
 
 ;;; Window Management
 (use-package emacs
@@ -16,7 +22,7 @@
    ("s-<up>" . move-text-up)))
 
 
-(defun my-toggle-between-go-test-and-impl-file ()
+(defun cafn-toggle-between-go-test-and-impl-file ()
   "Toggle between a Go file and its test file (with _test suffix).
 For example, switches between 'hello.go' and 'hello_test.go'."
   (interactive)
@@ -35,6 +41,6 @@ For example, switches between 'hello.go' and 'hello_test.go'."
 
 (use-package go-ts-mode
   :bind (:map go-ts-mode-map
-         ("C-c t" . my-toggle-between-go-test-and-impl-file)))
-
-(provide 'my-keybindings)
+          ("C-c t" . cafn-toggle-between-go-test-and-impl-file)))
+(provide 'cafn-keybindings)
+;;; cafn-keybindings.el ends here

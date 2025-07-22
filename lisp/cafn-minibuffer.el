@@ -1,4 +1,10 @@
-;;; -*- lexical-binding: t; -*-
+;;; cafn-minibuffer.el --- Minibuffer completion configuration  -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;;
+;; Minibuffer completion with Vertico and Marginalia.
+;;
+;;; Code:
 
 ;;; Vertico: Vertical completion system for Emacs.
 ;;; Provides a clean vertical list of completion candidates in the minibuffer.
@@ -46,4 +52,5 @@
   :ensure t
   :hook (after-init . marginalia-mode))
 
-(provide 'my-minibuffer)
+(provide 'cafn-minibuffer)
+;;; cafn-minibuffer.el ends here

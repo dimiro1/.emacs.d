@@ -14,10 +14,11 @@ recentf
 transient/
 tree-sitter/
 projects
-straight/
 history
 projectile-bookmarks.eld
 bookmarks
+/snippets/
+eshell/
 
 # Org-mode
 .org-id-locations
@@ -56,6 +57,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /url/
-/llm-token
 /eln-cache/
 /elpa/
+/custom.el
+/.emacs-saves/
+/auto-saves/
