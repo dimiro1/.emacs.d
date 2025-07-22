@@ -83,6 +83,10 @@
   (scroll-step 1)
   ;; Don't recenter point when scrolling
   (scroll-conservatively 10000)
+  ;; Keep 10 lines visible above and below cursor
+  (scroll-margin 10)
+  ;; Preserve cursor screen position when scrolling
+  (scroll-preserve-screen-position t)
 
   :init
   ;; === Encoding Configuration ===

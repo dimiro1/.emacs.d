@@ -32,6 +32,10 @@
 (use-package catppuccin-theme
   :ensure t)
 
+;; Inkpot Theme - Dark theme with vibrant colors
+(use-package inkpot-theme
+  :ensure t)
+
 ;;; Modus Themes Configuration
 ;; Configure Modus themes for easy toggling between light and dark
 (use-package modus-themes
@@ -50,7 +54,8 @@
 ;;   - (load-theme 'standard-light :no-confirm)
 ;;   - (load-theme 'doom-molokai :no-confirm)
 ;;   - (load-theme 'modus-operandi-tinted :no-confirm)
-(load-theme 'standard-light-tinted :no-confirm)
+;;   - (load-theme 'catppuccin :no-confirm)
+(load-theme 'inkpot :no-confirm)
 
 ;;; Custom Mode-line Configuration
 ;; Configure buffer identification to show project-relative paths
@@ -79,9 +84,6 @@
        (format "%s" (buffer-name)))))
 
   :config
-  ;; Additional mode-line customizations can go here
-  ;; For example, you might want to add git branch info, encoding, etc.
-
   ;; Ensure mode-line is always visible and readable
   (set-face-attribute 'mode-line nil
                       :box '(:line-width 1 :style released-button)))
@@ -104,23 +106,6 @@ and unpredictable colors."
   (mapc #'disable-theme custom-enabled-themes)
   ;; Load the new theme
   (load-theme theme :no-confirm))
-
-;;; Helper Functions for Mode-line Information
-(defun cafn-mode-line-file-encoding ()
-  "Return a string describing the current buffer's encoding.
-Useful for adding to mode-line-format if desired."
-  (let ((coding buffer-file-coding-system))
-    (if coding
-        (upcase (symbol-name (coding-system-base coding)))
-      "?")))
-
-(defun cafn-mode-line-git-branch ()
-  "Return current git branch name for mode-line display.
-Returns nil if not in a git repository."
-  (when (and (fboundp 'vc-git-mode-line-string)
-             buffer-file-name
-             (vc-backend buffer-file-name))
-    (substring-no-properties (vc-git-mode-line-string buffer-file-name))))
 
 (provide 'cafn-ui)
 ;;; cafn-ui.el ends here
