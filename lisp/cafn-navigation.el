@@ -40,7 +40,7 @@
   (consult-customize
    consult-flymake
    :preview-key '(:debounce 0.2 any))
-  
+
   ;; Custom function for project-wide flymake diagnostics
   (defun cafn-consult-flymake-project ()
     "Show flymake diagnostics for all buffers in the current project."
@@ -103,47 +103,6 @@
          ("l" . dired-find-file)          ; Open file/directory (vim-like)
          ("e" . dired-find-file)          ; Alternative open binding
          ("E" . dired-find-file-other-window))) ; Open in other window
-
-;;; Dired Troubleshooting Functions
-(defun cafn-dired-debug-info ()
-  "Display debug information about dired configuration.
-Useful for troubleshooting dired issues."
-  (interactive)
-  (with-output-to-temp-buffer "*Dired Debug*"
-    (princ "=== Dired Configuration Debug Info ===\n\n")
-    (princ (format "insert-directory-program: %s\n" insert-directory-program))
-    (princ (format "dired-listing-switches: %s\n" dired-listing-switches))
-    (princ (format "delete-by-moving-to-trash: %s\n" delete-by-moving-to-trash))
-    (princ (format "trash-directory: %s\n" (if (boundp 'trash-directory) trash-directory "not set")))
-    (princ "\n=== System Information ===\n")
-    (princ (format "System type: %s\n" system-type))
-    (princ (format "GNU ls available: %s\n" (if (executable-find "gls") "yes" "no")))
-    (when (executable-find "gls")
-      (princ (format "GNU ls version: %s\n"
-                     (shell-command-to-string "gls --version | head -1"))))
-    (princ "\n=== Test Commands ===\n")
-    (princ "To test dired manually:\n")
-    (princ "1. M-x dired RET\n")
-    (princ "2. M-x cafn-dired-test-ls RET\n")))
-
-(defun cafn-dired-test-ls ()
-  "Test the ls command used by dired."
-  (interactive)
-  (let ((test-dir (or default-directory "~")))
-    (message "Testing ls command in %s..." test-dir)
-    (with-output-to-temp-buffer "*Dired LS Test*"
-      (princ (format "Testing: %s %s %s\n\n"
-                     insert-directory-program
-                     dired-listing-switches
-                     test-dir))
-      (condition-case err
-          (call-process insert-directory-program nil t nil
-                       (split-string dired-listing-switches) test-dir)
-        (error (princ (format "Error: %s\n" err)))))))
-
-;; The built-in `recentf-mode' keeps track of recently visited files.
-(use-package emacs
-  :hook (after-init . recentf-mode))
 
 (provide 'cafn-navigation)
 ;;; cafn-navigation.el ends here

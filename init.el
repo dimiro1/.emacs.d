@@ -12,89 +12,52 @@
 ;;; Core Configuration Modules
 ;; Load configuration modules in dependency order with documentation
 
-;; Package Management - package.el setup for package management
-;; Provides: Package installation from ELPA/MELPA archives
+;; Core Configuration - Package management and fundamental editor settings
+;; Provides: Package management (use-package), encoding, indentation, UI settings,
+;; scrolling, line numbers, fonts, which-key, and core editing behavior
 ;; This must be loaded first as other modules depend on it
-(require 'cafn-packages)
+(require 'cafn-core)
 
-;; Core Editor - Fundamental editing behavior and user interface
-;; Provides: Encoding, indentation, UI settings, scrolling, line numbers, fonts, which-key
-;; Load early to establish core editing environment
-(require 'cafn-editor)
+;; User Interface - Themes, modeline, and file tree
+;; Provides: Multiple theme options, custom modeline with project info, NeoTree sidebar
+;; Consolidated visual configuration for consistent appearance
+(require 'cafn-ui)
 
-;; Color Scheme - Theme configuration and management
-;; Provides: Multiple theme options with easy switching
-;; Currently using Catppuccin theme
-(require 'cafn-colorscheme)
+;; System Integration - Environment and file management
+;; Provides: PATH configuration, shell integration, backup settings, auto-save,
+;; authentication, and file persistence
+(require 'cafn-system)
 
-;; File Management - File handling, backups, and persistence
-;; Provides: Backup configuration, custom file handling, auto-save
-(require 'cafn-files)
-
-;; Environment Setup - System integration and external tools
-;; Provides: PATH configuration, shell integration, external tool setup
-(require 'cafn-environment)
-
-;; Mode Line - Custom mode-line with project information
-;; Provides: Enhanced mode-line, project display, buffer identification
-(require 'cafn-modeline)
-
-;;; Enhanced Editing Features
-
-;; Minibuffer Enhancement - Better minibuffer interaction
-;; Provides: Enhanced minibuffer behavior and completion
-(require 'cafn-minibuffer)
-
-;; Completion Framework - Text completion and suggestions
-;; Provides: Built-in completion configuration with flex matching and Corfu UI
-;; Combines both the native completion system and modern in-buffer completion
+;; Completion System - Complete completion framework
+;; Provides: In-buffer completion (Corfu), minibuffer completion (Vertico + Marginalia),
+;; fuzzy matching (Orderless), and enhanced completion experience
 (require 'cafn-completion)
 
 ;; Programming Languages - Language-specific configurations and LSP
 ;; Provides: Go, Rust, TypeScript, Markdown, Emacs Lisp support with eglot LSP integration
-;; Includes: Go testing, Paredit for Lisp editing, Org Babel language support
+;; Includes: Go testing, Paredit for Lisp editing, enhanced Markdown editing, Org Babel support
 ;; Requires: External LSP servers to be installed
 (require 'cafn-languages)
 
 ;; Navigation - File and project navigation tools
-;; Provides: Enhanced file finding and buffer switching
+;; Provides: Enhanced file finding, buffer switching, dired configuration, search tools
 (require 'cafn-navigation)
 
 ;; Version Control - Git integration and workflow tools
-;; Provides: Magit configuration, Git workflow enhancements
-(require 'cafn-magit)
+;; Provides: Magit configuration, Git gutter, time machine, and workflow enhancements
+(require 'cafn-git)
 
-;;; Specialized Tools
+;; Productivity Tools - Organization and code efficiency
+;; Provides: Org mode, YASnippet templates, Tree-sitter parsers
+;; Combines note-taking, code snippets, and advanced syntax analysis
+(require 'cafn-productivity)
 
-;; Tree-sitter - Modern syntax highlighting and code analysis
-;; Provides: Enhanced syntax highlighting, code folding, structural editing
-;; Note: Requires Emacs 29+ with tree-sitter support
-(require 'cafn-treesit)
-
-;; Code Snippets - Template system for common code patterns
-;; Provides: YASnippet configuration, custom snippets
-(require 'cafn-snippets)
-
-;;; User Interface Enhancements
-
-;; NEOTree - File explorer sidebar
-;; Provides: Tree-based file navigation, project exploration
-(require 'cafn-neotree)
+;;; Optional Features
 
 ;; Evil Mode - Vim-like editing experience
 ;; Provides: Modal editing, Vim keybindings, hybrid editing modes
 ;; Comment out this line if you prefer Emacs keybindings
 (require 'cafn-evil)
-
-;;; Additional Features
-
-;; Markdown Support - Enhanced Markdown editing
-;; Provides: Syntax highlighting, code block support, GitHub flavored markdown
-(require 'cafn-markdown)
-
-;; Org Mode - Productivity and note-taking
-;; Provides: Agenda files, enhanced org mode experience
-(require 'cafn-org)
 
 ;; Custom Keybindings - Personal keybinding preferences
 ;; Provides: Custom shortcuts, workflow optimizations

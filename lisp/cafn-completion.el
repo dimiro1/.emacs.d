@@ -1,9 +1,12 @@
-;;; cafn-completion.el --- Completion framework configuration  -*- lexical-binding: t; -*-
+;;; cafn-completion.el --- Completion system configuration (Corfu + Vertico)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
-;; Completion configuration with Company mode.
+;; Complete completion system configuration combining in-buffer completion (Corfu)
+;; with minibuffer completion (Vertico + Marginalia + Orderless).
+;; This provides a modern, fast completion experience throughout Emacs.
 ;;
+
 ;;; Code:
 
 ;;; Built-in Completion Configuration
@@ -53,6 +56,7 @@
   (read-extended-command-predicate #'command-completion-default-include-p))
 
 ;;; Corfu - In-buffer completion UI
+;; Provides popup completion at point for programming and text editing
 (use-package corfu
   :ensure t
   ;; Optional customizations
@@ -74,6 +78,50 @@
   ;; `global-corfu-modes' to exclude certain modes.
   :init
   (global-corfu-mode))
+
+;;; Vertico: Vertical completion system for minibuffer
+;;; Provides a clean vertical list of completion candidates in the minibuffer.
+;;; Example: Typing `M-x find` shows:
+;;;
+;;; find-file
+;;; find-function
+;;; find-library
+;;;
+;;; Use arrow keys or bindings to navigate.
+(use-package vertico
+  :ensure t
+  :custom
+  (vertico-cycle t)
+  :init
+  (vertico-mode))
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :hook (after-init . savehist-mode))
+
+;; Optionally use the `orderless' completion style for fuzzy matching
+(use-package orderless
+  :ensure t
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+;;; Marginalia: Adds annotations to completion candidates
+;;; Works with Vertico to display metadata for each candidate.
+;;; Example: `C-x C-f` (find-file) shows:
+;;;
+;;; init.el       ~/.emacs.d/    2 KB  2024-12-20  rw-r--r--
+;;; config.org    ~/.emacs.d/    5 KB  2024-12-19  rw-r--r--
+;;; README.md     ~/projects/    3 KB  2024-12-18  rw-r--r--
+;;;
+;;; Enhances context and usability.
+(use-package marginalia
+  :ensure t
+  :hook (after-init . marginalia-mode))
 
 (provide 'cafn-completion)
 ;;; cafn-completion.el ends here
