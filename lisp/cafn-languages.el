@@ -6,114 +6,97 @@
 ;;
 ;;; Code:
 
+;;; Tree-sitter Configuration
+;; Modern syntax highlighting and code analysis (requires Emacs 29+)
+(use-package treesit
+  :ensure nil
+  :custom
+  ;; Language parsers for Tree-sitter (install with: M-x treesit-install-language-grammar)
+  (treesit-language-source-alist
+   '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
+     (css        "https://github.com/tree-sitter/tree-sitter-css")
+     (go         "https://github.com/tree-sitter/tree-sitter-go")
+     (gomod      "https://github.com/camdencheek/tree-sitter-go-mod")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     (json       "https://github.com/tree-sitter/tree-sitter-json")
+     (make       "https://github.com/alemuller/tree-sitter-make")
+     (markdown   "https://github.com/tree-sitter-grammars/tree-sitter-markdown")
+     (python     "https://github.com/tree-sitter/tree-sitter-python")
+     (rust       "https://github.com/tree-sitter/tree-sitter-rust")
+     (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+     (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))))
+
 ;;; Eglot Configuration (LSP Client)
-(use-package emacs
+(use-package eglot
+  :hook ((go-ts-mode rust-ts-mode typescript-ts-mode) . eglot-ensure)
   :hook (before-save . (lambda ()
                          (when (eglot-managed-p)
-                           ;; Try to organize imports first, but don't stop execution if it fails.
-                           ;; Some LSP servers may not support "source.organizeImports",
-                           ;; causing an error. `ignore-errors` ensures that the process
-                           ;; continues even if this action fails.
-                           (when (fboundp 'eglot-code-action-organize-imports)
-                             (ignore-errors
-                               (call-interactively #'eglot-code-action-organize-imports)))
+                           (ignore-errors (eglot-code-action-organize-imports))
+                           (eglot-format))))
+  :config
+  (add-to-list 'eglot-server-programs
+               '((rust-ts-mode rust-mode) . ("rustup" "run" "stable" "rust-analyzer"))))
 
-                           ;; Always format the buffer, even if organizing imports failed.
-                           (eglot-format)))))
-
-;; Enable flymake for on-the-fly syntax checking
 (use-package flymake
-  :hook ((prog-mode . flymake-mode))  ; Enable for all programming modes
+  :hook ((prog-mode . flymake-mode))
   :custom
-  (flymake-no-changes-timeout 0.5)    ; Faster feedback
-  (flymake-start-on-save-buffer nil)  ; Don't wait for save
-  (flymake-proc-ignored-file-name-regexps
-   '("\\.#" "\\`#.*#\\'" "\\.git/" "\\.svn/" "_build/" "dist/" "node_modules/")))
+  (flymake-no-changes-timeout 0.5)
+  (flymake-start-on-save-buffer nil))
 
 ;;; Go Programming Support
-;; Use `go-ts-mode` for Go files and enable Eglot for LSP.
+(defun cafn-toggle-between-go-test-and-impl-file ()
+  "Toggle between a Go file and its test file (with _test suffix).
+For example, switches between 'hello.go' and 'hello_test.go'."
+  (interactive)
+  (if (not buffer-file-name)
+      (message "Buffer is not visiting a file")
+    (let* ((file (buffer-file-name))
+           (base (file-name-sans-extension file))
+           (ext (file-name-extension file))
+           (is-test (string-match-p "_test$" base))
+           (target (if is-test
+                       (concat (replace-regexp-in-string "_test$" "" base) "." ext)
+                     (concat base "_test." ext))))
+      (if (file-exists-p target)
+          (find-file target)
+        (message "File %s does not exist" target)))))
+
 (use-package go-ts-mode
   :mode (("\\.go\\'" . go-ts-mode)
-         ("go\\.mod\\'" . go-ts-mode)) ;; Add go.mod to the list
-  :hook (go-ts-mode . eglot-ensure) ;; Enable Eglot in go-ts-mode
+         ("go\\.mod\\'" . go-ts-mode))
+  :bind (:map go-ts-mode-map
+              ("C-c t" . cafn-toggle-between-go-test-and-impl-file))
   :custom
-  ;; Use 4-space indentation for Go
   (go-ts-mode-indent-offset 4))
 
-;; Go Testing Support
-;; Provides utilities for running Go tests from within Emacs
-(use-package gotest
-  :ensure t)
-
+(use-package gotest)
 ;;; Rust Programming Support
-;; Configure `rust-ts-mode` for Rust files and enable Eglot for language server support.
 (use-package rust-ts-mode
-  :mode ("\\.rs\\'" . rust-ts-mode)
-  :hook (rust-ts-mode . eglot-ensure))
+  :mode ("\\.rs\\'" . rust-ts-mode))
 
 (use-package typescript-ts-mode
   :mode (("\\.ts\\'" . typescript-ts-mode)
-         ("\\.tsx\\'" . typescript-ts-mode))
-  :hook (typescript-ts-mode . eglot-ensure))
+         ("\\.tsx\\'" . typescript-ts-mode)))
 
 ;;; Markdown Support
-;; Enhanced Markdown editing with syntax highlighting and native code block rendering
 (use-package markdown-mode
-  :ensure t
   :mode (("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode)
          ("README\\.md\\'" . gfm-mode)) ; GitHub Flavored Markdown for README files
   :custom
-  ;; Enable native syntax highlighting in code blocks
-  ;; This makes code examples much more readable
   (markdown-fontify-code-blocks-natively t)
 
-  ;; Configure language modes for code blocks
-  ;; This maps code block language identifiers to their corresponding major modes
   (markdown-code-lang-modes
-   '(("ocaml" . tuareg-mode)
-     ("elisp" . emacs-lisp-mode)
-     ("ditaa" . artist-mode)
-     ("asymptote" . asy-mode)
-     ("dot" . fundamental-mode)
-     ("sqlite" . sql-mode)
-     ("calc" . fundamental-mode)
-     ("C" . c-mode)
-     ("cpp" . c++-mode)
-     ("C++" . c++-mode)
-     ("screen" . shell-script-mode)
-     ("shell" . sh-mode)
+   '(("elisp" . emacs-lisp-mode)
      ("bash" . sh-mode)
-     ("go" . go-ts-mode)        ; Use tree-sitter mode for Go
-     ("rust" . rust-ts-mode)))  ; Use tree-sitter mode for Rust
-
-  :config
-  ;; Additional markdown configuration can go here
-  ;; For example, custom keybindings or hooks
-  )
+     ("shell" . sh-mode)
+     ("go" . go-ts-mode)
+     ("rust" . rust-ts-mode))))
 
 ;;; Emacs Lisp Support
-;; Paredit for structured editing of Lisp code
-;; Ensures parentheses are always balanced and provides structural editing commands
 (use-package paredit
-  :ensure t
-  :hook (emacs-lisp-mode . paredit-mode))
-
-;;; Org Babel Language Support
-;; Configure Org mode to recognize additional languages in code blocks
-(use-package emacs
-  :config
-  (with-eval-after-load 'org
-    ;; Enable Go syntax highlighting in org-mode code blocks
-    ;; This allows #+begin_src go blocks to use go-ts-mode
-    (add-to-list 'org-src-lang-modes '("go" . go-ts))))
-
-;;; Eglot-Specific Configuration
-;; Configures Eglot to use `rust-analyzer` for Rust files, invoked via `rustup`.
-(use-package eglot
-  :config
-  (add-to-list 'eglot-server-programs
-               '((rust-ts-mode rust-mode) . ("rustup" "run" "stable" "rust-analyzer"))))
+  :hook ((emacs-lisp-mode lisp-mode scheme-mode clojure-mode)   .       paredit-mode))
 
 (provide 'cafn-languages)
 ;;; cafn-languages.el ends here

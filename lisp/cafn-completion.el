@@ -12,11 +12,6 @@
 ;;; Built-in Completion Configuration
 (use-package emacs
   :custom
-  ;; Use both basic and flex completion styles
-  ;; Basic: exact matches and prefix completion
-  ;; Flex: fuzzy matching (e.g., "fb" matches "foo-bar")
-  (completion-styles '(basic flex))
-
   ;; Automatically select first completion candidate
   ;; This allows immediate selection without extra TAB presses
   (completion-auto-select t)
@@ -58,38 +53,11 @@
 ;;; Corfu - In-buffer completion UI
 ;; Provides popup completion at point for programming and text editing
 (use-package corfu
-  :ensure t
-  ;; Optional customizations
-  ;; :custom
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-
-  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
-
-  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-  ;; be used globally (M-/).  See also the customization variable
-  ;; `global-corfu-modes' to exclude certain modes.
   :init
   (global-corfu-mode))
 
 ;;; Vertico: Vertical completion system for minibuffer
-;;; Provides a clean vertical list of completion candidates in the minibuffer.
-;;; Example: Typing `M-x find` shows:
-;;;
-;;; find-file
-;;; find-function
-;;; find-library
-;;;
-;;; Use arrow keys or bindings to navigate.
 (use-package vertico
-  :ensure t
   :custom
   (vertico-cycle t)
   :init
@@ -101,26 +69,14 @@
 
 ;; Optionally use the `orderless' completion style for fuzzy matching
 (use-package orderless
-  :ensure t
   :custom
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
-  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
   (completion-styles '(orderless basic))
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
 ;;; Marginalia: Adds annotations to completion candidates
 ;;; Works with Vertico to display metadata for each candidate.
-;;; Example: `C-x C-f` (find-file) shows:
-;;;
-;;; init.el       ~/.emacs.d/    2 KB  2024-12-20  rw-r--r--
-;;; config.org    ~/.emacs.d/    5 KB  2024-12-19  rw-r--r--
-;;; README.md     ~/projects/    3 KB  2024-12-18  rw-r--r--
-;;;
-;;; Enhances context and usability.
 (use-package marginalia
-  :ensure t
   :hook (after-init . marginalia-mode))
 
 (provide 'cafn-completion)

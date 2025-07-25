@@ -35,7 +35,7 @@
 
 ;; Programming Languages - Language-specific configurations and LSP
 ;; Provides: Go, Rust, TypeScript, Markdown, Emacs Lisp support with eglot LSP integration
-;; Includes: Go testing, Paredit for Lisp editing, enhanced Markdown editing, Org Babel support
+;; Includes: Tree-sitter parsers, Go testing, Paredit for Lisp editing, enhanced Markdown editing
 ;; Requires: External LSP servers to be installed
 (require 'cafn-languages)
 
@@ -46,11 +46,6 @@
 ;; Version Control - Git integration and workflow tools
 ;; Provides: Magit configuration, Git gutter, time machine, and workflow enhancements
 (require 'cafn-git)
-
-;; Productivity Tools - Organization and code efficiency
-;; Provides: Org mode, YASnippet templates, Tree-sitter parsers
-;; Combines note-taking, code snippets, and advanced syntax analysis
-(require 'cafn-productivity)
 
 ;;; Optional Features
 

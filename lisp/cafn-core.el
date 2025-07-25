@@ -13,27 +13,13 @@
 ;;; Initialize package.el and use-package
 
 ;; Initialize package.el
-(require 'package)
-
-;; Configure package archives
-;; Add MELPA and other repositories for more package options
-(setopt package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("gnu" . "https://elpa.gnu.org/packages/")
-                           ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
-;; Initialize package system
-(package-initialize)
-
-;; Refresh package contents if needed
-(unless package-archive-contents
-  (package-refresh-contents))
-
-;; Install and configure use-package
-;; use-package provides a clean, declarative way to configure packages
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(require 'use-package)
+(use-package package
+  :custom
+  ;; Configure package archives
+  ;; Add MELPA and other repositories for more package options
+  (package-archives '(("melpa" . "https://melpa.org/packages/")
+                      ("gnu" . "https://elpa.gnu.org/packages/")
+                      ("nongnu" . "https://elpa.nongnu.org/nongnu/"))))
 
 ;; Configure use-package for better debugging and performance monitoring
 (use-package use-package
@@ -102,7 +88,7 @@
   ;; === Core Editor Behavior ===
   ;; Prefer spaces over tabs for indentation
   ;; This ensures consistent display across different editors
-  (setopt indent-tabs-mode nil)
+  (indent-tabs-mode nil)
 
   ;; Global subword mode for better navigation in compound words
   ;; M-f/M-b will stop at each part of CamelCase or snake_case words
@@ -118,6 +104,11 @@
   ;; Visible in all buffers - helps identify and remove unnecessary spaces
   (setopt show-trailing-whitespace nil)
 
+  ;; Disable startup screen for faster access to work
+  ;; Set to nil to see the startup screen with useful tips
+  (setopt inhibit-startup-screen t)
+
+
   ;; Enable delete-selection-mode for more intuitive editing
   ;; When text is selected, typing replaces it (like most modern editors)
   (delete-selection-mode t)
@@ -126,9 +117,6 @@
   ;; Alternative: use 'fullboth for true fullscreen
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-  ;; Disable startup screen for faster access to work
-  ;; Set to nil to see the startup screen with useful tips
-  (setopt inhibit-startup-screen t)
 
   ;; Show column numbers in mode line
   ;; Useful for staying within line length limits
@@ -162,10 +150,10 @@
   :config
   ;; Set the default font
   ;; This is a high-quality monospace font designed for programming
-  (when (find-font (font-spec :name "Comic Code"))
+  (when (find-font (font-spec :name "Berkeley Mono"))
     (set-face-attribute 'default nil
-                        :family "Comic Code"
-                        :height 120  ; 12pt font size
+                        :family "Berkeley Mono"
+                        :height 130  ; 13pt font size
                         :weight 'regular))
 
   :bind
@@ -198,7 +186,6 @@
 (if (< emacs-major-version 30)
     ;; Emacs < 30: Install which-key via straight.el
     (use-package which-key
-      :ensure t
       :hook (after-init . which-key-mode))
   ;; Emacs 30+: which-key is built-in
   (use-package emacs

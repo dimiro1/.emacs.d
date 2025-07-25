@@ -9,7 +9,7 @@ A modern, modular Emacs configuration focused on developer productivity and clea
 - **Performance Optimized**: Fast startup with lazy loading
 - **LSP Support**: Native `eglot` for Go, Rust, TypeScript/JavaScript
 - **Git Integration**: Comprehensive Magit setup
-- **Themes**: Modus, Doom, Catppuccin, and Standard themes
+- **Themes**: Modus, Doom, and Standard themes
 - **Evil Mode**: Optional Vim emulation
 - **Smart Completion**: Flex matching with Vertico/Marginalia
 

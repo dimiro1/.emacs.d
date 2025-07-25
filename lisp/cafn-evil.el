@@ -7,12 +7,11 @@
 ;;; Code:
 
 (use-package evil
-  :ensure t
-  :init
-  (setopt evil-want-integration t)
-  (setopt evil-want-keybinding nil)
-  (setopt evil-want-C-u-scroll t)
-  (setopt evil-want-Y-yank-to-eol t)
+  :custom
+  (evil-want-integration t)
+  (evil-want-keybinding nil)
+  (evil-want-C-u-scroll t)
+  (evil-want-Y-yank-to-eol t)
   :config
   ;; Define prefix maps
   (define-prefix-command 'cafn-leader-map)
@@ -118,7 +117,6 @@
 ;;; Avy Configuration
 ;; Avy provides quick navigation to any visible text
 (use-package avy
-  :ensure t
   :custom
   ;; Use Colemak-friendly keys for avy navigation
   ;; These keys are positioned for easy access on Colemak layout
@@ -132,17 +130,14 @@
 
 (use-package evil-collection
   :after evil
-  :ensure t
   :config
   (evil-collection-init))
 
 (use-package evil-surround
-  :ensure t
   :config
   (global-evil-surround-mode 1))
 
 (use-package consult
-  :ensure t
   :bind (:map evil-ex-completion-map
               ("C-n" . consult-history)
               ("C-p" . consult-history)))

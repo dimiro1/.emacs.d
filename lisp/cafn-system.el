@@ -13,15 +13,6 @@
 ;; PATH, environment variables, and system integration
 (use-package emacs
   :custom
-  ;; === Authentication Configuration ===
-  ;; Set up authentication sources in order of preference
-  ;; This allows Emacs to find credentials for various services
-  (auth-sources '("~/.authinfo"           ; Plain text auth file
-                  "~/.authinfo.gpg"       ; Encrypted auth file
-                  "~/.netrc"              ; Traditional netrc file
-                  macos-keychain-internet ; macOS keychain (internet passwords)
-                  macos-keychain-generic)) ; macOS keychain (generic passwords)
-
   ;; === Backup Configuration ===
   ;; Store all backups in a central directory
   ;; This prevents ~ files from cluttering your projects
@@ -53,6 +44,11 @@
   ;; Auto-save after 30 seconds of idle time
   ;; Ensures work is saved during thinking pauses
   (auto-save-timeout 30)
+
+  ;; Store auto-save files in temporary directory
+  ;; Keeps them separate from project files
+  (auto-save-file-name-transforms
+   `((".*" ,(expand-file-name "auto-saves/" user-emacs-directory) t)))
 
   :init
   ;; === PATH Configuration ===
@@ -87,13 +83,13 @@
 
   ;; === macOS-specific Configuration ===
   ;; Use GNU ls if available (from coreutils)
-  ;; 
+  ;;
   ;; Why GNU ls (gls)?
   ;; - macOS ships with BSD ls, which lacks many GNU ls features
   ;; - Most importantly: BSD ls doesn't support --group-directories-first
   ;; - --group-directories-first shows directories before files in dired
   ;; - This makes file browsing much more organized and user-friendly
-  ;; 
+  ;;
   ;; Installation: brew install coreutils
   ;; This installs GNU versions with 'g' prefix: gls, gcp, gmv, etc.
   (when (executable-find "gls")
@@ -122,11 +118,6 @@
     (unless (file-exists-p backup-dir)
       (make-directory backup-dir t)))
 
-  ;; Store auto-save files in temporary directory
-  ;; Keeps them separate from project files
-  (setopt auto-save-file-name-transforms
-          `((".*" ,(expand-file-name "auto-saves/" user-emacs-directory) t)))
-
   ;; Ensure auto-save directory exists
   (let ((auto-save-dir (expand-file-name "auto-saves/" user-emacs-directory)))
     (unless (file-exists-p auto-save-dir)
@@ -141,7 +132,6 @@
 ;; On macOS, GUI Emacs doesn't inherit shell environment variables
 ;; This package fixes that issue
 (use-package exec-path-from-shell
-  :ensure t
   :init
   ;; Copy environment variables from shell
   ;; This ensures tools work the same in Emacs as in terminal
@@ -175,7 +165,7 @@
   (recentf-max-menu-items 100)
   (recentf-max-saved-items 100)
   ;; Exclude some directories from recent files
-  (recentf-exclude '("/tmp/" "/ssh:" "\\.git/" "COMMIT_EDITMSG"))
+  (recentf-exclude '("/tmp/" "/ssh:" "\\.git/" "COMMIT_EDITMSG" "node_modules"))
   :bind
   ;; Quick access to recent files
   ("C-c f r" . recentf-open-files))
