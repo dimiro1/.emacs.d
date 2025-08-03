@@ -59,4 +59,16 @@
 ;; Note: Loaded last to override any conflicting bindings
 (require 'd1-keybindings)
 
+;; NPM Script Runner - Interactive npm script execution
+;; Provides: Project-aware npm script discovery, interactive selection
+;; Usage: M-x d1-npm-run or C-c n
+(require 'd1-npm)
+
+;; Configure marginalia support for npm scripts
+(with-eval-after-load 'marginalia
+  (add-to-list 'marginalia-annotator-registry
+               '(npm-script d1-npm-annotate builtin none))
+  (add-to-list 'marginalia-command-categories
+               '(d1-npm-run . npm-script)))
+
 ;;; init.el ends here

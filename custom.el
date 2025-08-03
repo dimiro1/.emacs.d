@@ -17,7 +17,7 @@
    '(avy consult-eglot consult-project-extra corfu doom-themes doric-themes eat ef-themes
 		 evil-collection evil-surround exec-path-from-shell git-gutter git-timemachine gotest
 		 indent-guide magit marginalia markdown-mode move-text neotree orderless paredit rg
-		 standard-themes vertico vterm yasnippet-snippets))
+		 spacious-padding standard-themes vertico vterm yasnippet-snippets))
  '(package-vc-selected-packages
    '((copilot :url "https://github.com/copilot-emacs/copilot.el"))))
 

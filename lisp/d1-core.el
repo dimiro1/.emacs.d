@@ -150,20 +150,20 @@
 
   :config
   ;; Set the default font
-  ;; This is a high-quality monospace font designed for programming
-  (when (find-font (font-spec :name "Berkeley Mono"))
+  ;; JetBrains Mono is a high-quality monospace font designed for programming
+  (when (find-font (font-spec :name "JetBrains Mono"))
     (set-face-attribute 'default nil
-                        :family "Berkeley Mono"
-                        :height 130  ; 13pt font size
+                        :family "JetBrains Mono"
+                        :height 140  ; 14pt font size
                         :weight 'regular))
 
   :bind
   ;; C-c i for "init" - easy to remember
-  (("C-c i" . d1/open-init-file)
+  (("C-c i" . d1-open-init-file)
    ;; Package management keybindings
-   ("C-c P r" . d1/package-refresh)
-   ("C-c P u" . d1/package-update-all)
-   ("C-c P a" . d1/package-autoremove)
+   ("C-c P r" . d1-package-refresh)
+   ("C-c P u" . d1-package-update-all)
+   ("C-c P a" . d1-package-autoremove)
    ("C-c P l" . package-list-packages)))
 
 ;;; Line Numbers Configuration
@@ -191,13 +191,13 @@
 
 ;;; Helper functions for package management
 
-(defun d1/package-refresh ()
+(defun d1-package-refresh ()
   "Refresh package contents from all configured archives."
   (interactive)
   (package-refresh-contents)
   (message "Package contents refreshed"))
 
-(defun d1/package-update-all ()
+(defun d1-package-update-all ()
   "Update all installed packages to their latest versions."
   (interactive)
   (package-refresh-contents)
@@ -206,14 +206,14 @@
     (package-menu-mark-upgrades)
     (package-menu-execute t)))
 
-(defun d1/package-autoremove ()
+(defun d1-package-autoremove ()
   "Remove packages that are no longer needed."
   (interactive)
   (package-autoremove))
 
 ;;; Quick Init File Access
 ;; Provide quick access to configuration files
-(defun d1/open-init-file ()
+(defun d1-open-init-file ()
   "Open the init.el file for quick configuration edits.
 This function provides instant access to your Emacs configuration,
 making it easy to tweak settings on the fly."

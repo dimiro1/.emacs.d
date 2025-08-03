@@ -28,7 +28,7 @@
 (use-package doric-themes)
 
 ;;; Load Default Theme
-(load-theme 'modus-vivendi :no-confirm)
+(load-theme 'ef-dream :no-confirm)
 
 ;;; Custom Mode-line Configuration
 ;; Configure buffer identification to show project-relative paths
@@ -60,6 +60,12 @@
   ;; Ensure mode-line is always visible and readable
   (set-face-attribute 'mode-line nil
                       :box '(:line-width 1 :style released-button)))
+
+;; Add extra padding around the frames and the status-bar.
+(use-package spacious-padding
+  ;; Use emacs-startup hook to ensure proper initialization order
+  ;; Avoids conflicts with other UI packages like which-key
+  :hook (emacs-startup . spacious-padding-mode))
 
 (provide 'd1-ui)
 ;;; d1-ui.el ends here

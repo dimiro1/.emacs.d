@@ -18,13 +18,13 @@
    ("C-c s l" . consult-line-multi)
    ("C-c f r" . consult-recent-file)
    ("C-c ! l" . consult-flymake)
-   ("C-c ! p" . d1/consult-flymake-project))
+   ("C-c ! p" . d1-consult-flymake-project))
   :config
   (consult-customize
    consult-flymake
    :preview-key '(:debounce 0.2 any))
 
-  (defun d1/consult-flymake-project ()
+  (defun d1-consult-flymake-project ()
     "Show flymake diagnostics for all buffers in the current project."
     (interactive)
     (let ((project (project-current)))

@@ -72,7 +72,7 @@
   (flymake-start-on-save-buffer nil))
 
 ;;; Go Programming Support
-(defun d1/toggle-between-go-test-and-impl-file ()
+(defun d1-toggle-between-go-test-and-impl-file ()
   "Toggle between a Go file and its test file (with _test suffix).
 For example, switches between 'hello.go' and 'hello_test.go'."
   (interactive)
@@ -91,7 +91,7 @@ For example, switches between 'hello.go' and 'hello_test.go'."
 
 (use-package go-ts-mode
   :bind (:map go-ts-mode-map
-              ("C-c t" . d1/toggle-between-go-test-and-impl-file))
+              ("C-c t" . d1-toggle-between-go-test-and-impl-file))
   :custom
   (go-ts-mode-indent-offset 4))
 

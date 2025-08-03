@@ -19,5 +19,9 @@
   :bind
   (("s-<down>" . move-text-down)
    ("s-<up>" . move-text-up)))
+
+;;; NPM Script Runner
+(global-set-key (kbd "C-c n") 'd1-npm-run)
+
 (provide 'd1-keybindings)
 ;;; d1-keybindings.el ends here

@@ -172,7 +172,7 @@
   ("C-c f r" . recentf-open-files))
 
 ;;; Helper Functions
-(defun d1/refresh-environment ()
+(defun d1-refresh-environment ()
   "Refresh environment variables from shell.
 Useful when you've updated your shell configuration and want
 Emacs to pick up the changes without restarting."
