@@ -3,24 +3,31 @@
 ;;; Commentary:
 ;;
 ;; User interface configuration combining color themes, custom modeline,
-;; and file tree browser. This module handles all visual aspects of
-;; the Emacs interface.
+;; and file tree browser.
+;;
+;; This module handles all visual aspects of the Emacs interface.
 ;;
 
 ;;; Code:
 
 ;;; Theme Packages
 
-;; Standard Themes - Accessible and well-designed themes
+;; Standard Themes - Accessible and well-designed themes by Protesilaos
 ;; https://protesilaos.com/codelog/2024-12-17-emacs-standard-themes-tinted/
 ;; Provides both light and dark variants with careful color choices
 (use-package standard-themes)
 
+;; Ef Themes - Colorful and legible themes by Protesilaos
+;; https://protesilaos.com/emacs/ef-themes
+;; Large collection of light/dark themes with varied color palettes
 (use-package ef-themes)
+
+;; Doric Themes - Minimalist themes by Protesilaos
+;; https://github.com/protesilaos/doric-themes
+;; Monochromatic themes with careful typography emphasis
 (use-package doric-themes)
 
 ;;; Load Default Theme
-;; Change this to load your preferred theme
 (load-theme 'modus-vivendi :no-confirm)
 
 ;;; Custom Mode-line Configuration

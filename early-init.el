@@ -1,5 +1,13 @@
 ;;; early-init.el --- Early initialization  -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;;
+;; Early initialization file loaded before the main init.el.
+;; Contains performance optimizations and UI setup that must run early.
+;;
+
+;;; Code:
+
 ;;; Performance Optimizations
 ;; Temporarily increase GC threshold during startup for faster loading
 (setq gc-cons-threshold most-positive-fixnum

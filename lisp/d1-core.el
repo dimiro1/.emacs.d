@@ -3,8 +3,9 @@
 ;;; Commentary:
 ;;
 ;; Core Emacs configuration combining package management and fundamental
-;; editor settings. This module provides the foundation for all other
-;; configuration modules.
+;; editor settings.
+;;
+;; This module provides the foundation for all other configuration modules.
 ;;
 
 ;;; Code:

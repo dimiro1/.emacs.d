@@ -3,8 +3,9 @@
 ;;; Commentary:
 ;;
 ;; System integration combining environment configuration (PATH, shell variables)
-;; and file management (backups, auto-save, recent files). This module handles
-;; all system-level integration and file persistence.
+;; and file management (backups, auto-save, recent files).
+;;
+;; This module handles all system-level integration and file persistence.
 ;;
 
 ;;; Code:
