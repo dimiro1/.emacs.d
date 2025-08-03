@@ -56,7 +56,7 @@
 
 ;;; Eglot Configuration (LSP Client)
 (use-package eglot
-  :hook ((go-ts-mode rust-ts-mode typescript-ts-mode) . eglot-ensure)
+  :hook ((go-ts-mode rust-ts-mode typescript-ts-mode tsx-ts-mode) . eglot-ensure)
   :hook (before-save . (lambda ()
                          (when (eglot-managed-p)
                            (ignore-errors (eglot-code-action-organize-imports))
