@@ -1,4 +1,4 @@
-;;; cafn-ui.el --- User interface configuration (themes + modeline + file tree)  -*- lexical-binding: t; -*-
+;;; d1-ui.el --- User interface configuration (themes + modeline + file tree)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -16,23 +16,8 @@
 ;; Provides both light and dark variants with careful color choices
 (use-package standard-themes)
 
-;; Doom Themes - Popular themes from the Doom Emacs distribution
-;; https://github.com/doomemacs/themes
-(use-package doom-themes
-  :custom
-  (doom-themes-enable-bold t)
-  (doom-themes-enable-italic t))
-
-;;; Modus Themes Configuration
-;; Configure Modus themes for easy toggling between light and dark
-(use-package modus-themes
-  :ensure nil
-  :custom
-  ;; Set themes to toggle between
-  (modus-themes-to-toggle '(modus-operandi-tinted modus-vivendi))
-  :bind
-  ;; Quick theme toggling
-  ("<f5>" . modus-themes-toggle))
+(use-package ef-themes)
+(use-package doric-themes)
 
 ;;; Load Default Theme
 ;; Change this to load your preferred theme
@@ -69,24 +54,5 @@
   (set-face-attribute 'mode-line nil
                       :box '(:line-width 1 :style released-button)))
 
-;;; Helper Functions
-
-(defun cafn-switch-theme (theme)
-  "Switch to THEME, disabling all other themes first.
-This ensures only one theme is active at a time.
-
-Unlike `load-theme', this function prevents theme stacking by disabling
-all currently enabled themes before loading the new one. Without this,
-multiple themes can be active simultaneously, causing visual conflicts
-and unpredictable colors."
-  (interactive
-   (list (intern (completing-read "Load theme: "
-                                  (mapcar #'symbol-name
-                                          (custom-available-themes))))))
-  ;; Disable all current themes
-  (mapc #'disable-theme custom-enabled-themes)
-  ;; Load the new theme
-  (load-theme theme :no-confirm))
-
-(provide 'cafn-ui)
-;;; cafn-ui.el ends here
+(provide 'd1-ui)
+;;; d1-ui.el ends here

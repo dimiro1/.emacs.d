@@ -1,4 +1,4 @@
-;;; cafn-system.el --- System integration (environment + file management)  -*- lexical-binding: t; -*-
+;;; d1-system.el --- System integration (environment + file management)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -103,7 +103,7 @@
     (message "GNU ls (gls) not found. Install with: brew install coreutils")
     (message "Using BSD ls - directories and files will be mixed in dired")
     ;; BSD ls doesn't support --group-directories-first, so use simpler options
-    ;; This setting will override the one in cafn-navigation.el
+    ;; This setting will override the one in d1-navigation.el
     (with-eval-after-load 'dired
       (setopt dired-listing-switches "-alh")))
 
@@ -171,7 +171,7 @@
   ("C-c f r" . recentf-open-files))
 
 ;;; Helper Functions
-(defun cafn-refresh-environment ()
+(defun d1/refresh-environment ()
   "Refresh environment variables from shell.
 Useful when you've updated your shell configuration and want
 Emacs to pick up the changes without restarting."
@@ -180,5 +180,5 @@ Emacs to pick up the changes without restarting."
     (exec-path-from-shell-initialize)
     (message "Environment refreshed from shell")))
 
-(provide 'cafn-system)
-;;; cafn-system.el ends here
+(provide 'd1-system)
+;;; d1-system.el ends here

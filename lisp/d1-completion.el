@@ -1,4 +1,4 @@
-;;; cafn-completion.el --- Completion system configuration (Corfu + Vertico)  -*- lexical-binding: t; -*-
+;;; d1-completion.el --- Completion system configuration (Corfu + Vertico)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -79,5 +79,5 @@
 (use-package marginalia
   :hook (after-init . marginalia-mode))
 
-(provide 'cafn-completion)
-;;; cafn-completion.el ends here
+(provide 'd1-completion)
+;;; d1-completion.el ends here.

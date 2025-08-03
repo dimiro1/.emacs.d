@@ -1,4 +1,4 @@
-;;; cafn-navigation.el --- File and project navigation tools  -*- lexical-binding: t; -*-
+;;; d1-navigation.el --- File and project navigation tools  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -18,13 +18,13 @@
    ("C-c s l" . consult-line-multi)
    ("C-c f r" . consult-recent-file)
    ("C-c ! l" . consult-flymake)
-   ("C-c ! p" . cafn-consult-flymake-project))
+   ("C-c ! p" . d1/consult-flymake-project))
   :config
   (consult-customize
    consult-flymake
    :preview-key '(:debounce 0.2 any))
 
-  (defun cafn-consult-flymake-project ()
+  (defun d1/consult-flymake-project ()
     "Show flymake diagnostics for all buffers in the current project."
     (interactive)
     (let ((project (project-current)))
@@ -76,5 +76,5 @@
               ("e" . dired-find-file)
               ("E" . dired-find-file-other-window)))
 
-(provide 'cafn-navigation)
-;;; cafn-navigation.el ends here
+(provide 'd1-navigation)
+;;; d1-navigation.el ends here

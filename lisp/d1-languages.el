@@ -1,4 +1,4 @@
-;;; cafn-languages.el --- Programming language support with LSP  -*- lexical-binding: t; -*-
+;;; d1-languages.el --- Programming language support with LSP  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -25,7 +25,34 @@
      (rust       "https://github.com/tree-sitter/tree-sitter-rust")
      (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-     (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))))
+     (yaml       "https://github.com/ikatyang/tree-sitter-yaml")))
+  :config
+  ;; Auto-install missing grammars
+  (dolist (grammar treesit-language-source-alist)
+    (unless (treesit-ready-p (car grammar))
+      (treesit-install-language-grammar (car grammar))))
+
+  ;; Configure auto-mode-alist for Tree-sitter modes
+  (setopt auto-mode-alist
+          (append '(("\\.go\\'"		.	go-ts-mode)
+                    ("go\\.mod\\'"	.	go-ts-mode)
+                    ("\\.rs\\'"		.	rust-ts-mode)
+                    ("\\.ts\\'"		.	typescript-ts-mode)
+                    ("\\.tsx\\'"	.	tsx-ts-mode)
+                    ("\\.py\\'"		.	python-ts-mode)
+                    ("\\.js\\'"		.	js-ts-mode)
+                    ("\\.json\\'"	.	json-ts-mode)
+                    ("\\.yaml\\'"	.	yaml-ts-mode)
+                    ("\\.yml\\'"	.	yaml-ts-mode))
+                  auto-mode-alist))
+
+  ;; Remap traditional modes to Tree-sitter modes
+  (setopt major-mode-remap-alist
+          '((python-mode		.	python-ts-mode)
+            (javascript-mode	.	js-ts-mode)
+            (js-mode			.	js-ts-mode)
+            (rust-mode			.	rust-ts-mode)
+            (go-mode			.	go-ts-mode))))
 
 ;;; Eglot Configuration (LSP Client)
 (use-package eglot
@@ -45,7 +72,7 @@
   (flymake-start-on-save-buffer nil))
 
 ;;; Go Programming Support
-(defun cafn-toggle-between-go-test-and-impl-file ()
+(defun d1/toggle-between-go-test-and-impl-file ()
   "Toggle between a Go file and its test file (with _test suffix).
 For example, switches between 'hello.go' and 'hello_test.go'."
   (interactive)
@@ -63,40 +90,31 @@ For example, switches between 'hello.go' and 'hello_test.go'."
         (message "File %s does not exist" target)))))
 
 (use-package go-ts-mode
-  :mode (("\\.go\\'" . go-ts-mode)
-         ("go\\.mod\\'" . go-ts-mode))
   :bind (:map go-ts-mode-map
-              ("C-c t" . cafn-toggle-between-go-test-and-impl-file))
+              ("C-c t" . d1/toggle-between-go-test-and-impl-file))
   :custom
   (go-ts-mode-indent-offset 4))
 
 (use-package gotest)
-;;; Rust Programming Support
-(use-package rust-ts-mode
-  :mode ("\\.rs\\'" . rust-ts-mode))
-
-(use-package typescript-ts-mode
-  :mode (("\\.ts\\'" . typescript-ts-mode)
-         ("\\.tsx\\'" . typescript-ts-mode)))
 
 ;;; Markdown Support
 (use-package markdown-mode
-  :mode (("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode)
-         ("README\\.md\\'" . gfm-mode)) ; GitHub Flavored Markdown for README files
+  :mode (("\\.md\\'"		.	markdown-mode)
+         ("\\.markdown\\'"	.	markdown-mode)
+         ("README\\.md\\'"	.	gfm-mode)) ; GitHub Flavored Markdown for README files
   :custom
   (markdown-fontify-code-blocks-natively t)
 
   (markdown-code-lang-modes
-   '(("elisp" . emacs-lisp-mode)
-     ("bash" . sh-mode)
-     ("shell" . sh-mode)
-     ("go" . go-ts-mode)
-     ("rust" . rust-ts-mode))))
+   '(("elisp"	.	emacs-lisp-mode)
+     ("bash"	.	sh-mode)
+     ("shell"	.	sh-mode)
+     ("go"		.	go-ts-mode)
+     ("rust"	.	rust-ts-mode))))
 
 ;;; Emacs Lisp Support
 (use-package paredit
   :hook ((emacs-lisp-mode lisp-mode scheme-mode clojure-mode)   .       paredit-mode))
 
-(provide 'cafn-languages)
-;;; cafn-languages.el ends here
+(provide 'd1-languages)
+;;; d1-languages.el ends here

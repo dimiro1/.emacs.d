@@ -1,4 +1,4 @@
-;;; cafn-core.el --- Core Emacs configuration (packages + editor)  -*- lexical-binding: t; -*-
+;;; d1-core.el --- Core Emacs configuration (packages + editor)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -158,11 +158,11 @@
 
   :bind
   ;; C-c i for "init" - easy to remember
-  (("C-c i" . cafn-open-init-file)
+  (("C-c i" . d1/open-init-file)
    ;; Package management keybindings
-   ("C-c P r" . cafn-package-refresh)
-   ("C-c P u" . cafn-package-update-all)
-   ("C-c P a" . cafn-package-autoremove)
+   ("C-c P r" . d1/package-refresh)
+   ("C-c P u" . d1/package-update-all)
+   ("C-c P a" . d1/package-autoremove)
    ("C-c P l" . package-list-packages)))
 
 ;;; Line Numbers Configuration
@@ -182,24 +182,21 @@
 
 ;;; Keybinding Discovery
 ;; Which-key provides helpful keybinding hints
-;; Conditional configuration based on Emacs version
-(if (< emacs-major-version 30)
-    ;; Emacs < 30: Install which-key via straight.el
-    (use-package which-key
-      :hook (after-init . which-key-mode))
-  ;; Emacs 30+: which-key is built-in
-  (use-package emacs
-    :hook (after-init . which-key-mode)))
+(use-package which-key
+  :ensure nil
+  :hook (after-init . which-key-mode)
+  :custom
+  (which-key-idle-delay 0.1)) ; Show help delay
 
 ;;; Helper functions for package management
 
-(defun cafn-package-refresh ()
+(defun d1/package-refresh ()
   "Refresh package contents from all configured archives."
   (interactive)
   (package-refresh-contents)
   (message "Package contents refreshed"))
 
-(defun cafn-package-update-all ()
+(defun d1/package-update-all ()
   "Update all installed packages to their latest versions."
   (interactive)
   (package-refresh-contents)
@@ -208,19 +205,19 @@
     (package-menu-mark-upgrades)
     (package-menu-execute t)))
 
-(defun cafn-package-autoremove ()
+(defun d1/package-autoremove ()
   "Remove packages that are no longer needed."
   (interactive)
   (package-autoremove))
 
 ;;; Quick Init File Access
 ;; Provide quick access to configuration files
-(defun cafn-open-init-file ()
+(defun d1/open-init-file ()
   "Open the init.el file for quick configuration edits.
 This function provides instant access to your Emacs configuration,
 making it easy to tweak settings on the fly."
   (interactive)
   (find-file (expand-file-name "init.el" user-emacs-directory)))
 
-(provide 'cafn-core)
-;;; cafn-core.el ends here
+(provide 'd1-core)
+;;; d1-core.el ends here

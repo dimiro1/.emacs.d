@@ -1,4 +1,4 @@
-;;; cafn-keybindings.el --- Custom keybindings and shortcuts  -*- lexical-binding: t; -*-
+;;; d1-keybindings.el --- Custom keybindings and shortcuts  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -19,5 +19,5 @@
   :bind
   (("s-<down>" . move-text-down)
    ("s-<up>" . move-text-up)))
-(provide 'cafn-keybindings)
-;;; cafn-keybindings.el ends here
+(provide 'd1-keybindings)
+;;; d1-keybindings.el ends here

@@ -9,10 +9,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(avy catppuccin-theme consult-eglot consult-project-extra corfu doom-themes eat evil-collection
-         evil-surround exec-path-from-shell git-gutter git-timemachine gotest inkpot-theme
-         kuronami-theme magit marginalia markdown-mode move-text neotree orderless paredit rg
-         standard-themes vertico vterm yasnippet-snippets))
+   '(avy consult-eglot consult-project-extra corfu doom-themes doric-themes eat ef-themes
+		 evil-collection evil-surround exec-path-from-shell git-gutter git-timemachine gotest
+		 indent-guide magit marginalia markdown-mode move-text neotree orderless paredit rg
+		 standard-themes vertico vterm yasnippet-snippets))
  '(package-vc-selected-packages
    '((copilot :url "https://github.com/copilot-emacs/copilot.el"))))
 
