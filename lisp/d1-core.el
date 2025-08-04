@@ -47,8 +47,8 @@
   (no-littering-theme-backups)
 
   ;; Configure auto-save files location
-  (setq auto-save-file-name-transforms
-		`((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+  (setopt auto-save-file-name-transforms
+		  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;;; Flymake Configuration
 ;;; Configure Flymake to trust .emacs.d directory
