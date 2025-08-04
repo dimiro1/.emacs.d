@@ -62,3 +62,6 @@ Temporary Items
 /custom.el
 /.emacs-saves/
 /auto-saves/
+/etc/
+/var/
+/packages/

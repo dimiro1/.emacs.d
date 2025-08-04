@@ -19,8 +19,8 @@
   ;; Configure package archives
   ;; Add MELPA and other repositories for more package options
   (package-archives '(("melpa" . "https://melpa.org/packages/")
-                      ("gnu" . "https://elpa.gnu.org/packages/")
-                      ("nongnu" . "https://elpa.nongnu.org/nongnu/"))))
+					  ("gnu" . "https://elpa.gnu.org/packages/")
+					  ("nongnu" . "https://elpa.nongnu.org/nongnu/"))))
 
 ;; Configure use-package for better debugging and performance monitoring
 (use-package use-package
@@ -33,6 +33,34 @@
   (use-package-expand-minimally nil)
   ;; Enable verbose loading for debugging (set to nil for normal use)
   (use-package-verbose nil))
+
+;;; No-littering Configuration
+;;; Keep ~/.emacs.d clean by putting files in appropriate directories
+(use-package no-littering
+  :demand t  ;; Load immediately before other packages
+  :config
+  ;; Use no-littering to keep ~/.emacs.d clean
+  ;; Data files go to ~/.emacs.d/var/
+  ;; Config files go to ~/.emacs.d/etc/
+
+  ;; Store backups in subdirectories based on file name
+  (no-littering-theme-backups)
+
+  ;; Configure auto-save files location
+  (setq auto-save-file-name-transforms
+		`((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+
+;;; Flymake Configuration
+;;; Configure Flymake to trust .emacs.d directory
+(use-package flymake
+  :ensure nil
+  :custom
+  ;; Trust elisp files in .emacs.d to avoid "untrusted content" warnings
+  (elisp-flymake-byte-compile-load-path load-path)
+  :config
+  ;; Add .emacs.d to trusted directories
+  (add-to-list 'safe-local-variable-directories
+			   (expand-file-name user-emacs-directory)))
 
 ;;; Core Editor Configuration
 ;;; Fundamental editing behavior, encoding, indentation, and UI settings
@@ -134,9 +162,9 @@
   ;; Enable pixel-level scrolling for smoother experience
   ;; Only available in Emacs 29+
   (when (fboundp 'pixel-scroll-mode)
-    (pixel-scroll-mode t))
+	(pixel-scroll-mode t))
   (when (fboundp 'pixel-scroll-precision-mode)
-    (pixel-scroll-precision-mode t))
+	(pixel-scroll-precision-mode t))
 
   :hook
   ;; Enable repeat mode after initialization
@@ -152,10 +180,10 @@
   ;; Set the default font
   ;; JetBrains Mono is a high-quality monospace font designed for programming
   (when (find-font (font-spec :name "JetBrains Mono"))
-    (set-face-attribute 'default nil
-                        :family "JetBrains Mono"
-                        :height 140  ; 14pt font size
-                        :weight 'regular))
+	(set-face-attribute 'default nil
+						:family "JetBrains Mono"
+						:height 140  ; 14pt font size
+						:weight 'regular))
 
   :bind
   ;; C-c i for "init" - easy to remember
@@ -202,9 +230,9 @@
   (interactive)
   (package-refresh-contents)
   (save-window-excursion
-    (package-list-packages t)
-    (package-menu-mark-upgrades)
-    (package-menu-execute t)))
+	(package-list-packages t)
+	(package-menu-mark-upgrades)
+	(package-menu-execute t)))
 
 (defun d1-package-autoremove ()
   "Remove packages that are no longer needed."

@@ -15,41 +15,24 @@
 (use-package emacs
   :custom
   ;; === Backup Configuration ===
-  ;; Store all backups in a central directory
-  ;; This prevents ~ files from cluttering your projects
-  (backup-directory-alist `(("." . "~/.emacs-saves")))
-  ;; Use copying for backups to preserve file permissions and symlinks
-  ;; Safer than moving the original file
+  ;; no-littering package handles backup directory configuration
+  ;; Backups are stored in ~/.emacs.d/var/backup/
   (backup-by-copying t)
-  ;; Automatically delete old backup versions
-  ;; Prevents the backup directory from growing indefinitely
   (delete-old-versions t)
-  ;; Keep 6 recent versions of each file
-  ;; Provides good history without excessive disk usage
   (kept-new-versions 6)
-  ;; Keep 2 old versions for long-term reference
   (kept-old-versions 2)
-  ;; Enable version numbers for backup files
-  ;; Creates backups like file.~1~, file.~2~, etc.
   (version-control t)
 
   ;; === Custom File Management ===
   ;; Store customize-generated settings in a separate file
   ;; This keeps init.el clean and makes version control easier
-  (custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (custom-file (no-littering-expand-etc-file-name "custom.el"))
 
   ;; === Auto-save Configuration ===
-  ;; Auto-save every 300 characters typed
-  ;; Lower values save more frequently but may impact performance
+  ;; no-littering handles auto-save file locations
+  ;; Auto-saves are stored in ~/.emacs.d/var/auto-save/
   (auto-save-interval 300)
-  ;; Auto-save after 30 seconds of idle time
-  ;; Ensures work is saved during thinking pauses
   (auto-save-timeout 30)
-
-  ;; Store auto-save files in temporary directory
-  ;; Keeps them separate from project files
-  (auto-save-file-name-transforms
-   `((".*" ,(expand-file-name "auto-saves/" user-emacs-directory) t)))
 
   :init
   ;; === PATH Configuration ===
@@ -114,20 +97,14 @@
     (setenv "PATH" (concat "/opt/homebrew/bin:" (getenv "PATH"))))
 
   ;; === Directory Creation ===
-  ;; Ensure backup directory exists
-  (let ((backup-dir "~/.emacs-saves"))
-    (unless (file-exists-p backup-dir)
-      (make-directory backup-dir t)))
-
-  ;; Ensure auto-save directory exists
-  (let ((auto-save-dir (expand-file-name "auto-saves/" user-emacs-directory)))
-    (unless (file-exists-p auto-save-dir)
-      (make-directory auto-save-dir t)))
+  ;; no-littering automatically creates required directories
+  ;; No manual directory creation needed
 
   :config
-  ;; Load custom file if it exists, but don't error if it doesn't
-  ;; The :no-error-if-file-is-missing flag prevents startup errors
-  (load custom-file :no-error-if-file-is-missing))
+  ;; Load custom file if it exists
+  ;; no-littering sets custom-file to ~/.emacs.d/etc/custom.el
+  (when (and custom-file (file-exists-p custom-file))
+    (load custom-file)))
 
 ;;; Shell Environment Integration
 ;; On macOS, GUI Emacs doesn't inherit shell environment variables
@@ -167,6 +144,10 @@
   (recentf-max-saved-items 100)
   ;; Exclude some directories from recent files
   (recentf-exclude '("/tmp/" "/ssh:" "\\.git/" "COMMIT_EDITMSG" "node_modules"))
+  :config
+  ;; Exclude no-littering directories
+  (add-to-list 'recentf-exclude (regexp-quote (expand-file-name "var/" user-emacs-directory)))
+  (add-to-list 'recentf-exclude (regexp-quote (expand-file-name "etc/" user-emacs-directory)))
   :bind
   ;; Quick access to recent files
   ("C-c f r" . recentf-open-files))
