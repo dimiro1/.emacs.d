@@ -21,7 +21,15 @@
    ("s-<up>" . move-text-up)))
 
 ;;; NPM Script Runner
-(global-set-key (kbd "C-c n") 'd1-npm-run)
+(global-set-key (kbd "C-c p n") 'd1-npm-run)
+
+;;; programming notes
+(defun d1-open-programming-notes ()
+  "Open my programming notes."
+  (interactive)
+  (find-file "~/Documents/programming-notes.md"))
+
+(global-set-key (kbd "C-c n") 'd1-open-programming-notes)
 
 (provide 'd1-keybindings)
 ;;; d1-keybindings.el ends here
