@@ -6,69 +6,89 @@
 ;;
 ;;; Code:
 
-;;; Add Custom `lisp` Directory to Load Path
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-
 ;;; Core Configuration Modules
 ;; Load configuration modules in dependency order with documentation
+
+;; Define local modules directory
+(defconst d1-modules-dir "lisp/"
+  "Directory containing d1 configuration modules.")
 
 ;; Core Configuration - Package management and fundamental editor settings
 ;; Provides: Package management (use-package), encoding, indentation, UI settings,
 ;; scrolling, line numbers, fonts, which-key, and core editing behavior
 ;; This must be loaded first as other modules depend on it
-(require 'd1-core)
+(use-package d1-core
+  :load-path d1-modules-dir
+  :demand t)
 
 ;; User Interface - Themes, modeline, and file tree
 ;; Provides: Multiple theme options, custom modeline with project info, NeoTree sidebar
 ;; Consolidated visual configuration for consistent appearance
-(require 'd1-ui)
+(use-package d1-ui
+  :load-path d1-modules-dir
+  :demand t)
 
 ;; System Integration - Environment and file management
 ;; Provides: PATH configuration, shell integration, backup settings, auto-save,
 ;; authentication, and file persistence
-(require 'd1-system)
+(use-package d1-system
+  :load-path d1-modules-dir
+  :demand t)
 
 ;; Completion System - Complete completion framework
 ;; Provides: In-buffer completion (Corfu), minibuffer completion (Vertico + Marginalia),
 ;; fuzzy matching (Orderless), and enhanced completion experience
-(require 'd1-completion)
+(use-package d1-completion
+  :load-path d1-modules-dir
+  :demand t)
 
 ;; Programming Languages - Language-specific configurations and LSP
 ;; Provides: Go, Rust, TypeScript, Markdown, Emacs Lisp support with eglot LSP integration
 ;; Includes: Tree-sitter parsers, Go testing, Paredit for Lisp editing, enhanced Markdown editing
 ;; Requires: External LSP servers to be installed
-(require 'd1-languages)
+(use-package d1-languages
+  :load-path d1-modules-dir
+  :demand t)
 
 ;; Navigation - File and project navigation tools
 ;; Provides: Enhanced file finding, buffer switching, dired configuration, search tools
-(require 'd1-navigation)
+(use-package d1-navigation
+  :load-path d1-modules-dir
+  :demand t)
 
 ;; Version Control - Git integration and workflow tools
 ;; Provides: Magit configuration, Git gutter, time machine, and workflow enhancements
-(require 'd1-git)
+(use-package d1-git
+  :load-path d1-modules-dir
+  :demand t)
 
 ;;; Optional Features
 
 ;; Evil Mode - Vim-like editing experience
 ;; Provides: Modal editing, Vim keybindings, hybrid editing modes
-;; Comment out this line if you prefer Emacs keybindings
-;; (require 'd1-evil)
+;; Comment out this block if you prefer Emacs keybindings
+;; (use-package d1-evil
+;;   :load-path d1-modules-dir
+;;   :demand t)
 
 ;; Custom Keybindings - Personal keybinding preferences
 ;; Provides: Custom shortcuts, workflow optimizations
 ;; Note: Loaded last to override any conflicting bindings
-(require 'd1-keybindings)
+(use-package d1-keybindings
+  :load-path d1-modules-dir
+  :demand t)
 
 ;; NPM Script Runner - Interactive npm script execution
 ;; Provides: Project-aware npm script discovery, interactive selection
 ;; Usage: M-x d1-npm-run or C-c n
-(require 'd1-npm)
-
-;; Configure marginalia support for npm scripts
-(with-eval-after-load 'marginalia
-  (add-to-list 'marginalia-annotator-registry
-               '(npm-script d1-npm-annotate builtin none))
-  (add-to-list 'marginalia-command-categories
-               '(d1-npm-run . npm-script)))
+(use-package d1-npm
+  :load-path d1-modules-dir
+  :demand t
+  :init
+  (with-eval-after-load 'marginalia
+    (add-to-list 'marginalia-annotator-registry
+                 '(npm-script d1-npm-annotate builtin none))
+    (add-to-list 'marginalia-command-categories
+                 '(d1-npm-run . npm-script))))
 
 ;;; init.el ends here
