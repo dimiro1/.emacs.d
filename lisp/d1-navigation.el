@@ -12,6 +12,7 @@
 (use-package consult
   :bind
   (("C-x b"   . consult-buffer)
+   ("C-x p b" . consult-project-buffer)
    ("C-c b"   . consult-buffer)
    ("C-c s r" . consult-ripgrep)
    ("C-c o"   . consult-outline)
@@ -35,7 +36,8 @@
 ;; Enhanced project file navigation
 (use-package consult-project-extra
   :bind
-  (("C-c p f" . consult-project-extra-find)
+  (("C-x p f" . consult-project-extra-find)
+   ("C-c p f" . consult-project-extra-find)
    ("C-c p o" . consult-project-extra-find-other-window)))
 
 ;; Consult integration with Eglot LSP
