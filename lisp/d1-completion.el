@@ -1,10 +1,8 @@
-;;; d1-completion.el --- Completion system configuration (Corfu + Vertico)  -*- lexical-binding: t; -*-
+;;; d1-completion.el --- Completion system configuration  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
-;; Complete completion system configuration combining in-buffer completion (Corfu)
-;; with minibuffer completion (Vertico + Marginalia + Orderless).
-;; This provides a modern, fast completion experience throughout Emacs.
+;; Provides a modern, fast completion experience throughout Emacs.
 ;;
 
 ;;; Code:
@@ -45,16 +43,9 @@
   ;; Try `cape-dict' as an alternative.
   (text-mode-ispell-word-completion nil)
 
-  ;; Hide commands in M-x which do not apply to the current mode.  Corfu
-  ;; commands are hidden, since they are not used via M-x. This setting is
-  ;; useful beyond Corfu.
+  ;; Hide commands in M-x which do not apply to the current mode.
   (read-extended-command-predicate #'command-completion-default-include-p))
 
-;;; Corfu - In-buffer completion UI
-;; Provides popup completion at point for programming and text editing
-(use-package corfu
-  :init
-  (global-corfu-mode))
 
 ;;; Vertico: Vertical completion system for minibuffer
 (use-package vertico
