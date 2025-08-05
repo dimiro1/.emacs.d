@@ -9,6 +9,9 @@
 
 ;;; Built-in Completion Configuration
 (use-package emacs
+  :init
+  (fido-vertical-mode 1)
+
   :custom
   ;; Automatically select first completion candidate
   ;; This allows immediate selection without extra TAB presses
@@ -40,33 +43,24 @@
   (tab-always-indent 'complete)
 
   ;; Emacs 30 and newer: Disable Ispell completion function.
-  ;; Try `cape-dict' as an alternative.
   (text-mode-ispell-word-completion nil)
 
   ;; Hide commands in M-x which do not apply to the current mode.
   (read-extended-command-predicate #'command-completion-default-include-p))
 
 
-;;; Vertico: Vertical completion system for minibuffer
-(use-package vertico
-  :custom
-  (vertico-cycle t)
-  :init
-  (vertico-mode))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
+;; Persist history over Emacs restarts.
 (use-package savehist
   :hook (after-init . savehist-mode))
 
 ;; Optionally use the `orderless' completion style for fuzzy matching
 (use-package orderless
   :custom
-  (completion-styles '(orderless basic))
+  (completion-styles '(orderless flex basic))
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
 ;;; Marginalia: Adds annotations to completion candidates
-;;; Works with Vertico to display metadata for each candidate.
 (use-package marginalia
   :hook (after-init . marginalia-mode))
 
