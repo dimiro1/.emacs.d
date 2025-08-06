@@ -50,17 +50,6 @@
   (setopt auto-save-file-name-transforms
 		  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
-;;; Flymake Configuration
-;;; Configure Flymake to trust .emacs.d directory
-(use-package flymake
-  :ensure nil
-  :custom
-  ;; Trust elisp files in .emacs.d to avoid "untrusted content" warnings
-  (elisp-flymake-byte-compile-load-path load-path)
-  :config
-  ;; Add .emacs.d to trusted directories
-  (add-to-list 'safe-local-variable-directories
-			   (expand-file-name user-emacs-directory)))
 
 ;;; Core Editor Configuration
 ;;; Fundamental editing behavior, encoding, indentation, and UI settings
