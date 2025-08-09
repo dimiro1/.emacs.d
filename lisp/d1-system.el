@@ -135,9 +135,6 @@
 ;;; Recent Files
 ;; Track recently opened files for quick access
 (use-package recentf
-  :config
-  ;; Enable recent files mode
-  (recentf-mode 1)
   :custom
   ;; Keep track of last 100 files
   (recentf-max-menu-items 100)
@@ -145,6 +142,8 @@
   ;; Exclude some directories from recent files
   (recentf-exclude '("/tmp/" "/ssh:" "\\.git/" "COMMIT_EDITMSG" "node_modules"))
   :config
+  ;; Enable recent files mode
+  (recentf-mode 1)
   ;; Exclude no-littering directories
   (add-to-list 'recentf-exclude (regexp-quote (expand-file-name "var/" user-emacs-directory)))
   (add-to-list 'recentf-exclude (regexp-quote (expand-file-name "etc/" user-emacs-directory)))
