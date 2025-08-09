@@ -63,7 +63,7 @@
 
 ;; God Mode - Minimalist modal editing
 ;; Provides: God-mode modal editing without complex keybindings
-(use-package d1-god-mode :load-path d1-modules-dir :demand t)
+;; (use-package d1-god-mode :load-path d1-modules-dir :demand t)
 
 ;; Custom Keybindings - Personal keybinding preferences
 ;; Provides: Custom shortcuts, workflow optimizations
