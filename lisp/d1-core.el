@@ -1,4 +1,4 @@
-;;; d1-core.el --- Core Emacs configuration (packages + editor)  -*- lexical-binding: t; -*-
+;;; d1-core.el --- Core Emacs configuration (packages + editor)  -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;;; Commentary:
 ;;
@@ -33,6 +33,13 @@
   (use-package-expand-minimally nil)
   ;; Enable verbose loading for debugging (set to nil for normal use)
   (use-package-verbose nil))
+
+;;; Flymake Configuration
+;; Disable byte-compile checking for elisp files
+(use-package flymake
+  :hook (emacs-lisp-mode . (lambda ()
+							 (remove-hook 'flymake-diagnostic-functions
+										  'elisp-flymake-byte-compile t))))
 
 ;;; No-littering Configuration
 ;;; Keep ~/.emacs.d clean by putting files in appropriate directories
@@ -92,7 +99,7 @@
   ;; Preserve cursor screen position when scrolling
   (scroll-preserve-screen-position t)
 
-  :init
+  :config
   ;; === Encoding Configuration ===
   ;; Ensure UTF-8 encoding everywhere for proper international text support
   ;; Set UTF-8 as the default encoding for all operations
@@ -156,21 +163,20 @@
 	(pixel-scroll-precision-mode t))
 
   :hook
-  ;; Enable repeat mode after initialization
-  ;; This allows repeating commands like C-x o with just 'o'
-  ;; Works with many built-in commands for faster workflows
-  (after-init . repeat-mode)
-
   ;; Remove trailing whitespace on save for all files
   ;; Keeps your files clean and prevents unnecessary diffs
   (before-save . delete-trailing-whitespace)
 
   :config
+  ;; Enable repeat mode
+  ;; This allows repeating commands like C-x o with just 'o'
+  ;; Works with many built-in commands for faster workflows
+  (repeat-mode 1)
   ;; Set the default font
-  ;; JetBrains Mono is a high-quality monospace font designed for programming
-  (when (find-font (font-spec :name "JetBrains Mono"))
+  ;; Google Sans Code is a high-quality monospace font designed for programming
+  (when (find-font (font-spec :name "Google Sans Code"))
 	(set-face-attribute 'default nil
-						:family "JetBrains Mono"
+						:family "Google Sans Code"
 						:height 140  ; 14pt font size
 						:weight 'regular))
 
@@ -186,10 +192,7 @@
 ;;; Line Numbers Configuration
 ;; Display line numbers in programming modes with relative numbering
 (use-package display-line-numbers
-  :hook
-  ;; Enable line numbers only in programming modes
-  ;; Add more hooks here for other modes if needed
-  (prog-mode . display-line-numbers-mode)
+  :hook prog-mode
   :custom
   ;; Use relative line numbers for easier navigation
   ;; Set to t for absolute line numbers
@@ -201,10 +204,16 @@
 ;;; Keybinding Discovery
 ;; Which-key provides helpful keybinding hints
 (use-package which-key
-  :ensure nil
-  :hook (after-init . which-key-mode)
+  :config
+  (which-key-mode t)
   :custom
   (which-key-idle-delay 0.1)) ; Show help delay
+
+;; Capture stats about key presses.
+(use-package keyfreq
+  :config
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
 
 ;;; Helper functions for package management
 

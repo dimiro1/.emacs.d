@@ -1,4 +1,4 @@
-;;; d1-navigation.el --- File and project navigation tools  -*- lexical-binding: t; -*-
+;;; d1-navigation.el --- File and project navigation tools  -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;;; Commentary:
 ;;
@@ -14,12 +14,14 @@
   (("C-x b"   . consult-buffer)
    ("C-x p b" . consult-project-buffer)
    ("C-c b"   . consult-buffer)
-   ("C-c s r" . consult-ripgrep)
    ("C-c o"   . consult-outline)
    ("C-c s l" . consult-line-multi)
    ("C-c f r" . consult-recent-file)
    ("C-c ! l" . consult-flymake)
-   ("C-c ! p" . d1-consult-flymake-project))
+   ("C-c ! p" . d1-consult-flymake-project)
+   ("C-c p b" . consult-project-buffer)
+   ("C-c p g" . consult-ripgrep)
+   ("C-c p r" . consult-recent-file))
   :config
   (consult-customize
    consult-flymake

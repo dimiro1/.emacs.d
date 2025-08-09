@@ -1,4 +1,4 @@
-;;; d1-languages.el --- Programming language support with LSP  -*- lexical-binding: t; -*-
+;;; d1-languages.el --- Programming language support with LSP  -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;;; Commentary:
 ;;
@@ -60,7 +60,7 @@
                            (eglot-format)))))
 
 (use-package flymake
-  :hook ((prog-mode . flymake-mode))
+  :hook prog-mode
   :custom
   (flymake-no-changes-timeout 0.5)
   (flymake-start-on-save-buffer nil))
@@ -107,7 +107,7 @@ For example, switches between 'hello.go' and 'hello_test.go'."
 
 ;;; Emacs Lisp Support
 (use-package paredit
-  :hook ((emacs-lisp-mode lisp-mode scheme-mode clojure-mode) . paredit-mode))
+  :hook (emacs-lisp-mode lisp-mode scheme-mode clojure-mode))
 
 (provide 'd1-languages)
 ;;; d1-languages.el ends here

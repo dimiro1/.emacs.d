@@ -1,4 +1,4 @@
-;;; d1-completion.el --- Completion system configuration  -*- lexical-binding: t; -*-
+;;; d1-completion.el --- Completion system configuration  -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;;; Commentary:
 ;;
@@ -51,7 +51,8 @@
 
 ;; Persist history over Emacs restarts.
 (use-package savehist
-  :hook (after-init . savehist-mode))
+  :config
+  (savehist-mode 1))
 
 ;; Optionally use the `orderless' completion style for fuzzy matching
 (use-package orderless
@@ -62,7 +63,13 @@
 
 ;;; Marginalia: Adds annotations to completion candidates
 (use-package marginalia
-  :hook (after-init . marginalia-mode))
+  :config
+  (marginalia-mode 1))
+
+;;; Expand the region syntatically.
+(use-package expand-region
+  :bind (("C-=" . er/expand-region)
+         ("C--" . er/contract-region)))
 
 (provide 'd1-completion)
 ;;; d1-completion.el ends here.

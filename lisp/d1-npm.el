@@ -1,4 +1,4 @@
-;;; d1-npm.el --- Run npm scripts interactively  -*- lexical-binding: t; -*-
+;;; d1-npm.el --- Run npm scripts interactively  -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;;; Commentary:
 ;;

@@ -1,4 +1,4 @@
-;;; d1-system.el --- System integration (environment + file management)  -*- lexical-binding: t; -*-
+;;; d1-system.el --- System integration (environment + file management)  -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;;; Commentary:
 ;;
@@ -34,7 +34,7 @@
   (auto-save-interval 300)
   (auto-save-timeout 30)
 
-  :init
+  :config
   ;; === PATH Configuration ===
   ;; Add Go binaries to PATH
   ;; This allows Emacs to find Go tools like gopls, gofmt, etc.
@@ -123,7 +123,7 @@
 ;;; Auto-revert Files
 ;; Automatically reload files when they change on disk
 (use-package autorevert
-  :init
+  :config
   ;; Enable global auto-revert mode
   (global-auto-revert-mode 1)
   :custom
@@ -135,7 +135,7 @@
 ;;; Recent Files
 ;; Track recently opened files for quick access
 (use-package recentf
-  :init
+  :config
   ;; Enable recent files mode
   (recentf-mode 1)
   :custom

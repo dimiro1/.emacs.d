@@ -1,10 +1,13 @@
-;;; init.el --- Claudemiro Emacs Configuration Entry Point  -*- lexical-binding: t; -*-
+;;; init.el --- Claudemiro Emacs Configuration Entry Point  -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;;; Commentary:
 ;;
 ;; Claudemiro's modular Emacs configuration entry point.
 ;;
 ;;; Code:
+
+;; Prevent byte compilation
+(setopt load-prefer-newer t)  ; Always load newer .el files over .elc
 
 ;;; Core Configuration Modules
 ;; Load configuration modules in dependency order with documentation
@@ -13,6 +16,7 @@
 (defconst d1-modules-dir "lisp/"
   "Directory containing d1 configuration modules.")
 
+;; Add the lisp dir to load path.
 (add-to-list 'load-path (concat user-emacs-directory d1-modules-dir))
 
 ;; Core Configuration - Package management and fundamental editor settings
@@ -55,12 +59,11 @@
 ;; Evil Mode - Vim-like editing experience
 ;; Provides: Modal editing, Vim keybindings, hybrid editing modes
 ;; Comment out this block if you prefer Emacs keybindings
-;; (use-package d1-evil
-;;   :load-path d1-modules-dir
-;;   :demand t)
+;; (use-package d1-evil :load-path d1-modules-dir :demand t)
 
-;; Xah-fly-keys
-;; (use-package d1-xah-fly-keys :load-path d1-modules-dir :demand t)
+;; God Mode - Minimalist modal editing
+;; Provides: God-mode modal editing without complex keybindings
+(use-package d1-god-mode :load-path d1-modules-dir :demand t)
 
 ;; Custom Keybindings - Personal keybinding preferences
 ;; Provides: Custom shortcuts, workflow optimizations
@@ -73,7 +76,7 @@
 (use-package d1-npm
   :load-path d1-modules-dir
   :demand t
-  :init
+  :config
   (with-eval-after-load 'marginalia
     (add-to-list 'marginalia-annotator-registry
                  '(npm-script d1-npm-annotate builtin none))
