@@ -69,7 +69,14 @@
 ;;; Expand the region syntatically.
 (use-package expand-region
   :bind (("C-=" . er/expand-region)
-         ("C--" . er/contract-region)))
+         ("C--" . er/contract-region))
+  :config
+  ;; Enable repeat mode for expand-region commands
+  (defvar-keymap d1-expand-region-repeat-map
+    :doc "Repeat map for expand-region commands."
+    :repeat t
+    "=" #'er/expand-region
+    "-" #'er/contract-region))
 
 (provide 'd1-completion)
 ;;; d1-completion.el ends here.
