@@ -6,6 +6,12 @@
 ;;
 ;;; Code:
 
+;; Display project name in mode line
+(use-package project
+  :ensure nil
+  :custom
+  (project-mode-line 1))
+
 ;; Ripgrep integration for fast project searches
 (use-package rg)
 
