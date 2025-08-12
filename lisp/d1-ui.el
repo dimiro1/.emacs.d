@@ -28,7 +28,7 @@
 (use-package doric-themes)
 
 ;;; Load Default Theme
-(load-theme 'ef-dream :no-confirm)
+(load-theme 'ef-elea-dark :no-confirm)
 
 ;;; Custom Mode-line Configuration
 ;; Configure buffer identification to show project-relative paths
@@ -63,6 +63,7 @@
 
 ;; Add extra padding around the frames and the status-bar.
 (use-package spacious-padding
+  :if (display-graphic-p)
   ;; Use emacs-startup hook to ensure proper initialization order
   ;; Avoids conflicts with other UI packages like which-key
   :hook (emacs-startup . spacious-padding-mode))
