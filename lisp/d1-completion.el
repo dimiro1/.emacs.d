@@ -9,7 +9,8 @@
 
 ;;; Built-in Completion Configuration
 (use-package emacs
-  :init
+  :config
+  ;; Enables the vertical minibuffer for command completion.
   (fido-vertical-mode 1)
 
   :custom
