@@ -19,6 +19,7 @@
   (define-prefix-command 'd1-project-map)
   (define-prefix-command 'd1-help-map)
   (define-prefix-command 'd1-quit-map)
+  (define-prefix-command 'd1-npm-map)
 
   ;; Set up leader key
   (evil-set-leader 'normal (kbd "SPC"))
@@ -27,6 +28,7 @@
   (define-key d1-leader-map "p" d1-project-map)
   (define-key d1-leader-map "h" d1-help-map)
   (define-key d1-leader-map "q" d1-quit-map)
+  (define-key d1-leader-map "n" d1-npm-map)
 
   ;; Quit commands
   (define-key d1-quit-map "q" 'save-buffers-kill-terminal)
@@ -88,6 +90,16 @@
   ;; Symbols
   (define-key d1-leader-map "i" 'consult-imenu)  ;; Changed from S to i for consistency
 
+  ;; NPM commands
+  (define-key d1-npm-map "n" 'd1-npm-run)
+
+  (defun d1-npm-run-with-args ()
+	"Run npm script with additional arguments."
+	(interactive)
+	(d1-npm-run '(4)))
+
+  (define-key d1-npm-map "a" 'd1-npm-run-with-args)
+
   ;; LSP navigation
   (evil-define-key 'normal 'global (kbd "gh") 'eglot-help-at-point)
   (evil-define-key 'normal 'global (kbd "gd") 'eglot-find-declaration)
@@ -146,7 +158,7 @@ DIRECTION: 'next or 'prev
 POSITION-FN: function to get position from node (treesit-node-start or 'treesit-node-end')
 NOT-FOUND-MSG: message to display when no node found"
   (when (treesit-parser-list)
-    (let* ((current-point (point))
+	(let* ((current-point (point))
 		 (current-node (treesit-node-at current-point))
 		 (backward (eq direction 'prev))
 		 (comparator (if backward #'< #'>))
@@ -163,9 +175,9 @@ NOT-FOUND-MSG: message to display when no node found"
 							(funcall comparator node-pos current-point))))
 				   backward))
 				type-lists)))
-      (if node
-          (goto-char (funcall position-fn node))
-        (message not-found-msg)))))
+	  (if node
+		  (goto-char (funcall position-fn node))
+		(message not-found-msg)))))
 
 (defun d1-treesit-goto-next-function ()
   "Move to the beginning of the next function using treesitter."
@@ -247,7 +259,6 @@ Fallback to functions if no type declarations found."
   (require 'expand-region)
   (er/contract-region 1))
 
-
 ;;; Avy Configuration
 ;; Avy provides quick navigation to any visible text
 (use-package avy
@@ -268,8 +279,15 @@ Fallback to functions if no type declarations found."
   (evil-collection-init))
 
 (use-package evil-surround
+  :after evil
   :config
   (global-evil-surround-mode 1))
+
+(use-package evil-exchange
+  :after evil
+  :config
+  (evil-exchange-install))
+
 
 ;;; Evil Textobj Tree-sitter Configuration
 ;; Provides treesitter-based text objects for Evil mode
