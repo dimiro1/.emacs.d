@@ -22,6 +22,13 @@
 					  ("gnu" . "https://elpa.gnu.org/packages/")
 					  ("nongnu" . "https://elpa.nongnu.org/nongnu/"))))
 
+;; Enable native compilation if available
+(use-package emacs
+  :if (native-comp-available-p)
+  :custom
+  (native-comp-deferred-compilation 1)
+  (package-native-compile 1))
+
 ;; Configure use-package for better debugging and performance monitoring
 (use-package use-package
   :custom
@@ -51,11 +58,7 @@
   ;; Config files go to ~/.emacs.d/etc/
 
   ;; Store backups in subdirectories based on file name
-  (no-littering-theme-backups)
-
-  ;; Configure auto-save files location
-  (setopt auto-save-file-name-transforms
-		  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+  (no-littering-theme-backups))
 
 
 ;;; Core Editor Configuration
@@ -162,12 +165,6 @@
   (when (fboundp 'pixel-scroll-precision-mode)
 	(pixel-scroll-precision-mode t))
 
-  :hook
-  ;; Remove trailing whitespace on save for all files
-  ;; Keeps your files clean and prevents unnecessary diffs
-  (before-save . delete-trailing-whitespace)
-
-  :config
   ;; Enable repeat mode
   ;; This allows repeating commands like C-x o with just 'o'
   ;; Works with many built-in commands for faster workflows
@@ -179,6 +176,11 @@
 						:family "Google Sans Code"
 						:height 140  ; 14pt font size
 						:weight 'regular))
+
+  :hook
+  ;; Remove trailing whitespace on save for all files
+  ;; Keeps your files clean and prevents unnecessary diffs
+  (before-save . delete-trailing-whitespace)
 
   :bind
   ;; C-c i for "init" - easy to remember

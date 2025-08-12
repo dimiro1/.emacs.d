@@ -45,6 +45,7 @@
 
 ;;; Public API
 
+;;;###autoload
 (defun d1-npm-run (&optional script-args)
   "Run an npm script interactively.
 

@@ -20,9 +20,6 @@
   (("s-<down>" . move-text-down)
    ("s-<up>" . move-text-up)))
 
-;;; NPM Script Runner
-(global-set-key (kbd "C-c p n") 'd1-npm-run)
-
 ;;; programming notes
 (defun d1-open-programming-notes ()
   "Open my programming notes."
