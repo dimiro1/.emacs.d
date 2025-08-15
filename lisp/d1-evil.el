@@ -20,6 +20,10 @@
   (define-prefix-command 'd1-help-map)
   (define-prefix-command 'd1-quit-map)
   (define-prefix-command 'd1-npm-map)
+  (define-prefix-command 'd1-search-map)
+  (define-prefix-command 'd1-git-map)
+  (define-prefix-command 'd1-code-map)
+  (define-prefix-command 'd1-diagnostics-map)
 
   ;; Set up leader key
   (evil-set-leader 'normal (kbd "SPC"))
@@ -29,6 +33,10 @@
   (define-key d1-leader-map "h" d1-help-map)
   (define-key d1-leader-map "q" d1-quit-map)
   (define-key d1-leader-map "n" d1-npm-map)
+  (define-key d1-leader-map "s" d1-search-map)
+  (define-key d1-leader-map "g" d1-git-map)
+  (define-key d1-leader-map "c" d1-code-map)
+  (define-key d1-leader-map "d" d1-diagnostics-map)
 
   ;; Quit commands
   (define-key d1-quit-map "q" 'save-buffers-kill-terminal)
@@ -45,23 +53,19 @@
   (define-key d1-help-map "l" 'view-lossage)  ;; Show recent keystrokes
   (define-key d1-help-map "r" 'reload-init-file)  ;; Custom function defined below
 
-  ;; File and search operations
+  ;; File operations
   (define-key d1-leader-map "f" 'consult-find)
-  (define-key d1-leader-map "s" 'consult-outline)
-  (define-key d1-leader-map "S" 'consult-eglot-symbols)
-  (define-key d1-leader-map "t" 'consult-theme)
-  (define-key d1-leader-map "d" 'd1-consult-flymake-project)
-  (define-key d1-leader-map "l" 'consult-line)
   (define-key d1-leader-map "b" 'consult-buffer)
-  (define-key d1-leader-map "/" 'consult-ripgrep)
   (define-key d1-leader-map "j" 'evil-collection-consult-jump-list)
+  (define-key d1-leader-map "t" 'consult-theme)
 
   ;; Enhanced project commands
   (define-key d1-project-map "f" 'project-find-file)
   (define-key d1-project-map "b" 'project-switch-to-buffer)
   (define-key d1-project-map "p" 'project-switch-project)
   (define-key d1-project-map "d" 'project-find-dir)
-  (define-key d1-project-map "g" 'consult-ripgrep)  ;; Better search with consult
+  (define-key d1-project-map "g" 'consult-ripgrep)  ;; Project-wide grep
+  (define-key d1-project-map "s" 'consult-eglot-symbols)  ;; Workspace symbols (LSP)
   (define-key d1-project-map "e" 'project-eshell)
   (define-key d1-project-map "k" 'project-kill-buffers)
   (define-key d1-project-map "!" 'project-shell-command)
@@ -82,13 +86,35 @@
   (define-key d1-workspace-map "e" 'windmove-down)
   (define-key d1-workspace-map "u" 'windmove-up)
 
-  ;; Code actions and refactoring
-  (define-key d1-leader-map "a" 'eglot-code-actions)
-  (define-key d1-leader-map "r" 'eglot-rename)
-  (define-key d1-leader-map "F" 'eglot-format-buffer)
+  ;; Search commands
+  (define-key d1-search-map "s" 'consult-imenu)			;; Document symbols
+  (define-key d1-search-map "S" 'consult-eglot-symbols)	;; Workspace symbols (LSP)
+  (define-key d1-search-map "l" 'consult-line)			;; Search lines in current buffer
+  (define-key d1-search-map "o" 'consult-outline)		;; Search outline
+  (define-key d1-search-map "L" 'consult-line-multi)	;; Search all buffers
+  (define-key d1-search-map "d" 'consult-flymake)		;; Search diagnostics in current buffer
 
-  ;; Symbols
-  (define-key d1-leader-map "i" 'consult-imenu)  ;; Changed from S to i for consistency
+  ;; Code actions and refactoring
+  (define-key d1-code-map "a" 'eglot-code-actions)
+  (define-key d1-code-map "r" 'eglot-rename)
+  (define-key d1-code-map "f" 'eglot-format-buffer)
+  (define-key d1-code-map "d" 'xref-find-definitions)	;; Alternative to gd
+  (define-key d1-code-map "R" 'reload-init-file)		;; Reload config
+
+  ;; Git commands
+  (define-key d1-git-map "s" 'magit-status)				;; Git status
+  (define-key d1-git-map "b" 'magit-branch)				;; Git branches
+  (define-key d1-git-map "c" 'magit-log-current)		;; Git commits
+  (define-key d1-git-map "d" 'magit-diff-buffer-file)	;; Git diff current file
+  (define-key d1-git-map "D" 'magit-diff-working-tree)  ;; Git diff project
+  (define-key d1-git-map "h" 'diff-hl-show-hunk)		;; Show git hunk at point
+
+  ;; Diagnostics commands
+  (define-key d1-diagnostics-map "d" 'consult-flymake)					;; Diagnostics for current buffer
+  (define-key d1-diagnostics-map "D" 'flymake-show-project-diagnostics)	;; Project-wide diagnostics
+  (define-key d1-diagnostics-map "l" 'flymake-show-diagnostics-buffer)  ;; Diagnostics list
+  (define-key d1-diagnostics-map "n" 'flymake-goto-next-error)			;; Next diagnostic
+  (define-key d1-diagnostics-map "p" 'flymake-goto-prev-error)			;; Previous diagnostic
 
   ;; NPM commands
   (define-key d1-npm-map "n" 'd1-npm-run)
@@ -108,24 +134,40 @@
   (evil-define-key 'normal 'global (kbd "gI") 'eglot-find-implementation)
   (evil-define-key 'normal 'global (kbd "gi") 'eglot-find-implementation)
 
+  ;; Git status
+  (evil-define-key 'normal 'global (kbd "gg") 'magit-status)
+
   ;; avy (go to any word)
   (evil-define-key 'normal 'global (kbd "gw") 'avy-goto-char)
 
   ;; Diagnostics
   (evil-define-key 'normal 'global (kbd "]d") 'flymake-goto-next-error)
   (evil-define-key 'normal 'global (kbd "[d") 'flymake-goto-prev-error)
+  (evil-define-key 'normal 'global (kbd "gl") 'flymake-show-buffer-diagnostics)  ;; Show line diagnostics
 
-  ;; Treesitter Structural Navigation (matching Zed keybindings)
-  (evil-define-key 'normal 'global (kbd "]m") 'd1-treesit-goto-next-function)
-  (evil-define-key 'normal 'global (kbd "[m") 'd1-treesit-goto-prev-function)
-  (evil-define-key 'normal 'global (kbd "]M") 'd1-treesit-goto-next-function-end)
-  (evil-define-key 'normal 'global (kbd "[M") 'd1-treesit-goto-prev-function-end)
-  (evil-define-key 'normal 'global (kbd "]]") 'd1-treesit-goto-next-class)
-  (evil-define-key 'normal 'global (kbd "[[") 'd1-treesit-goto-prev-class)
+  ;; Treesitter Structural Navigation (matching Vim config)
+  (evil-define-key 'normal 'global (kbd "]f") 'd1-treesit-goto-next-function)
+  (evil-define-key 'normal 'global (kbd "[f") 'd1-treesit-goto-prev-function)
+  (evil-define-key 'normal 'global (kbd "]F") 'd1-treesit-goto-next-function-end)
+  (evil-define-key 'normal 'global (kbd "[F") 'd1-treesit-goto-prev-function-end)
+  (evil-define-key 'normal 'global (kbd "]c") 'd1-treesit-goto-next-class)
+  (evil-define-key 'normal 'global (kbd "[c") 'd1-treesit-goto-prev-class)
+  (evil-define-key 'normal 'global (kbd "]C") 'd1-treesit-goto-next-class-end)
+  (evil-define-key 'normal 'global (kbd "[C") 'd1-treesit-goto-prev-class-end)
+  (evil-define-key 'normal 'global (kbd "]s") 'd1-treesit-goto-next-conditional)
+  (evil-define-key 'normal 'global (kbd "[s") 'd1-treesit-goto-prev-conditional)
+  (evil-define-key 'normal 'global (kbd "]S") 'd1-treesit-goto-next-conditional-end)
+  (evil-define-key 'normal 'global (kbd "[S") 'd1-treesit-goto-prev-conditional-end)
+  (evil-define-key 'normal 'global (kbd "]b") 'd1-treesit-goto-next-block)
+  (evil-define-key 'normal 'global (kbd "[b") 'd1-treesit-goto-prev-block)
+  (evil-define-key 'normal 'global (kbd "]B") 'd1-treesit-goto-next-block-end)
+  (evil-define-key 'normal 'global (kbd "[B") 'd1-treesit-goto-prev-block-end)
+  (evil-define-key 'normal 'global (kbd "]a") 'd1-treesit-goto-next-parameter)
+  (evil-define-key 'normal 'global (kbd "[a") 'd1-treesit-goto-prev-parameter)
+  (evil-define-key 'normal 'global (kbd "]A") 'd1-treesit-goto-next-parameter-end)
+  (evil-define-key 'normal 'global (kbd "[A") 'd1-treesit-goto-prev-parameter-end)
   (evil-define-key 'normal 'global (kbd "]/") 'd1-treesit-goto-next-comment)
   (evil-define-key 'normal 'global (kbd "[/") 'd1-treesit-goto-prev-comment)
-  (evil-define-key 'normal 'global (kbd "]*") 'd1-treesit-goto-next-comment)
-  (evil-define-key 'normal 'global (kbd "[*") 'd1-treesit-goto-prev-comment)
 
   ;; Smart Selection using expand-region (matching Zed keybindings)
   (evil-define-key 'normal 'global (kbd "[x") 'd1-expand-selection)
@@ -145,6 +187,68 @@
 
   ;; Enable auto-indentation
   (electric-indent-mode 1)
+
+  ;; Configure which-key descriptions for prefix maps
+  (with-eval-after-load 'which-key
+    ;; Main prefix descriptions
+    (which-key-add-key-based-replacements
+      "SPC w" "workspace/window"
+      "SPC p" "project"
+      "SPC h" "help"
+      "SPC q" "quit"
+      "SPC n" "npm"
+      "SPC s" "search/symbols"
+      "SPC g" "git"
+      "SPC c" "code"
+      "SPC d" "diagnostics"
+
+      ;; Standalone leader commands
+      "SPC f" "find files"
+      "SPC b" "buffers"
+      "SPC j" "jump list"
+      "SPC t" "theme"
+
+      ;; Git navigation commands
+      "g g" "git status"
+      "g h" "help at point"
+      "g d" "go to definition"
+      "g D" "go to type definition"
+      "g r" "references"
+      "g i" "implementation"
+      "g I" "implementation"
+      "g w" "avy jump"
+      "g y" "type definition"
+      "g ." "code actions"
+      "g l" "line diagnostics"
+
+      ;; Treesitter navigation
+      "] f" "next function"
+      "[ f" "prev function"
+      "] F" "next function end"
+      "[ F" "prev function end"
+      "] c" "next class"
+      "[ c" "prev class"
+      "] C" "next class end"
+      "[ C" "prev class end"
+      "] s" "next conditional"
+      "[ s" "prev conditional"
+      "] S" "next conditional end"
+      "[ S" "prev conditional end"
+      "] b" "next block"
+      "[ b" "prev block"
+      "] B" "next block end"
+      "[ B" "prev block end"
+      "] a" "next parameter"
+      "[ a" "prev parameter"
+      "] A" "next parameter end"
+      "[ A" "prev parameter end"
+      "] /" "next comment"
+      "[ /" "prev comment"
+      "] d" "next diagnostic"
+      "[ d" "prev diagnostic"
+      "] x" "expand selection"
+      "[ x" "contract selection"))
+
   ;; Enable evil
   (evil-mode 1))
 
@@ -245,6 +349,118 @@ Fallback to functions if no type declarations found."
 					   #'treesit-node-start
 					   "No previous comment found"))
 
+(defun d1-treesit-goto-next-class-end ()
+  "Move to the end of the next class/struct using treesitter."
+  (interactive)
+  (d1-treesit-navigate '(("type_declaration") ("function_declaration" "method_declaration"))
+					   'next
+					   #'treesit-node-end
+					   "No next type declaration or function found"))
+
+(defun d1-treesit-goto-prev-class-end ()
+  "Move to the end of the previous class/struct using treesitter."
+  (interactive)
+  (d1-treesit-navigate '(("type_declaration") ("function_declaration" "method_declaration"))
+					   'prev
+					   #'treesit-node-end
+					   "No previous type declaration or function found"))
+
+(defun d1-treesit-goto-next-conditional ()
+  "Move to the beginning of the next conditional using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
+					   'next
+					   #'treesit-node-start
+					   "No next conditional found"))
+
+(defun d1-treesit-goto-prev-conditional ()
+  "Move to the beginning of the previous conditional using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
+					   'prev
+					   #'treesit-node-start
+					   "No previous conditional found"))
+
+(defun d1-treesit-goto-next-conditional-end ()
+  "Move to the end of the next conditional using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
+					   'next
+					   #'treesit-node-end
+					   "No next conditional found"))
+
+(defun d1-treesit-goto-prev-conditional-end ()
+  "Move to the end of the previous conditional using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
+					   'prev
+					   #'treesit-node-end
+					   "No previous conditional found"))
+
+(defun d1-treesit-goto-next-block ()
+  "Move to the beginning of the next block using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("block" "statement_block" "block_statement")
+					   'next
+					   #'treesit-node-start
+					   "No next block found"))
+
+(defun d1-treesit-goto-prev-block ()
+  "Move to the beginning of the previous block using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("block" "statement_block" "block_statement")
+					   'prev
+					   #'treesit-node-start
+					   "No previous block found"))
+
+(defun d1-treesit-goto-next-block-end ()
+  "Move to the end of the next block using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("block" "statement_block" "block_statement")
+					   'next
+					   #'treesit-node-end
+					   "No next block found"))
+
+(defun d1-treesit-goto-prev-block-end ()
+  "Move to the end of the previous block using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("block" "statement_block" "block_statement")
+					   'prev
+					   #'treesit-node-end
+					   "No previous block found"))
+
+(defun d1-treesit-goto-next-parameter ()
+  "Move to the beginning of the next parameter using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
+					   'next
+					   #'treesit-node-start
+					   "No next parameter found"))
+
+(defun d1-treesit-goto-prev-parameter ()
+  "Move to the beginning of the previous parameter using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
+					   'prev
+					   #'treesit-node-start
+					   "No previous parameter found"))
+
+(defun d1-treesit-goto-next-parameter-end ()
+  "Move to the end of the next parameter using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
+					   'next
+					   #'treesit-node-end
+					   "No next parameter found"))
+
+(defun d1-treesit-goto-prev-parameter-end ()
+  "Move to the end of the previous parameter using treesitter."
+  (interactive)
+  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
+					   'prev
+					   #'treesit-node-end
+					   "No previous parameter found"))
+
 ;;; Smart Selection Functions
 
 (defun d1-expand-selection ()
@@ -286,7 +502,7 @@ Fallback to functions if no type declarations found."
 (use-package evil-exchange
   :after evil
   :config
-  (evil-exchange-install))
+  (evil-exchange-cx-install))
 
 
 ;;; Evil Textobj Tree-sitter Configuration
