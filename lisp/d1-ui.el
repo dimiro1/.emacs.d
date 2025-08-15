@@ -28,7 +28,7 @@
 (use-package doric-themes)
 
 ;;; Load Default Theme
-(load-theme 'ef-elea-dark :no-confirm)
+(load-theme 'ef-light :no-confirm)
 
 ;; Add extra padding around the frames and the status-bar.
 (use-package spacious-padding
