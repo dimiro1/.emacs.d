@@ -57,13 +57,56 @@
   :hook (before-save . (lambda ()
                          (when (eglot-managed-p)
                            (ignore-errors (eglot-code-action-organize-imports))
-                           (eglot-format)))))
+                           (eglot-format))))
+  :custom
+  ;; Show all diagnostics
+  (eglot-ignored-server-capabilities '())
+  (eglot-extend-to-xref t)
+  :config
+  (setq-default eglot-workspace-configuration
+                '(:gopls (:gofumpt t
+                         :usePlaceholders t
+                         :staticcheck t
+                         :semanticTokens t
+                         :vulncheck "Imports"
+                         :codelenses (:gc_details t
+                                     :generate t
+                                     :regenerate_cgo t
+                                     :tidy t
+                                     :upgrade_dependency t
+                                     :vendor t)
+                         :analyses (:unreachable t
+                                   :unusedvariable t
+                                   :unusedparams t
+                                   :unusedwrite t
+                                   :shadow t)
+                         :hints (:assignVariableTypes t
+                                :compositeLiteralFields t
+                                :compositeLiteralTypes t
+                                :constantValues t
+                                :functionTypeParameters t
+                                :parameterNames t
+                                :rangeVariableTypes t)
+                         :diagnosticsDelay "250ms"))))
 
 (use-package flymake
   :hook prog-mode
+  :bind (:map flymake-mode-map
+              ("M-n" . flymake-goto-next-error)
+              ("M-p" . flymake-goto-prev-error)
+              ("C-c ! l" . flymake-show-buffer-diagnostics)
+              ("C-c ! p" . flymake-show-project-diagnostics))
   :custom
   (flymake-no-changes-timeout 0.5)
-  (flymake-start-on-save-buffer nil))
+  (flymake-start-on-save-buffer nil)
+  ;; Show all diagnostic types including notes and hints
+  (flymake-suppress-zero-counters nil)
+  (flymake-indicator-type 'margins)
+  :config
+  ;; Show all severity levels
+  (setq flymake-error-bitmap '(flymake-double-exclamation-mark compilation-error))
+  (setq flymake-warning-bitmap '(exclamation-mark compilation-warning))
+  (setq flymake-note-bitmap '(question-mark compilation-info)))
 
 ;;; Go Programming Support
 (defun d1-toggle-between-go-test-and-impl-file ()
