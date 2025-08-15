@@ -17,19 +17,85 @@
 
 (use-package consult
   :bind
-  (("C-x b"   . consult-buffer)
-   ("C-x p b" . consult-project-buffer)
+  (;; C-c bindings (mode-specific-map)
+   ("C-c M-x" . consult-mode-command)
+   ("C-c h"   . consult-history)
+   ("C-c k"   . consult-kmacro)
+   ("C-c m"   . consult-man)
+   ("C-c i"   . consult-info)
+   ([remap Info-search] . consult-info)
+   ;; C-x bindings (ctl-x-map)
+   ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+   ("C-x b"   . consult-buffer)              ;; orig. switch-to-buffer
+   ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+   ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+   ;; Custom bindings
    ("C-c b"   . consult-buffer)
    ("C-c o"   . consult-outline)
    ("C-c s l" . consult-line-multi)
    ("C-c f r" . consult-recent-file)
+   ;; M-g bindings (goto-map)
+   ("M-g e"   . consult-compile-error)
+   ("M-g g"   . consult-goto-line)           ;; orig. goto-line
+   ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+   ("M-g o"   . consult-outline)             ;; Alternative: consult-org-heading
+   ("M-g m"   . consult-mark)
+   ("M-g k"   . consult-global-mark)
+   ("M-g i"   . consult-imenu)
+   ("M-g I"   . consult-imenu-multi)
+   ;; M-s bindings (search-map)
+   ("M-s d"   . consult-find)
+   ("M-s D"   . consult-locate)
+   ("M-s g"   . consult-grep)
+   ("M-s G"   . consult-git-grep)
+   ("M-s r"   . consult-ripgrep)
+   ("M-s l"   . consult-line)
+   ("M-s L"   . consult-line-multi)
+   ("M-s k"   . consult-keep-lines)
+   ("M-s u"   . consult-focus-lines)
+   ;; Isearch integration
+   ("M-s e"   . consult-isearch-history)
+   ;; Flymake
    ("C-c ! l" . consult-flymake)
    ("C-c ! p" . d1-consult-flymake-project)
+   ;; Project specific
    ("C-c p b" . consult-project-buffer)
    ("C-c p g" . consult-ripgrep)
    ("C-c p r" . consult-recent-file))
+  ;; use consult for completion
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :init
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+  :custom
+  ;; integrate with xref.
+  (xref-show-xrefs-function #'consult-xref
+							xref-show-definitions-function #'consult-xref)
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (register-preview-delay 0.5)
+  (register-preview-function #'consult-register-format)
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  (consult-preview-key 'any)
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (consult-narrow-key "<") ;; "C-+"
   :config
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  (keymap-set consult-narrow-map "?" #'consult-narrow-help)
+  
   (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any)
    consult-flymake
    :preview-key '(:debounce 0.2 any))
 
@@ -49,18 +115,6 @@
 
 ;; Consult integration with Eglot LSP
 (use-package consult-eglot)
-
-;;; Avy Configuration
-(use-package avy
-  :config
-  (avy-setup-default)
-  :bind
-  (("M-g c"   . avy-goto-char)
-   ("M-g C"   . avy-goto-char-2)
-   ("M-g l"   . avy-goto-line)
-   ("M-g w"   . avy-goto-word-1)
-   ("M-g e"   . avy-goto-word-0)
-   ("C-c g r" . avy-resume)))
 
 ;;; Dired Configuration
 (use-package dired
