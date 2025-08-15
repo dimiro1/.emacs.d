@@ -50,6 +50,13 @@
   ;; Many tools install here by default
   (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
 
+  ;; Add Homebrew paths (both Apple Silicon and Intel locations)
+  ;; Apple Silicon Macs use /opt/homebrew/bin
+  ;; Intel Macs use /usr/local/bin
+  (dolist (brew-path '("/opt/homebrew/bin" "/usr/local/bin"))
+    (when (file-directory-p brew-path)
+      (add-to-list 'exec-path brew-path)))
+
   ;; Ensure PATH environment variable matches exec-path
   ;; This is important for subprocesses spawned by Emacs
   (setenv "PATH" (string-join exec-path ":"))
@@ -90,15 +97,6 @@
     ;; This setting will override the one in d1-navigation.el
     (with-eval-after-load 'dired
       (setopt dired-listing-switches "-alh")))
-
-  ;; Set up Homebrew paths if installed
-  (when (file-directory-p "/opt/homebrew/bin")
-    (add-to-list 'exec-path "/opt/homebrew/bin")
-    (setenv "PATH" (concat "/opt/homebrew/bin:" (getenv "PATH"))))
-
-  ;; === Directory Creation ===
-  ;; no-littering automatically creates required directories
-  ;; No manual directory creation needed
 
   :config
   ;; Load custom file if it exists
