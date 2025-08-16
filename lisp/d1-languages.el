@@ -132,8 +132,6 @@ For example, switches between 'hello.go' and 'hello_test.go'."
   :custom
   (go-ts-mode-indent-offset 4))
 
-(use-package gotest)
-
 ;;; Markdown Support
 (use-package markdown-mode
   :mode (("\\.md\\'"        . markdown-mode)
