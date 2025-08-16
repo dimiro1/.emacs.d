@@ -32,7 +32,6 @@
 
 ;; Add extra padding around the frames and the status-bar.
 (use-package spacious-padding
-  :if (display-graphic-p)
   ;; Use emacs-startup hook to ensure proper initialization order
   ;; Avoids conflicts with other UI packages like which-key
   :hook (emacs-startup . spacious-padding-mode))
