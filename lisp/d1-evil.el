@@ -145,29 +145,36 @@
   (evil-define-key 'normal 'global (kbd "[d") 'flymake-goto-prev-error)
   (evil-define-key 'normal 'global (kbd "gl") 'flymake-show-buffer-diagnostics)  ;; Show line diagnostics
 
+  ;; Helper function for tree-sitter navigation
+  (defun d1-make-ts-nav-fn (textobj &optional backward end)
+    "Create a tree-sitter navigation function for TEXTOBJ.
+BACKWARD: if non-nil, search backward instead of forward.
+END: if non-nil, go to end of textobj instead of start."
+    (lambda () (interactive) (evil-textobj-tree-sitter-goto-textobj textobj backward end)))
+
   ;; Treesitter Structural Navigation (matching Vim config)
-  (evil-define-key 'normal 'global (kbd "]f") 'd1-treesit-goto-next-function)
-  (evil-define-key 'normal 'global (kbd "[f") 'd1-treesit-goto-prev-function)
-  (evil-define-key 'normal 'global (kbd "]F") 'd1-treesit-goto-next-function-end)
-  (evil-define-key 'normal 'global (kbd "[F") 'd1-treesit-goto-prev-function-end)
-  (evil-define-key 'normal 'global (kbd "]c") 'd1-treesit-goto-next-class)
-  (evil-define-key 'normal 'global (kbd "[c") 'd1-treesit-goto-prev-class)
-  (evil-define-key 'normal 'global (kbd "]C") 'd1-treesit-goto-next-class-end)
-  (evil-define-key 'normal 'global (kbd "[C") 'd1-treesit-goto-prev-class-end)
-  (evil-define-key 'normal 'global (kbd "]s") 'd1-treesit-goto-next-conditional)
-  (evil-define-key 'normal 'global (kbd "[s") 'd1-treesit-goto-prev-conditional)
-  (evil-define-key 'normal 'global (kbd "]S") 'd1-treesit-goto-next-conditional-end)
-  (evil-define-key 'normal 'global (kbd "[S") 'd1-treesit-goto-prev-conditional-end)
-  (evil-define-key 'normal 'global (kbd "]b") 'd1-treesit-goto-next-block)
-  (evil-define-key 'normal 'global (kbd "[b") 'd1-treesit-goto-prev-block)
-  (evil-define-key 'normal 'global (kbd "]B") 'd1-treesit-goto-next-block-end)
-  (evil-define-key 'normal 'global (kbd "[B") 'd1-treesit-goto-prev-block-end)
-  (evil-define-key 'normal 'global (kbd "]a") 'd1-treesit-goto-next-parameter)
-  (evil-define-key 'normal 'global (kbd "[a") 'd1-treesit-goto-prev-parameter)
-  (evil-define-key 'normal 'global (kbd "]A") 'd1-treesit-goto-next-parameter-end)
-  (evil-define-key 'normal 'global (kbd "[A") 'd1-treesit-goto-prev-parameter-end)
-  (evil-define-key 'normal 'global (kbd "]/") 'd1-treesit-goto-next-comment)
-  (evil-define-key 'normal 'global (kbd "[/") 'd1-treesit-goto-prev-comment)
+  (evil-define-key 'normal 'global (kbd "]f") (d1-make-ts-nav-fn "function.outer"))
+  (evil-define-key 'normal 'global (kbd "[f") (d1-make-ts-nav-fn "function.outer" t))
+  (evil-define-key 'normal 'global (kbd "]F") (d1-make-ts-nav-fn "function.outer" nil t))
+  (evil-define-key 'normal 'global (kbd "[F") (d1-make-ts-nav-fn "function.outer" t t))
+  (evil-define-key 'normal 'global (kbd "]c") (d1-make-ts-nav-fn "class.outer"))
+  (evil-define-key 'normal 'global (kbd "[c") (d1-make-ts-nav-fn "class.outer" t))
+  (evil-define-key 'normal 'global (kbd "]C") (d1-make-ts-nav-fn "class.outer" nil t))
+  (evil-define-key 'normal 'global (kbd "[C") (d1-make-ts-nav-fn "class.outer" t t))
+  (evil-define-key 'normal 'global (kbd "]s") (d1-make-ts-nav-fn "conditional.outer"))
+  (evil-define-key 'normal 'global (kbd "[s") (d1-make-ts-nav-fn "conditional.outer" t))
+  (evil-define-key 'normal 'global (kbd "]S") (d1-make-ts-nav-fn "conditional.outer" nil t))
+  (evil-define-key 'normal 'global (kbd "[S") (d1-make-ts-nav-fn "conditional.outer" t t))
+  (evil-define-key 'normal 'global (kbd "]b") (d1-make-ts-nav-fn "statement.outer"))
+  (evil-define-key 'normal 'global (kbd "[b") (d1-make-ts-nav-fn "statement.outer" t))
+  (evil-define-key 'normal 'global (kbd "]B") (d1-make-ts-nav-fn "statement.outer" nil t))
+  (evil-define-key 'normal 'global (kbd "[B") (d1-make-ts-nav-fn "statement.outer" t t))
+  (evil-define-key 'normal 'global (kbd "]a") (d1-make-ts-nav-fn "parameter.outer"))
+  (evil-define-key 'normal 'global (kbd "[a") (d1-make-ts-nav-fn "parameter.outer" t))
+  (evil-define-key 'normal 'global (kbd "]A") (d1-make-ts-nav-fn "parameter.outer" nil t))
+  (evil-define-key 'normal 'global (kbd "[A") (d1-make-ts-nav-fn "parameter.outer" t t))
+  (evil-define-key 'normal 'global (kbd "]/") (d1-make-ts-nav-fn "comment.outer"))
+  (evil-define-key 'normal 'global (kbd "[/") (d1-make-ts-nav-fn "comment.outer" t))
 
   ;; Smart Selection using expand-region (matching Zed keybindings)
   (evil-define-key 'normal 'global (kbd "[x") 'd1-expand-selection)
@@ -252,214 +259,6 @@
   ;; Enable evil
   (evil-mode 1))
 
-;;; Treesitter Navigation Functions
-;; Helper function and navigation commands
-
-(defun d1-treesit-navigate (node-types direction position-fn not-found-msg)
-  "Navigate to next/previous treesitter node of given types.
-NODE-TYPES: list of treesitter node type strings to search for, or list of lists for fallback
-DIRECTION: 'next or 'prev
-POSITION-FN: function to get position from node (treesit-node-start or 'treesit-node-end')
-NOT-FOUND-MSG: message to display when no node found"
-  (when (treesit-parser-list)
-	(let* ((current-point (point))
-		 (current-node (treesit-node-at current-point))
-		 (backward (eq direction 'prev))
-		 (comparator (if backward #'< #'>))
-		 ;; Handle both simple list and nested list (for fallbacks)
-		 (type-lists (if (stringp (car node-types)) (list node-types) node-types))
-		 (node (cl-some
-				(lambda (types)
-				  (treesit-search-forward
-				   current-node
-				   (lambda (n)
-					 (let ((type (treesit-node-type n))
-						   (node-pos (funcall position-fn n)))
-					   (and (member type types)
-							(funcall comparator node-pos current-point))))
-				   backward))
-				type-lists)))
-	  (if node
-		  (goto-char (funcall position-fn node))
-		(message not-found-msg)))))
-
-(defun d1-treesit-goto-next-function ()
-  "Move to the beginning of the next function using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("function_declaration" "method_declaration")
-					   'next
-					   #'treesit-node-start
-					   "No next function found"))
-
-(defun d1-treesit-goto-prev-function ()
-  "Move to the beginning of the previous function using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("function_declaration" "method_declaration")
-					   'prev
-					   #'treesit-node-start
-					   "No previous function found"))
-
-(defun d1-treesit-goto-next-function-end ()
-  "Move to the end of the next function using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("function_declaration" "method_declaration")
-					   'next
-					   #'treesit-node-end
-					   "No next function found"))
-
-(defun d1-treesit-goto-prev-function-end ()
-  "Move to the end of the previous function using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("function_declaration" "method_declaration")
-					   'prev
-					   #'treesit-node-end
-					   "No previous function found"))
-
-(defun d1-treesit-goto-next-class ()
-  "Move to the beginning of the next class/struct using treesitter.
-Fallback to functions if no type declarations found."
-  (interactive)
-  (d1-treesit-navigate '(("type_declaration") ("function_declaration" "method_declaration"))
-					   'next
-					   #'treesit-node-start
-					   "No next type declaration or function found"))
-
-(defun d1-treesit-goto-prev-class ()
-  "Move to the beginning of the previous class/struct using treesitter.
-Fallback to functions if no type declarations found."
-  (interactive)
-  (d1-treesit-navigate '(("type_declaration") ("function_declaration" "method_declaration"))
-					   'prev
-					   #'treesit-node-start
-					   "No previous type declaration or function found"))
-
-(defun d1-treesit-goto-next-comment ()
-  "Move to the next comment using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("comment" "line_comment" "block_comment")
-					   'next
-					   #'treesit-node-start
-					   "No next comment found"))
-
-(defun d1-treesit-goto-prev-comment ()
-  "Move to the previous comment using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("comment" "line_comment" "block_comment")
-					   'prev
-					   #'treesit-node-start
-					   "No previous comment found"))
-
-(defun d1-treesit-goto-next-class-end ()
-  "Move to the end of the next class/struct using treesitter."
-  (interactive)
-  (d1-treesit-navigate '(("type_declaration") ("function_declaration" "method_declaration"))
-					   'next
-					   #'treesit-node-end
-					   "No next type declaration or function found"))
-
-(defun d1-treesit-goto-prev-class-end ()
-  "Move to the end of the previous class/struct using treesitter."
-  (interactive)
-  (d1-treesit-navigate '(("type_declaration") ("function_declaration" "method_declaration"))
-					   'prev
-					   #'treesit-node-end
-					   "No previous type declaration or function found"))
-
-(defun d1-treesit-goto-next-conditional ()
-  "Move to the beginning of the next conditional using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
-					   'next
-					   #'treesit-node-start
-					   "No next conditional found"))
-
-(defun d1-treesit-goto-prev-conditional ()
-  "Move to the beginning of the previous conditional using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
-					   'prev
-					   #'treesit-node-start
-					   "No previous conditional found"))
-
-(defun d1-treesit-goto-next-conditional-end ()
-  "Move to the end of the next conditional using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
-					   'next
-					   #'treesit-node-end
-					   "No next conditional found"))
-
-(defun d1-treesit-goto-prev-conditional-end ()
-  "Move to the end of the previous conditional using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("if_statement" "conditional_expression" "switch_statement" "ternary_expression")
-					   'prev
-					   #'treesit-node-end
-					   "No previous conditional found"))
-
-(defun d1-treesit-goto-next-block ()
-  "Move to the beginning of the next block using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("block" "statement_block" "block_statement")
-					   'next
-					   #'treesit-node-start
-					   "No next block found"))
-
-(defun d1-treesit-goto-prev-block ()
-  "Move to the beginning of the previous block using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("block" "statement_block" "block_statement")
-					   'prev
-					   #'treesit-node-start
-					   "No previous block found"))
-
-(defun d1-treesit-goto-next-block-end ()
-  "Move to the end of the next block using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("block" "statement_block" "block_statement")
-					   'next
-					   #'treesit-node-end
-					   "No next block found"))
-
-(defun d1-treesit-goto-prev-block-end ()
-  "Move to the end of the previous block using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("block" "statement_block" "block_statement")
-					   'prev
-					   #'treesit-node-end
-					   "No previous block found"))
-
-(defun d1-treesit-goto-next-parameter ()
-  "Move to the beginning of the next parameter using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
-					   'next
-					   #'treesit-node-start
-					   "No next parameter found"))
-
-(defun d1-treesit-goto-prev-parameter ()
-  "Move to the beginning of the previous parameter using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
-					   'prev
-					   #'treesit-node-start
-					   "No previous parameter found"))
-
-(defun d1-treesit-goto-next-parameter-end ()
-  "Move to the end of the next parameter using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
-					   'next
-					   #'treesit-node-end
-					   "No next parameter found"))
-
-(defun d1-treesit-goto-prev-parameter-end ()
-  "Move to the end of the previous parameter using treesitter."
-  (interactive)
-  (d1-treesit-navigate '("parameter" "formal_parameter" "parameter_declaration")
-					   'prev
-					   #'treesit-node-end
-					   "No previous parameter found"))
 
 ;;; Smart Selection Functions
 
