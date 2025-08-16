@@ -27,8 +27,11 @@
 ;; Monochromatic themes with careful typography emphasis
 (use-package doric-themes)
 
+;; Doom emacs themes
+(use-package doom-themes)
+
 ;;; Load Default Theme
-(load-theme 'ef-light :no-confirm)
+(load-theme 'doom-tokyo-night :no-confirm)
 
 ;; Add extra padding around the frames and the status-bar.
 (use-package spacious-padding
