@@ -64,30 +64,30 @@
   (eglot-extend-to-xref t)
   :config
   (setq-default eglot-workspace-configuration
-                '(:gopls (:gofumpt t
-                         :usePlaceholders t
-                         :staticcheck t
-                         :semanticTokens t
-                         :vulncheck "Imports"
-                         :codelenses (:gc_details t
-                                     :generate t
-                                     :regenerate_cgo t
-                                     :tidy t
-                                     :upgrade_dependency t
-                                     :vendor t)
-                         :analyses (:unreachable t
-                                   :unusedvariable t
-                                   :unusedparams t
-                                   :unusedwrite t
-                                   :shadow t)
-                         :hints (:assignVariableTypes t
-                                :compositeLiteralFields t
-                                :compositeLiteralTypes t
-                                :constantValues t
-                                :functionTypeParameters t
-                                :parameterNames t
-                                :rangeVariableTypes t)
-                         :diagnosticsDelay "250ms"))))
+				'(:gopls (
+						  :gofumpt t
+						  :usePlaceholders t
+						  :staticcheck t
+						  :semanticTokens t
+						  :vulncheck "Imports"
+						  :codelenses (
+									   :gc_details t
+									   :generate t
+									   :regenerate_cgo t
+									   :tidy t
+									   :upgrade_dependency t
+									   :vendor t)
+						  :analyses (
+									 :unreachable t
+									 :unusedvariable t
+									 :unusedparams t
+									 :unusedwrite t
+									 :shadow t)
+						  :hints (
+								  :compositeLiteralFields t
+								  :constantValues t
+								  :ignoredErrors t)
+						  :diagnosticsDelay "250ms"))))
 
 (use-package flymake
   :hook prog-mode
