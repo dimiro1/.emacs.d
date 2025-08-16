@@ -126,6 +126,7 @@
 
   (define-key d1-npm-map "a" 'd1-npm-run-with-args)
 
+
   ;; LSP navigation
   (evil-define-key 'normal 'global (kbd "gh") 'eglot-help-at-point)
   (evil-define-key 'normal 'global (kbd "gd") 'eglot-find-declaration)
@@ -181,6 +182,10 @@ END: if non-nil, go to end of textobj instead of start."
   (evil-define-key 'normal 'global (kbd "]x") 'd1-contract-selection)
   (evil-define-key 'visual 'global (kbd "[x") 'd1-expand-selection)
   (evil-define-key 'visual 'global (kbd "]x") 'd1-contract-selection)
+  (evil-define-key 'normal 'global (kbd "M-<up>")  'd1-expand-selection)
+  (evil-define-key 'normal 'global (kbd "M-<down>")  'd1-contract-select)
+  (evil-define-key 'visual 'global (kbd "M-<up>")  'd1-expand-selection)
+  (evil-define-key 'visual 'global (kbd "M-<down>")  'd1-contract-selection)
 
   ;; Additional LSP keybindings to match Zed
   (evil-define-key 'normal 'global (kbd "gy") 'eglot-find-typeDefinition)
