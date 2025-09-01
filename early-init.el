@@ -41,9 +41,6 @@
 		scroll-bar-mode nil)
 
 ;;; Startup Time Measurement
-;; Record the start time for performance monitoring
-(defvar d1--startup-time (current-time)
-  "Time when Emacs started loading.")
 
 ;; Allow computing statistics for use-package
 ;; Check stats with M-x use-package-report

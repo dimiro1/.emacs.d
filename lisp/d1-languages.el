@@ -17,10 +17,11 @@
      (css        "https://github.com/tree-sitter/tree-sitter-css")
      (go         "https://github.com/tree-sitter/tree-sitter-go")
      (gomod      "https://github.com/camdencheek/tree-sitter-go-mod")
+	 (clojure    "https://github.com/sogaiu/tree-sitter-clojure")
      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
      (json       "https://github.com/tree-sitter/tree-sitter-json")
      (make       "https://github.com/alemuller/tree-sitter-make")
-     (markdown   "https://github.com/tree-sitter-grammars/tree-sitter-markdown")
+     (markdown   "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src")
      (python     "https://github.com/tree-sitter/tree-sitter-python")
      (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
@@ -36,6 +37,7 @@
           (append '(("\\.go\\'"    . go-ts-mode)
                     ("go\\.mod\\'" . go-ts-mode)
                     ("\\.ts\\'"    . typescript-ts-mode)
+					;; ("\\.clj\\'"   . clojure-ts-mode)
                     ("\\.tsx\\'"   . tsx-ts-mode)
                     ("\\.py\\'"    . python-ts-mode)
                     ("\\.js\\'"    . js-ts-mode)
@@ -49,6 +51,7 @@
           '((python-mode     . python-ts-mode)
             (javascript-mode . js-ts-mode)
             (js-mode         . js-ts-mode)
+            ;; (clojure-mode    . clojure-ts-mode)
             (go-mode         . go-ts-mode))))
 
 ;;; Eglot Configuration (LSP Client)
@@ -149,6 +152,28 @@ For example, switches between 'hello.go' and 'hello_test.go'."
 ;;; Emacs Lisp Support
 (use-package paredit
   :hook (emacs-lisp-mode lisp-mode scheme-mode clojure-mode))
+
+(use-package clojure-mode
+  :mode "\\.clj\\'"
+  :hook (clojure-mode . paredit-mode)
+  :custom
+  (clojure-align-forms-automatically t)
+  (clojure-indent-style 'always-align))
+
+(use-package cider
+  :after clojure-mode
+  :hook (clojure-mode . cider-mode)
+  :custom
+  (cider-repl-display-help-banner nil)
+  (cider-save-file-on-load t)
+  (cider-show-error-buffer 'only-in-repl)
+  (cider-font-lock-dynamically '(macro core function var))
+  :bind (:map cider-mode-map
+              ("C-c C-t t" . cider-test-run-test)
+              ("C-c C-t n" . cider-test-run-ns-tests)
+              ("C-c C-t p" . cider-test-run-project-tests)
+              ("C-c C-t r" . cider-test-rerun-tests)
+              ("C-c C-t f" . cider-test-rerun-failed-tests)))
 
 (provide 'd1-languages)
 ;;; d1-languages.el ends here

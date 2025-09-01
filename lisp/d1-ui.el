@@ -31,7 +31,7 @@
 (use-package doom-themes)
 
 ;;; Load Default Theme
-(load-theme 'doom-tokyo-night :no-confirm)
+(load-theme 'ef-light :no-confirm)
 
 ;; Add extra padding around the frames and the status-bar.
 (use-package spacious-padding

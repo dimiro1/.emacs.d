@@ -67,24 +67,53 @@
   :config
   (marginalia-mode 1))
 
+;;; Corfu: In-buffer completion UI
+(use-package corfu
+  :init
+  (global-corfu-mode))
+
+;;; Cape: Additional completion backends
+(use-package cape
+  :init
+  ;; Add completion functions to the global completion list
+  ;; Order matters: more specific completions should come first
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+
+  :hook
+  ;; Add mode-specific completion functions
+  ((emacs-lisp-mode . (lambda ()
+						(add-hook 'completion-at-point-functions #'cape-elisp-symbol nil t)))
+   (org-mode . (lambda ()
+				 (add-hook 'completion-at-point-functions #'cape-elisp-block nil t)))
+   (eshell-mode . (lambda ()
+					(add-hook 'completion-at-point-functions #'cape-history nil t))))
+
+  :bind ("C-c p" . cape-prefix-map)
+
+  :config
+  ;; Optional: Make dabbrev case-sensitive
+  (setq cape-dabbrev-check-other-buffers 'some))
+
 ;;; Expand the region syntatically.
 (use-package expand-region
   :bind (("C-=" . er/expand-region)
-         ("C--" . er/contract-region))
+		 ("C--" . er/contract-region))
   :config
   ;; Enable repeat mode for expand-region commands
   (defvar-keymap d1-expand-region-repeat-map
-    :doc "Repeat map for expand-region commands."
-    :repeat t
-    "=" #'er/expand-region
-    "-" #'er/contract-region))
+	:doc "Repeat map for expand-region commands."
+	:repeat t
+	"=" #'er/expand-region
+	"-" #'er/contract-region))
 
 ;;; Github copilot
 (use-package copilot
   :vc (:url "https://github.com/copilot-emacs/copilot.el"
 			:rev :newest
 			:branch "main")
-  :hook prog-mode
+  ;; :hook prog-mode
   :bind
   ((:map copilot-completion-map
 		 ("M-<tab>" . copilot-accept-completion)

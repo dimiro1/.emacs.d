@@ -16,6 +16,7 @@
   (speed-type-max-chars 450))
 
 (use-package yasnippet
+  :disabled
   :ensure t
   :diminish yas-minor-mode
   :hook ((prog-mode . yas-minor-mode)
@@ -24,6 +25,7 @@
   (yas-reload-all))
 
 (use-package yasnippet-snippets
+  :disabled
   :ensure t
   :after yasnippet)
 

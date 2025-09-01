@@ -57,7 +57,6 @@
   (define-key d1-leader-map "f" 'consult-find)
   (define-key d1-leader-map "b" 'consult-buffer)
   (define-key d1-leader-map "j" 'evil-collection-consult-jump-list)
-  (define-key d1-leader-map "t" 'consult-theme)
 
   ;; Enhanced project commands
   (define-key d1-project-map "f" 'project-find-file)
@@ -129,7 +128,7 @@
 
   ;; LSP navigation
   (evil-define-key 'normal 'global (kbd "gh") 'eglot-help-at-point)
-  (evil-define-key 'normal 'global (kbd "gd") 'eglot-find-declaration)
+  (evil-define-key 'normal 'global (kbd "gd") 'xref-find-definitions)
   (evil-define-key 'normal 'global (kbd "gD") 'eglot-find-typeDefinition)
   (evil-define-key 'normal 'global (kbd "gr") 'xref-find-references)
   (evil-define-key 'normal 'global (kbd "gI") 'eglot-find-implementation)
@@ -148,10 +147,10 @@
 
   ;; Helper function for tree-sitter navigation
   (defun d1-make-ts-nav-fn (textobj &optional backward end)
-    "Create a tree-sitter navigation function for TEXTOBJ.
+	"Create a tree-sitter navigation function for TEXTOBJ.
 BACKWARD: if non-nil, search backward instead of forward.
 END: if non-nil, go to end of textobj instead of start."
-    (lambda () (interactive) (evil-textobj-tree-sitter-goto-textobj textobj backward end)))
+	(lambda () (interactive) (evil-textobj-tree-sitter-goto-textobj textobj backward end)))
 
   ;; Treesitter Structural Navigation (matching Vim config)
   (evil-define-key 'normal 'global (kbd "]f") (d1-make-ts-nav-fn "function.outer"))
@@ -202,67 +201,159 @@ END: if non-nil, go to end of textobj instead of start."
 
   ;; Configure which-key descriptions for prefix maps
   (with-eval-after-load 'which-key
-    ;; Main prefix descriptions
-    (which-key-add-key-based-replacements
-      "SPC w" "workspace/window"
-      "SPC p" "project"
-      "SPC h" "help"
-      "SPC q" "quit"
-      "SPC n" "npm"
-      "SPC s" "search/symbols"
-      "SPC g" "git"
-      "SPC c" "code"
-      "SPC d" "diagnostics"
+	;; Main prefix descriptions
+	(which-key-add-key-based-replacements
+	  "SPC w" "workspace/window"
+	  "SPC p" "project"
+	  "SPC h" "help"
+	  "SPC q" "quit"
+	  "SPC n" "npm"
+	  "SPC s" "search/symbols"
+	  "SPC g" "git"
+	  "SPC c" "code"
+	  "SPC d" "diagnostics"
 
-      ;; Standalone leader commands
-      "SPC f" "find files"
-      "SPC b" "buffers"
-      "SPC j" "jump list"
-      "SPC t" "theme"
+	  ;; Standalone leader commands
+	  "SPC f" "find files"
+	  "SPC b" "buffers"
+	  "SPC j" "jump list"
 
-      ;; Git navigation commands
-      "g g" "git status"
-      "g h" "help at point"
-      "g d" "go to definition"
-      "g D" "go to type definition"
-      "g r" "references"
-      "g i" "implementation"
-      "g I" "implementation"
-      "g w" "avy jump"
-      "g y" "type definition"
-      "g ." "code actions"
-      "g l" "line diagnostics"
+	  ;; Git navigation commands
+	  "g g" "git status"
+	  "g h" "help at point"
+	  "g d" "go to definition"
+	  "g D" "go to type definition"
+	  "g r" "references"
+	  "g i" "implementation"
+	  "g I" "implementation"
+	  "g w" "avy jump"
+	  "g y" "type definition"
+	  "g ." "code actions"
+	  "g l" "line diagnostics"
 
-      ;; Treesitter navigation
-      "] f" "next function"
-      "[ f" "prev function"
-      "] F" "next function end"
-      "[ F" "prev function end"
-      "] c" "next class"
-      "[ c" "prev class"
-      "] C" "next class end"
-      "[ C" "prev class end"
-      "] s" "next conditional"
-      "[ s" "prev conditional"
-      "] S" "next conditional end"
-      "[ S" "prev conditional end"
-      "] b" "next block"
-      "[ b" "prev block"
-      "] B" "next block end"
-      "[ B" "prev block end"
-      "] a" "next parameter"
-      "[ a" "prev parameter"
-      "] A" "next parameter end"
-      "[ A" "prev parameter end"
-      "] /" "next comment"
-      "[ /" "prev comment"
-      "] d" "next diagnostic"
-      "[ d" "prev diagnostic"
-      "] x" "expand selection"
-      "[ x" "contract selection"))
+	  ;; Treesitter navigation
+	  "] f" "next function"
+	  "[ f" "prev function"
+	  "] F" "next function end"
+	  "[ F" "prev function end"
+	  "] c" "next class"
+	  "[ c" "prev class"
+	  "] C" "next class end"
+	  "[ C" "prev class end"
+	  "] s" "next conditional"
+	  "[ s" "prev conditional"
+	  "] S" "next conditional end"
+	  "[ S" "prev conditional end"
+	  "] b" "next block"
+	  "[ b" "prev block"
+	  "] B" "next block end"
+	  "[ B" "prev block end"
+	  "] a" "next parameter"
+	  "[ a" "prev parameter"
+	  "] A" "next parameter end"
+	  "[ A" "prev parameter end"
+	  "] /" "next comment"
+	  "[ /" "prev comment"
+	  "] d" "next diagnostic"
+	  "[ d" "prev diagnostic"
+	  "] x" "expand selection"
+	  "[ x" "contract selection"))
 
   ;; Enable evil
   (evil-mode 1))
+
+;;; CIDER Integration
+;; Evil mode keybindings for CIDER evaluation (similar to conjure)
+(with-eval-after-load 'cider
+  (define-prefix-command 'd1-cider-map)
+  (define-prefix-command 'd1-cider-eval-map)
+  (define-prefix-command 'd1-cider-repl-map)
+  (define-prefix-command 'd1-cider-test-map)
+  (define-prefix-command 'd1-cider-doc-map)
+
+  (evil-define-key 'normal clojure-mode-map (kbd "SPC c") 'd1-cider-map)
+  (evil-define-key 'visual clojure-mode-map (kbd "SPC c") 'd1-cider-map)
+
+  ;; Sub-prefixes under SPC c
+  (define-key d1-cider-map "e" 'd1-cider-eval-map)
+  (define-key d1-cider-map "r" 'd1-cider-repl-map)
+  (define-key d1-cider-map "t" 'd1-cider-test-map)
+  (define-key d1-cider-map "k" 'd1-cider-doc-map)
+
+  ;; Evaluation commands
+  (define-key d1-cider-eval-map "e" 'cider-eval-defun-at-point)   ; eval current form
+  (define-key d1-cider-eval-map "r" 'cider-eval-defun-at-point)   ; eval root form (same as current)
+  (define-key d1-cider-eval-map "b" 'cider-eval-buffer)           ; eval buffer
+  (define-key d1-cider-eval-map "s" 'cider-eval-sexp-at-point)    ; eval sexp at point
+  (define-key d1-cider-eval-map "f" 'cider-load-file)             ; load file
+  (define-key d1-cider-eval-map "n" 'cider-eval-ns-form)          ; eval namespace form
+  (define-key d1-cider-eval-map "p" 'cider-pprint-eval-last-sexp) ; pretty print last result
+  (define-key d1-cider-eval-map "P" 'cider-pprint-eval-defun-at-point) ; pretty print current form
+
+  ;; REPL commands
+  (define-key d1-cider-repl-map "r" 'cider-switch-to-repl-buffer) ; go to repl
+  (define-key d1-cider-repl-map "n" 'cider-repl-set-ns)           ; set namespace
+  (define-key d1-cider-repl-map "q" 'cider-quit)                  ; quit repl
+  (define-key d1-cider-repl-map "R" 'cider-restart)               ; restart repl
+  (define-key d1-cider-repl-map "c" 'cider-repl-clear-buffer)     ; clear repl
+  (define-key d1-cider-repl-map "b" 'cider-load-buffer-and-switch-to-repl-buffer) ; load buffer and switch
+
+  ;; Test commands
+  (define-key d1-cider-test-map "t" 'cider-test-run-test)         ; run test at point
+  (define-key d1-cider-test-map "n" 'cider-test-run-ns-tests)     ; run namespace tests
+  (define-key d1-cider-test-map "p" 'cider-test-run-project-tests) ; run all tests
+  (define-key d1-cider-test-map "r" 'cider-test-rerun-tests)      ; rerun tests
+  (define-key d1-cider-test-map "f" 'cider-test-rerun-failed-tests) ; rerun failed
+  (define-key d1-cider-test-map "s" 'cider-test-show-report)      ; show test report
+
+  ;; Documentation commands
+  (define-key d1-cider-doc-map "d" 'cider-doc)                    ; show doc
+  (define-key d1-cider-doc-map "j" 'cider-javadoc)                ; show javadoc
+  (define-key d1-cider-doc-map "s" 'cider-clojuredocs)            ; search clojuredocs
+  (define-key d1-cider-doc-map "a" 'cider-apropos)                ; apropos search
+
+  ;; In visual mode, eval selection
+  (evil-define-key 'visual clojure-mode-map (kbd "SPC c e e") 'cider-eval-region)
+
+  ;; Quick eval bindings (like vim-sexp)
+  (evil-define-key 'normal clojure-mode-map (kbd "K") 'cider-doc)
+  (evil-define-key 'normal clojure-mode-map (kbd "gK") 'cider-javadoc)
+
+  ;; Which-key descriptions for CIDER commands
+  (with-eval-after-load 'which-key
+	(which-key-add-major-mode-key-based-replacements 'clojure-mode
+	  "SPC c" "cider"
+	  "SPC c e" "eval"
+	  "SPC c e e" "eval form"
+	  "SPC c e r" "eval root form"
+	  "SPC c e b" "eval buffer"
+	  "SPC c e s" "eval sexp"
+	  "SPC c e f" "load file"
+	  "SPC c e n" "eval ns form"
+	  "SPC c e p" "pretty print last"
+	  "SPC c e P" "pretty print form"
+
+	  "SPC c r" "repl"
+	  "SPC c r r" "switch to repl"
+	  "SPC c r n" "set namespace"
+	  "SPC c r q" "quit repl"
+	  "SPC c r R" "restart repl"
+	  "SPC c r c" "clear repl"
+	  "SPC c r b" "load buffer and switch"
+
+	  "SPC c t" "test"
+	  "SPC c t t" "run test"
+	  "SPC c t n" "run ns tests"
+	  "SPC c t p" "run project tests"
+	  "SPC c t r" "rerun tests"
+	  "SPC c t f" "rerun failed"
+	  "SPC c t s" "show report"
+
+	  "SPC c k" "docs"
+	  "SPC c k d" "show doc"
+	  "SPC c k j" "javadoc"
+	  "SPC c k s" "clojuredocs"
+	  "SPC c k a" "apropos")))
 
 
 ;;; Smart Selection Functions

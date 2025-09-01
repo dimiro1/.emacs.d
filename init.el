@@ -59,7 +59,7 @@
 ;; Evil Mode - Vim-like editing experience
 ;; Provides: Modal editing, Vim keybindings, hybrid editing modes
 ;; Comment out this block if you prefer Emacs keybindings
-(use-package d1-evil :load-path d1-modules-dir :demand t)
+;;(use-package d1-evil :load-path d1-modules-dir :demand t)
 
 ;; God Mode - Minimalist modal editing
 ;; Provides: God-mode modal editing without complex keybindings

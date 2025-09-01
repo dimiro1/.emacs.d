@@ -14,7 +14,6 @@
 ;; PATH, environment variables, and system integration
 (use-package emacs
   :custom
-  ;; === Backup Configuration ===
   ;; no-littering package handles backup directory configuration
   ;; Backups are stored in ~/.emacs.d/var/backup/
   (backup-by-copying t)
@@ -23,56 +22,21 @@
   (kept-old-versions 2)
   (version-control t)
 
-  ;; === Custom File Management ===
   ;; Store customize-generated settings in a separate file
   ;; This keeps init.el clean and makes version control easier
   (custom-file (no-littering-expand-etc-file-name "custom.el"))
 
-  ;; === Auto-save Configuration ===
   ;; no-littering handles auto-save file locations
   ;; Auto-saves are stored in ~/.emacs.d/var/auto-save/
   (auto-save-interval 300)
   (auto-save-timeout 30)
 
   :config
-  ;; === PATH Configuration ===
-  ;; Add Go binaries to PATH
-  ;; This allows Emacs to find Go tools like gopls, gofmt, etc.
-  ;; These tools are typically installed with 'go install'
-  (add-to-list 'exec-path (expand-file-name "~/go/bin"))
-
-  ;; Add Rust/Cargo binaries to PATH
-  ;; This allows Emacs to find Rust tools like rust-analyzer, rustfmt, etc.
-  ;; These tools are typically installed with 'cargo install'
-  (add-to-list 'exec-path (expand-file-name "~/.cargo/bin"))
-
-  ;; Add local bin directory for user-installed tools
-  ;; Many tools install here by default
-  (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
-
-  ;; Add Homebrew paths (both Apple Silicon and Intel locations)
-  ;; Apple Silicon Macs use /opt/homebrew/bin
-  ;; Intel Macs use /usr/local/bin
-  (dolist (brew-path '("/opt/homebrew/bin" "/usr/local/bin"))
-    (when (file-directory-p brew-path)
-      (add-to-list 'exec-path brew-path)))
-
-  ;; Ensure PATH environment variable matches exec-path
-  ;; This is important for subprocesses spawned by Emacs
-  (setenv "PATH" (string-join exec-path ":"))
-
-  ;; === Development Environment Variables ===
-  ;; Ensure GOPATH is set for Go development
-  ;; This is less critical in modern Go with modules, but some tools still use it
-  (unless (getenv "GOPATH")
-    (setenv "GOPATH" (expand-file-name "~/go")))
-
   ;; Set default editor for git commits and other tools
   ;; This ensures external tools that need an editor will use Emacs
   (setenv "EDITOR" "emacsclient")
   (setenv "VISUAL" "emacsclient")
 
-  ;; === macOS-specific Configuration ===
   ;; Use GNU ls if available (from coreutils)
   ;;
   ;; Why GNU ls (gls)?
@@ -122,25 +86,19 @@
 ;; Automatically reload files when they change on disk
 (use-package autorevert
   :config
-  ;; Enable global auto-revert mode
   (global-auto-revert-mode 1)
   :custom
-  ;; Also auto-revert non-file buffers like dired
   (global-auto-revert-non-file-buffers t)
-  ;; Be quiet about reverting files
   (auto-revert-verbose nil))
 
 ;;; Recent Files
 ;; Track recently opened files for quick access
 (use-package recentf
   :custom
-  ;; Keep track of last 100 files
   (recentf-max-menu-items 100)
   (recentf-max-saved-items 100)
-  ;; Exclude some directories from recent files
   (recentf-exclude '("/tmp/" "/ssh:" "\\.git/" "COMMIT_EDITMSG" "node_modules"))
   :config
-  ;; Enable recent files mode
   (recentf-mode 1)
   ;; Exclude no-littering directories
   (add-to-list 'recentf-exclude (regexp-quote (expand-file-name "var/" user-emacs-directory)))

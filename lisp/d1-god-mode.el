@@ -11,11 +11,16 @@
 ;; God Mode - Minimalist modal editing
 ;; Provides: God-mode modal editing without complex keybindings
 (use-package god-mode
+  :demand t
+  :custom
+  (god-exempt-major-modes nil)
+  (god-exempt-predicates nil)
   :config
   (god-mode)
   (with-eval-after-load 'which-key
     (which-key-enable-god-mode-support))
-  :bind (("<escape>" . (lambda () (interactive) (god-local-mode 1)))
+  :bind (("<escape>" . god-local-mode)
+         ("ESC ESC" . god-local-mode)
          :map god-local-mode-map
          ("i" . god-local-mode)))
 

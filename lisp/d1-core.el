@@ -66,7 +66,6 @@
 
 (use-package emacs
   :custom
-  ;; === Indentation and Spacing ===
   ;; Use 4 spaces as default tab width
   ;; This matches common conventions for many languages
   (tab-width 4)
@@ -75,7 +74,6 @@
   ;; Enable multi-line comments
   (comment-multi-line t)
 
-  ;; === User Interface ===
   ;; Require confirmation before killing Emacs
   ;; Prevents accidental closure with a simple y/n prompt
   (confirm-kill-emacs 'y-or-n-p)
@@ -84,7 +82,6 @@
   ;; Disable bell sound - use visual indication instead
   (ring-bell-function 'ignore)
 
-  ;; === Text Display Settings ===
   ;; Set default fill column for auto-fill and visual indicators
   (fill-column 100)
   ;; Disable scroll bar for cleaner appearance
@@ -92,7 +89,6 @@
   ;; Disable tool bar for more screen space
   (tool-bar-mode nil)
 
-  ;; === Smooth Scrolling Configuration ===
   ;; Scroll one line at a time (less "jumpy" than defaults)
   (scroll-step 1)
   ;; Don't recenter point when scrolling
@@ -103,7 +99,6 @@
   (scroll-preserve-screen-position t)
 
   :config
-  ;; === Encoding Configuration ===
   ;; Ensure UTF-8 encoding everywhere for proper international text support
   ;; Set UTF-8 as the default encoding for all operations
   ;; This ensures proper handling of international characters
@@ -113,7 +108,6 @@
   ;; Explicitly set language environment
   (set-language-environment "UTF-8")
 
-  ;; === Core Editor Behavior ===
   ;; Prefer spaces over tabs for indentation
   ;; This ensures consistent display across different editors
   (indent-tabs-mode nil)
@@ -123,7 +117,6 @@
   ;; Example: "CamelCase" -> stops at "Camel" and "Case"
   (global-subword-mode t)
 
-  ;; === UI Configuration ===
   ;; Highlight current line for better visibility
   ;; This helps track cursor position, especially in large files
   (global-hl-line-mode t)
@@ -209,7 +202,7 @@
   :config
   (which-key-mode t)
   :custom
-  (which-key-idle-delay 0.1)) ; Show help delay
+  (which-key-idle-delay 0.1))
 
 ;; Capture stats about key presses.
 (use-package keyfreq
