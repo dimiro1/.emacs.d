@@ -164,11 +164,12 @@
   (repeat-mode 1)
   ;; Set the default font
   ;; Google Sans Code is a high-quality monospace font designed for programming
-  (when (find-font (font-spec :name "Google Sans Code"))
+  (when (find-font (font-spec :name "PragmataPro Mono"))
 	(set-face-attribute 'default nil
-						:family "Google Sans Code"
+						:family "PragmataPro Mono"
 						:height 140  ; 14pt font size
-						:weight 'regular))
+						:weight 'regular)
+	(setq-default line-spacing 0.3))
 
   :hook
   ;; Remove trailing whitespace on save for all files

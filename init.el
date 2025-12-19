@@ -42,7 +42,7 @@
 
 ;; Programming Languages - Language-specific configurations and LSP
 ;; Provides: Go, Rust, TypeScript, Markdown, Emacs Lisp support with eglot LSP integration
-;; Includes: Tree-sitter parsers, Go testing, Paredit for Lisp editing, enhanced Markdown editing
+;; Includes: Tree-sitter parsers, Go testing, Parinfer for Lisp editing, enhanced Markdown editing
 ;; Requires: External LSP servers to be installed
 (use-package d1-languages :load-path d1-modules-dir :demand t)
 
@@ -80,12 +80,6 @@
   :load-path d1-modules-dir
   :demand t
   :bind
-  ("C-c p n" . d1-npm-run)
-  :config
-  (with-eval-after-load 'marginalia
-    (add-to-list 'marginalia-annotator-registry
-                 '(npm-script d1-npm-annotate builtin none))
-    (add-to-list 'marginalia-command-categories
-                 '(d1-npm-run . npm-script))))
+  ("C-c p n" . d1-npm-run))
 
 ;;; init.el ends here

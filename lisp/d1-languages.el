@@ -25,7 +25,8 @@
      (python     "https://github.com/tree-sitter/tree-sitter-python")
      (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-     (yaml       "https://github.com/ikatyang/tree-sitter-yaml")))
+     (yaml       "https://github.com/ikatyang/tree-sitter-yaml")
+     (gleam      "https://github.com/gleam-lang/tree-sitter-gleam")))
   :config
   ;; Auto-install missing grammars
   (dolist (grammar treesit-language-source-alist)
@@ -43,7 +44,8 @@
                     ("\\.js\\'"    . js-ts-mode)
                     ("\\.json\\'"  . json-ts-mode)
                     ("\\.yaml\\'"  . yaml-ts-mode)
-                    ("\\.yml\\'"   . yaml-ts-mode))
+                    ("\\.yml\\'"   . yaml-ts-mode)
+                    ("\\.gleam\\'" . gleam-ts-mode))
                   auto-mode-alist))
 
   ;; Remap traditional modes to Tree-sitter modes
@@ -56,7 +58,7 @@
 
 ;;; Eglot Configuration (LSP Client)
 (use-package eglot
-  :hook ((go-ts-mode typescript-ts-mode tsx-ts-mode) . eglot-ensure)
+  :hook ((go-ts-mode typescript-ts-mode tsx-ts-mode gleam-ts-mode) . eglot-ensure)
   :hook (before-save . (lambda ()
                          (when (eglot-managed-p)
                            (ignore-errors (eglot-code-action-organize-imports))
@@ -149,13 +151,19 @@ For example, switches between 'hello.go' and 'hello_test.go'."
      ("shell" . sh-mode)
      ("go"    . go-ts-mode))))
 
-;;; Emacs Lisp Support
-(use-package paredit
-  :hook (emacs-lisp-mode lisp-mode scheme-mode clojure-mode))
+;;; Lisp Editing Support (Parinfer)
+(use-package parinfer-rust-mode
+  :hook (emacs-lisp-mode lisp-mode scheme-mode clojure-mode)
+  :custom
+  (parinfer-rust-auto-download t)
+  (parinfer-rust-disable-troublesome-modes t))
+
+;;; Rainbow Delimiters
+(use-package rainbow-delimiters
+  :hook prog-mode)
 
 (use-package clojure-mode
   :mode "\\.clj\\'"
-  :hook (clojure-mode . paredit-mode)
   :custom
   (clojure-align-forms-automatically t)
   (clojure-indent-style 'always-align))
@@ -174,6 +182,16 @@ For example, switches between 'hello.go' and 'hello_test.go'."
               ("C-c C-t p" . cider-test-run-project-tests)
               ("C-c C-t r" . cider-test-rerun-tests)
               ("C-c C-t f" . cider-test-rerun-failed-tests)))
+
+;;; Gleam Support
+(use-package gleam-ts-mode
+  :after treesit
+  :ensure t
+  :mode "\\.gleam\\'"
+  :config
+  ;; Configure eglot to use gleam lsp for Gleam files
+  (add-to-list 'eglot-server-programs
+               '(gleam-ts-mode . ("gleam" "lsp"))))
 
 (provide 'd1-languages)
 ;;; d1-languages.el ends here
