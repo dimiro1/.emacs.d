@@ -163,10 +163,9 @@
   ;; Works with many built-in commands for faster workflows
   (repeat-mode 1)
   ;; Set the default font
-  ;; Google Sans Code is a high-quality monospace font designed for programming
-  (when (find-font (font-spec :name "PragmataPro Mono"))
+  (when (find-font (font-spec :name "JetBrains Mono"))
 	(set-face-attribute 'default nil
-						:family "PragmataPro Mono"
+						:family "JetBrains Mono"
 						:height 140  ; 14pt font size
 						:weight 'regular)
 	(setq-default line-spacing 0.3))
