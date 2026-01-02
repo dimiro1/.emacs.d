@@ -31,7 +31,7 @@
 (use-package doom-themes)
 
 ;;; Load Default Theme
-(load-theme 'modus-vivendi-deuteranopia :no-confirm)
+(load-theme 'doom-dark+ :no-confirm)
 
 ;; Add extra padding around the frames and the status-bar.
 (use-package spacious-padding

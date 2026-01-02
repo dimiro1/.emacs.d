@@ -73,6 +73,9 @@
 ;; Typing practice package.
 (use-package d1-typing :load-path d1-modules-dir)
 
+;; Atom and RSS feeds.
+(use-package d1-rss :load-path d1-modules-dir)
+
 ;; NPM Script Runner - Interactive npm script execution
 ;; Provides: Project-aware npm script discovery, interactive selection
 ;; Usage: M-x d1-npm-run or C-c n

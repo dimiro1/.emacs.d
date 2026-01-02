@@ -69,27 +69,23 @@
   (eglot-extend-to-xref t)
   :config
   (setq-default eglot-workspace-configuration
-				'(:gopls (
-						  :gofumpt t
+				'(:gopls (:gofumpt t
 						  :usePlaceholders t
 						  :staticcheck t
 						  :semanticTokens t
 						  :vulncheck "Imports"
-						  :codelenses (
-									   :gc_details t
+						  :codelenses (:gc_details t
 									   :generate t
 									   :regenerate_cgo t
 									   :tidy t
 									   :upgrade_dependency t
 									   :vendor t)
-						  :analyses (
-									 :unreachable t
+						  :analyses (:unreachable t
 									 :unusedvariable t
 									 :unusedparams t
 									 :unusedwrite t
 									 :shadow t)
-						  :hints (
-								  :compositeLiteralFields t
+						  :hints (:compositeLiteralFields t
 								  :constantValues t
 								  :ignoredErrors t)
 						  :diagnosticsDelay "250ms"))))
