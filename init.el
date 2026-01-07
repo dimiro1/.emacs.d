@@ -76,6 +76,15 @@
 ;; Atom and RSS feeds.
 (use-package d1-rss :load-path d1-modules-dir)
 
+;; Utilities - General-purpose utility functions
+;; Provides: Kill process by port, kill process with completion
+;; Usage: M-x d1-kill-process-on-port or C-c x p
+;;        M-x d1-kill-process or C-c x k
+(use-package d1-utilities
+  :load-path d1-modules-dir
+  :bind (("C-c x p" . d1-kill-process-on-port)
+         ("C-c x k" . d1-kill-process)))
+
 ;; NPM Script Runner - Interactive npm script execution
 ;; Provides: Project-aware npm script discovery, interactive selection
 ;; Usage: M-x d1-npm-run or C-c n
