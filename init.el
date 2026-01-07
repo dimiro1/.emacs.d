@@ -85,6 +85,13 @@
   :bind (("C-c x p" . d1-kill-process-on-port)
          ("C-c x k" . d1-kill-process)))
 
+;; AI Apropos - AI-powered function lookup using Ollama
+;; Provides: Natural language function search based on current language
+;; Usage: M-x d1-ai-apropos or C-c a a
+(use-package d1-ai-apropos
+  :load-path d1-modules-dir
+  :bind ("C-c a a" . d1-ai-apropos))
+
 ;; NPM Script Runner - Interactive npm script execution
 ;; Provides: Project-aware npm script discovery, interactive selection
 ;; Usage: M-x d1-npm-run or C-c n

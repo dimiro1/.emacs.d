@@ -140,6 +140,7 @@ For example, switches between 'hello.go' and 'hello_test.go'."
          ("README\\.md\\'"  . gfm-mode)) ; GitHub Flavored Markdown for README files
   :custom
   (markdown-fontify-code-blocks-natively t)
+  (markdown-header-scaling t)
 
   (markdown-code-lang-modes
    '(("elisp" . emacs-lisp-mode)
