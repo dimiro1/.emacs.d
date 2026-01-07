@@ -89,14 +89,10 @@
   ;; Disable tool bar for more screen space
   (tool-bar-mode nil)
 
-  ;; Scroll one line at a time (less "jumpy" than defaults)
-  (scroll-step 1)
-  ;; Don't recenter point when scrolling
-  (scroll-conservatively 10000)
-  ;; Keep 10 lines visible above and below cursor
-  (scroll-margin 10)
   ;; Preserve cursor screen position when scrolling
   (scroll-preserve-screen-position t)
+  ;; Don't recenter point when scrolling
+  (scroll-conservatively 101)
 
   :config
   ;; Ensure UTF-8 encoding everywhere for proper international text support
@@ -151,12 +147,9 @@
   ;; This wraps lines at fill-column automatically while typing
   (auto-fill-mode t)
 
-  ;; Enable pixel-level scrolling for smoother experience
-  ;; Only available in Emacs 29+
-  (when (fboundp 'pixel-scroll-mode)
-	(pixel-scroll-mode t))
+  ;; Enable pixel-level scrolling for smoother experience (Emacs 29+)
   (when (fboundp 'pixel-scroll-precision-mode)
-	(pixel-scroll-precision-mode t))
+    (pixel-scroll-precision-mode t))
 
   ;; Enable repeat mode
   ;; This allows repeating commands like C-x o with just 'o'
