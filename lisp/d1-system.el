@@ -117,5 +117,23 @@ Emacs to pick up the changes without restarting."
     (exec-path-from-shell-initialize)
     (message "Environment refreshed from shell")))
 
+;;; Eshell Configuration
+;; Minimalistic oh-my-zsh inspired prompt
+(use-package eshell
+  :config
+  (defun d1-eshell-prompt ()
+    "Minimalistic eshell prompt inspired by oh-my-zsh."
+    (let* ((path (abbreviate-file-name (eshell/pwd)))
+           (parts (split-string path "/" t))
+           (last-3 (last parts 3)))
+      (concat
+       (propertize (string-join last-3 "/") 'face '(:foreground "cyan"))
+       "\n"
+       (propertize "❯" 'face '(:foreground "magenta"))
+       " ")))
+
+  (setopt eshell-prompt-function #'d1-eshell-prompt)
+  (setopt eshell-prompt-regexp "^❯ "))
+
 (provide 'd1-system)
 ;;; d1-system.el ends here
