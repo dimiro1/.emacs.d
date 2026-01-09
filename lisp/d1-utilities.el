@@ -8,24 +8,31 @@
 ;;; Code:
 
 (defun d1-kill-process-on-port (port)
-  "Kill the process running on PORT.
-Prompts for a port number and kills the process listening on that port.
-Useful for freeing up ports during development."
+  "Kill a process running on PORT.
+Prompts for a port number.  If multiple processes are listening,
+lets you select which one to kill via completion."
   (interactive "nPort number: ")
   (let* ((port-str (number-to-string port))
          (pid-command (format "lsof -ti :%s" port-str))
-         (pid (string-trim (shell-command-to-string pid-command))))
-    (if (string-empty-p pid)
+         (pids (split-string (shell-command-to-string pid-command) "\n" t)))
+    (if (null pids)
         (message "No process found running on port %s" port-str)
-      (let* ((name-command (format "ps -p %s -o comm=" pid))
-             (process-name (string-trim (shell-command-to-string name-command)))
-             (prompt (format "Kill process '%s' (PID %s) on port %s? "
-                           process-name pid port-str)))
-        (when (yes-or-no-p prompt)
-          (let ((kill-command (format "kill -9 %s" pid)))
-            (shell-command kill-command)
-            (message "Killed process '%s' (PID %s) on port %s"
-                    process-name pid port-str)))))))
+      (let* ((process-alist
+              (mapcar (lambda (pid)
+                        (let ((name (string-trim
+                                     (shell-command-to-string
+                                      (format "ps -p %s -o comm=" pid)))))
+                          (cons (format "%s (PID %s)" name pid) pid)))
+                      pids))
+             (selection (if (= (length pids) 1)
+                            (caar process-alist)
+                          (completing-read
+                           (format "Select process on port %s: " port-str)
+                           process-alist nil t)))
+             (pid (cdr (assoc selection process-alist))))
+        (when (yes-or-no-p (format "Kill %s? " selection))
+          (shell-command (format "kill -9 %s" pid))
+          (message "Killed %s on port %s" selection port-str))))))
 
 (defun d1--format-uptime (etime)
   "Convert elapsed time ETIME from ps format to human-readable format.
