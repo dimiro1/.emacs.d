@@ -92,6 +92,14 @@
   :load-path d1-modules-dir
   :bind ("C-c a a" . d1-ai-apropos))
 
+;; German Gender - Check German word gender using Ollama
+;; Provides: Gender lookup with article, plural, translations, and explanations
+;; Usage: M-x d1-german-gender or C-c a g
+(use-package d1-german-gender
+  :load-path d1-modules-dir
+  :bind (("C-c a g" . d1-german-gender)
+         ("C-c a G" . d1-german-gender-at-point)))
+
 ;; NPM Script Runner - Interactive npm script execution
 ;; Provides: Project-aware npm script discovery, interactive selection
 ;; Usage: M-x d1-npm-run or C-c n
