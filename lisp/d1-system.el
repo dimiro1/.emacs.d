@@ -171,7 +171,34 @@ Usage: zi [keywords...]"
       (call-process "zoxide" nil 0 nil "add" dir)))
 
   ;; Update zoxide when changing directories in eshell
-  (add-hook 'eshell-directory-change-hook #'d1-eshell-zoxide-add))
+  (add-hook 'eshell-directory-change-hook #'d1-eshell-zoxide-add)
+
+  ;; Enhanced cat command with image rendering using advice
+  ;; Inspired by https://xenodium.com/rinku-cli-link-previews
+  (defun d1-eshell-cat-with-images (orig-fun &rest args)
+    "Display images inline when using cat in eshell.
+ORIG-FUN is the original cat function.
+ARGS is a list of file paths to display."
+    (if (seq-every-p (lambda (arg)
+                       (and (stringp arg)
+                            (file-exists-p arg)
+                            (image-type-from-file-name arg)))
+                     args)
+        ;; All args are images - render them
+        (with-temp-buffer
+          (insert "\n")
+          (dolist (path args)
+            (let ((image (create-image (expand-file-name path)
+                                       (image-type-from-file-name path)
+                                       nil :max-width 800)))
+              (insert-image image))
+            (insert "\n"))
+          (buffer-string))
+      ;; Not all args are images - use original cat function
+      (apply orig-fun args)))
+
+  ;; Set the enhanced cat command.
+  (advice-add 'eshell/cat :around #'d1-eshell-cat-with-images))
 
 (provide 'd1-system)
 ;;; d1-system.el ends here
