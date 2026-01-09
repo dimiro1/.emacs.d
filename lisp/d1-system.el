@@ -133,7 +133,45 @@ Emacs to pick up the changes without restarting."
        " ")))
 
   (setopt eshell-prompt-function #'d1-eshell-prompt)
-  (setopt eshell-prompt-regexp "^❯ "))
+  (setopt eshell-prompt-regexp "^❯ ")
+
+  ;; Zoxide integration - smart directory jumping
+  (defun eshell/z (&rest args)
+    "Jump to a directory using zoxide.
+Usage: z [keywords...]"
+    (if (null args)
+        (eshell/cd "~")
+      (let* ((query (string-join args " "))
+             (result (string-trim
+                      (shell-command-to-string
+                       (concat "zoxide query -- " (shell-quote-argument query))))))
+        (if (string-empty-p result)
+            (eshell-error (format "zoxide: no match found for '%s'" query))
+          (eshell/cd result)))))
+
+  (defun eshell/zi (&rest args)
+    "Interactively select a directory using zoxide and Emacs completion.
+Usage: zi [keywords...]"
+    (let* ((query (if args (string-join args " ") ""))
+           (cmd (if (string-empty-p query)
+                    "zoxide query --list"
+                  (concat "zoxide query --list -- " (shell-quote-argument query))))
+           (output (shell-command-to-string cmd))
+           (dirs (split-string output "\n" t)))
+      (if (null dirs)
+          (eshell-error (format "zoxide: no matches found%s"
+                                (if (string-empty-p query) "" (format " for '%s'" query))))
+        (let ((selected (completing-read "Select directory: " dirs nil t)))
+          (when selected
+            (eshell/cd selected))))))
+
+  (defun d1-eshell-zoxide-add ()
+    "Add current directory to zoxide database."
+    (let ((dir (eshell/pwd)))
+      (call-process "zoxide" nil 0 nil "add" dir)))
+
+  ;; Update zoxide when changing directories in eshell
+  (add-hook 'eshell-directory-change-hook #'d1-eshell-zoxide-add))
 
 (provide 'd1-system)
 ;;; d1-system.el ends here
