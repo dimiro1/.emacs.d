@@ -92,13 +92,17 @@
   :load-path d1-modules-dir
   :bind ("C-c a a" . d1-ai-apropos))
 
-;; German Gender - Check German word gender using Ollama
-;; Provides: Gender lookup with article, plural, translations, and explanations
-;; Usage: M-x d1-german-gender or C-c a g
-(use-package d1-german-gender
+;; German Language Utilities - German word gender and verb conjugation using Ollama
+;; Provides: Gender lookup with article, plural, translations, explanations
+;;           Verb conjugation with all major tenses (Präsens, Präteritum, Perfekt, Futur)
+;; Usage: M-x d1-german-gender or C-c a g (for nouns)
+;;        M-x d1-german-verb or C-c a v (for verbs)
+(use-package d1-german
   :load-path d1-modules-dir
   :bind (("C-c a g" . d1-german-gender)
-         ("C-c a G" . d1-german-gender-at-point)))
+         ("C-c a G" . d1-german-gender-at-point)
+         ("C-c a v" . d1-german-verb)
+         ("C-c a V" . d1-german-verb-at-point)))
 
 ;; NPM Script Runner - Interactive npm script execution
 ;; Provides: Project-aware npm script discovery, interactive selection
