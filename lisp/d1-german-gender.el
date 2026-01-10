@@ -220,6 +220,14 @@ Returns alist with keys: corrected, article, singular, plural, english, portugue
          (article (cdr (assoc 'article data)))
          (singular (cdr (assoc 'singular data)))
          (plural (cdr (assoc 'plural data)))
+         (nominative (cdr (assoc 'nominative data)))
+         (nominative-example (cdr (assoc 'nominative_example data)))
+         (accusative (cdr (assoc 'accusative data)))
+         (accusative-example (cdr (assoc 'accusative_example data)))
+         (dative (cdr (assoc 'dative data)))
+         (dative-example (cdr (assoc 'dative_example data)))
+         (genitive (cdr (assoc 'genitive data)))
+         (genitive-example (cdr (assoc 'genitive_example data)))
          (english (cdr (assoc 'english data)))
          (portuguese (cdr (assoc 'portuguese data)))
          (explanation (cdr (assoc 'explanation data)))
@@ -262,6 +270,42 @@ Returns alist with keys: corrected, article, singular, plural, english, portugue
         (insert (propertize "die " 'face 'd1-german-gender-entry))
         (insert (propertize (or plural "—") 'face 'd1-german-gender-entry))
         (insert "\n\n")
+        ;; Cases
+        (when (or nominative accusative dative genitive)
+          (insert (propertize "Cases\n" 'face '(d1-german-gender-label d1-german-gender-entry)))
+          (when nominative
+            (insert (propertize "  Nominativ  " 'face 'd1-german-gender-label))
+            (insert (propertize nominative 'face 'd1-german-gender-entry))
+            (insert "\n")
+            (when nominative-example
+              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize nominative-example 'face 'shadow))
+              (insert "\n")))
+          (when accusative
+            (insert (propertize "  Akkusativ  " 'face 'd1-german-gender-label))
+            (insert (propertize accusative 'face 'd1-german-gender-entry))
+            (insert "\n")
+            (when accusative-example
+              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize accusative-example 'face 'shadow))
+              (insert "\n")))
+          (when dative
+            (insert (propertize "  Dativ      " 'face 'd1-german-gender-label))
+            (insert (propertize dative 'face 'd1-german-gender-entry))
+            (insert "\n")
+            (when dative-example
+              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize dative-example 'face 'shadow))
+              (insert "\n")))
+          (when genitive
+            (insert (propertize "  Genitiv    " 'face 'd1-german-gender-label))
+            (insert (propertize genitive 'face 'd1-german-gender-entry))
+            (insert "\n")
+            (when genitive-example
+              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize genitive-example 'face 'shadow))
+              (insert "\n")))
+          (insert "\n"))
         ;; Translations
         (insert (propertize "English   " 'face '(d1-german-gender-label d1-german-gender-entry)))
         (insert (propertize (or english "—") 'face '(d1-german-gender-translation d1-german-gender-entry)))
@@ -296,6 +340,14 @@ Reply with ONLY this JSON (no markdown, no explanation outside JSON):
   \"article\": \"der or die or das\",
   \"singular\": \"word in singular form\",
   \"plural\": \"word in plural form\",
+  \"nominative\": \"article + word\",
+  \"nominative_example\": \"short example sentence\",
+  \"accusative\": \"article + word\",
+  \"accusative_example\": \"short example sentence\",
+  \"dative\": \"article + word\",
+  \"dative_example\": \"short example sentence\",
+  \"genitive\": \"article + word\",
+  \"genitive_example\": \"short example sentence\",
   \"english\": \"English translation\",
   \"portuguese\": \"Brazilian Portuguese translation\",
   \"explanation\": \"Brief explanation of the gender pattern\"
