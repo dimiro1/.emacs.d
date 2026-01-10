@@ -11,7 +11,8 @@
   :custom
   (elfeed-feeds '("https://kxsh.dev/index.xml"
                   "https://bitmaybewise.substack.com/feed"
-                  "https://dimiro1.dev/feed/index.xml")))
+                  "https://dimiro1.dev/feed/index.xml"
+                  "https://xenodium.com/feed")))
 
 
 (provide 'd1-rss)
