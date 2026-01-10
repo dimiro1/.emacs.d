@@ -155,10 +155,10 @@ CALLBACK is called with parsed JSON response or nil on error."
 Returns t if ready, nil otherwise."
   (cond
    ((not (d1--german-gender-ollama-running-p))
-    (message "Ollama is not running. Start it with: ollama serve")
+    (message "Ollama não está rodando. Inicie com: ollama serve")
     nil)
    ((not (d1--german-gender-model-installed-p d1-german-gender-model))
-    (message "Model '%s' not found. Install it with: ollama pull %s"
+    (message "Modelo '%s' não encontrado. Instale com: ollama pull %s"
              d1-german-gender-model d1-german-gender-model)
     nil)
    (t t)))
@@ -176,9 +176,9 @@ CALLBACK is called with the response text when complete, or nil on error."
      (let ((result (cdr (assoc 'response response)))
            (error-msg (cdr (assoc 'error response))))
        (cond
-        (error-msg (message "Ollama error: %s" error-msg) (funcall callback nil))
+        (error-msg (message "Erro do Ollama: %s" error-msg) (funcall callback nil))
         (result (funcall callback result))
-        (t (message "Error: No response from Ollama") (funcall callback nil)))))))
+        (t (message "Erro: Sem resposta do Ollama") (funcall callback nil)))))))
 
 (defun d1--german-gender-parse-json (response)
   "Parse JSON from RESPONSE string.
@@ -222,12 +222,16 @@ Returns alist with keys: corrected, article, singular, plural, english, portugue
          (plural (cdr (assoc 'plural data)))
          (nominative (cdr (assoc 'nominative data)))
          (nominative-example (cdr (assoc 'nominative_example data)))
+         (nominative-example-pt (cdr (assoc 'nominative_example_pt data)))
          (accusative (cdr (assoc 'accusative data)))
          (accusative-example (cdr (assoc 'accusative_example data)))
+         (accusative-example-pt (cdr (assoc 'accusative_example_pt data)))
          (dative (cdr (assoc 'dative data)))
          (dative-example (cdr (assoc 'dative_example data)))
+         (dative-example-pt (cdr (assoc 'dative_example_pt data)))
          (genitive (cdr (assoc 'genitive data)))
          (genitive-example (cdr (assoc 'genitive_example data)))
+         (genitive-example-pt (cdr (assoc 'genitive_example_pt data)))
          (english (cdr (assoc 'english data)))
          (portuguese (cdr (assoc 'portuguese data)))
          (explanation (cdr (assoc 'explanation data)))
@@ -249,7 +253,7 @@ Returns alist with keys: corrected, article, singular, plural, english, portugue
             (insert "\n")
             (insert (make-string (length word) ?─))
             (insert "\n\n")
-            (insert (or error-msg "Could not parse response. Enable debug mode to see raw output.")))
+            (insert (or error-msg "Não foi possível processar a resposta. Ative o modo debug para ver a saída completa.")))
         ;; Valid response - display formatted
         ;; Show correction if word was misspelled
         (when (and corrected (not (string= (downcase corrected) (downcase word))))
@@ -274,37 +278,65 @@ Returns alist with keys: corrected, article, singular, plural, english, portugue
         (when (or nominative accusative dative genitive)
           (insert (propertize "Cases\n" 'face '(d1-german-gender-label d1-german-gender-entry)))
           (when nominative
-            (insert (propertize "  Nominativ  " 'face 'd1-german-gender-label))
+            (insert "\n")
+            (insert (propertize "  Nominativ " 'face 'd1-german-gender-label))
+            (insert (propertize "(Quem faz a ação?)\n" 'face 'shadow))
+            (insert (propertize "  " 'face 'd1-german-gender-label))
             (insert (propertize nominative 'face 'd1-german-gender-entry))
             (insert "\n")
             (when nominative-example
-              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize "    " 'face 'd1-german-gender-label))
               (insert (propertize nominative-example 'face 'shadow))
-              (insert "\n")))
+              (insert "\n")
+              (when nominative-example-pt
+                (insert (propertize "    " 'face 'd1-german-gender-label))
+                (insert (propertize nominative-example-pt 'face '(d1-german-gender-translation)))
+                (insert "\n"))))
           (when accusative
-            (insert (propertize "  Akkusativ  " 'face 'd1-german-gender-label))
+            (insert "\n")
+            (insert (propertize "  Akkusativ " 'face 'd1-german-gender-label))
+            (insert (propertize "(O quê? / Quem sofre a ação?)\n" 'face 'shadow))
+            (insert (propertize "  " 'face 'd1-german-gender-label))
             (insert (propertize accusative 'face 'd1-german-gender-entry))
             (insert "\n")
             (when accusative-example
-              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize "    " 'face 'd1-german-gender-label))
               (insert (propertize accusative-example 'face 'shadow))
-              (insert "\n")))
+              (insert "\n")
+              (when accusative-example-pt
+                (insert (propertize "    " 'face 'd1-german-gender-label))
+                (insert (propertize accusative-example-pt 'face '(d1-german-gender-translation)))
+                (insert "\n"))))
           (when dative
-            (insert (propertize "  Dativ      " 'face 'd1-german-gender-label))
+            (insert "\n")
+            (insert (propertize "  Dativ     " 'face 'd1-german-gender-label))
+            (insert (propertize "(Pra quem? / A quem?)\n" 'face 'shadow))
+            (insert (propertize "  " 'face 'd1-german-gender-label))
             (insert (propertize dative 'face 'd1-german-gender-entry))
             (insert "\n")
             (when dative-example
-              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize "    " 'face 'd1-german-gender-label))
               (insert (propertize dative-example 'face 'shadow))
-              (insert "\n")))
+              (insert "\n")
+              (when dative-example-pt
+                (insert (propertize "    " 'face 'd1-german-gender-label))
+                (insert (propertize dative-example-pt 'face '(d1-german-gender-translation)))
+                (insert "\n"))))
           (when genitive
-            (insert (propertize "  Genitiv    " 'face 'd1-german-gender-label))
+            (insert "\n")
+            (insert (propertize "  Genitiv   " 'face 'd1-german-gender-label))
+            (insert (propertize "(De quem? / Posse)\n" 'face 'shadow))
+            (insert (propertize "  " 'face 'd1-german-gender-label))
             (insert (propertize genitive 'face 'd1-german-gender-entry))
             (insert "\n")
             (when genitive-example
-              (insert (propertize "             " 'face 'd1-german-gender-label))
+              (insert (propertize "    " 'face 'd1-german-gender-label))
               (insert (propertize genitive-example 'face 'shadow))
-              (insert "\n")))
+              (insert "\n")
+              (when genitive-example-pt
+                (insert (propertize "    " 'face 'd1-german-gender-label))
+                (insert (propertize genitive-example-pt 'face '(d1-german-gender-translation)))
+                (insert "\n"))))
           (insert "\n"))
         ;; Translations
         (insert (propertize "English   " 'face '(d1-german-gender-label d1-german-gender-entry)))
@@ -342,25 +374,29 @@ Reply with ONLY this JSON (no markdown, no explanation outside JSON):
   \"plural\": \"word in plural form\",
   \"nominative\": \"article + word\",
   \"nominative_example\": \"short example sentence\",
+  \"nominative_example_pt\": \"Brazilian Portuguese translation of example\",
   \"accusative\": \"article + word\",
   \"accusative_example\": \"short example sentence\",
+  \"accusative_example_pt\": \"Brazilian Portuguese translation of example\",
   \"dative\": \"article + word\",
   \"dative_example\": \"short example sentence\",
+  \"dative_example_pt\": \"Brazilian Portuguese translation of example\",
   \"genitive\": \"article + word\",
   \"genitive_example\": \"short example sentence\",
+  \"genitive_example_pt\": \"Brazilian Portuguese translation of example\",
   \"english\": \"English translation\",
   \"portuguese\": \"Brazilian Portuguese translation\",
-  \"explanation\": \"Brief explanation of the gender pattern\"
+  \"explanation\": \"Brief explanation of why this German word has this gender, written in Brazilian Portuguese\"
 }
 
-If the word is not a German noun, reply: {\"error\": \"reason\"}"
+If the word is not a German noun, reply: {\"error\": \"reason in Brazilian Portuguese\"}"
                           word)))
-      (message "Checking gender of '%s'..." word)
+      (message "Verificando gênero de '%s'..." word)
       (d1--german-gender-request prompt
                                  (lambda (response)
                                    (if response
                                        (d1--german-gender-display word response)
-                                     (message "No response received")))))))
+                                     (message "Nenhuma resposta recebida")))))))
 
 (defun d1-german-gender-at-point ()
   "Check the grammatical gender of the German word at point.
