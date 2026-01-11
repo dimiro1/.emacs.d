@@ -7,9 +7,9 @@
 ;;
 ;; Additional features:
 ;; - d1-git-browse-remote: Open the current git repository or file in the browser
-;;   Supports GitHub, GitLab, and Codeberg.  Opens the current file's path when
-;;   viewing a file buffer, or the repository root otherwise.  Uses the current
-;;   branch name when available.
+;;   Supports GitHub, GitLab, and Codeberg.  Opens the current file's path at the
+;;   current line number when viewing a file buffer, or the repository root
+;;   otherwise.  Uses the current branch name when available.
 ;;
 
 ;;; Code:
@@ -60,11 +60,18 @@ Returns nil if not in a git repository or unable to determine branch."
             branch))
       (error nil))))
 
-(defun d1--git-remote-to-browse-url (remote-url &optional relative-path branch)
+(defun d1--git-get-current-line ()
+  "Get the current line number.
+Returns nil if not in a file buffer."
+  (when (buffer-file-name)
+    (line-number-at-pos)))
+
+(defun d1--git-remote-to-browse-url (remote-url &optional relative-path branch line-number)
   "Convert REMOTE-URL to a web browsable URL.
 Supports GitHub, GitLab, and Codeberg.
 If RELATIVE-PATH is provided, appends the path to the URL.
 If BRANCH is provided, uses that branch name instead of HEAD.
+If LINE-NUMBER is provided, appends the line anchor to the URL.
 Signals an error for unsupported platforms."
   (let* ((url (string-trim remote-url))
          ;; Strip .git suffix if present
@@ -97,13 +104,19 @@ Signals an error for unsupported platforms."
        ((or (string-match-p "github\\.com" host)
             (string-match-p "gitlab\\.com" host))
         (if relative-path
-            (format "%s/blob/%s/%s" base-url ref relative-path)
+            (let ((file-url (format "%s/blob/%s/%s" base-url ref relative-path)))
+              (if line-number
+                  (format "%s#L%d" file-url line-number)
+                file-url))
           base-url))
 
        ;; Codeberg uses a different format
        ((string-match-p "codeberg\\.org" host)
         (if relative-path
-            (format "%s/src/branch/%s/%s" base-url ref relative-path)
+            (let ((file-url (format "%s/src/branch/%s/%s" base-url ref relative-path)))
+              (if line-number
+                  (format "%s#L%d" file-url line-number)
+                file-url))
           base-url))
 
        ;; Unsupported platform
@@ -113,7 +126,8 @@ Signals an error for unsupported platforms."
 (defun d1-git-browse-remote ()
   "Open the git remote URL in the browser.
 Opens the 'origin' remote.  When viewing a file buffer, opens the current
-file's path on the hosting platform.  Otherwise, opens the repository root.
+file's path on the hosting platform at the current line number.  Otherwise,
+opens the repository root.
 
 Uses the current branch name when available, otherwise falls back to HEAD.
 
@@ -128,7 +142,8 @@ Supports GitHub, GitLab, and Codeberg."
 
     (let* ((relative-path (d1--git-get-relative-path))
            (branch (d1--git-get-current-branch))
-           (browse-url (d1--git-remote-to-browse-url remote-url relative-path branch)))
+           (line-number (d1--git-get-current-line))
+           (browse-url (d1--git-remote-to-browse-url remote-url relative-path branch line-number)))
       (browse-url browse-url)
       (message "Opening: %s" browse-url))))
 
