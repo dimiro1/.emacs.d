@@ -168,15 +168,17 @@ CALLBACK is called with parsed JSON response or nil on error."
      url
      (lambda (status)
        (let ((response nil))
-         (unless (plist-get status :error)
-           (goto-char url-http-end-of-headers)
-           (condition-case nil
-               (setq response (json-parse-string
-                               (buffer-substring-no-properties (point) (point-max))
-                               :object-type 'alist))
-             (error nil)))
-         (kill-buffer (current-buffer))
-         (funcall callback response)))
+         (unwind-protect
+             (progn
+               (unless (plist-get status :error)
+                 (goto-char url-http-end-of-headers)
+                 (condition-case nil
+                     (setq response (json-parse-string
+                                     (buffer-substring-no-properties (point) (point-max))
+                                     :object-type 'alist))
+                   (error nil)))
+               (funcall callback response))
+           (kill-buffer (current-buffer)))))
      nil t)))
 
 (defun d1--german-ollama-running-p ()
