@@ -101,12 +101,14 @@ Returns the matching config plist or nil if not found."
 (defun d1--git-get-remote-url ()
   "Get the URL for the 'origin' remote.
 Returns nil if not in a git repository or 'origin' remote doesn't exist."
-  (when-let* ((root (vc-root-dir))
-              (default-directory root))
-    (condition-case nil
-        (string-trim
-         (shell-command-to-string "git remote get-url origin"))
-      (error nil))))
+  (when-let ((root (vc-root-dir)))
+    (let ((default-directory root))
+      (condition-case nil
+          (let ((url (string-trim
+                      (shell-command-to-string "git remote get-url origin"))))
+            (when (and url (not (string-empty-p url)))
+              url))
+        (error nil)))))
 
 (defun d1--git-get-relative-path ()
   "Get the current buffer's file path relative to the git repository root.
@@ -118,22 +120,24 @@ Returns nil if not in a file buffer or not in a git repository."
 (defun d1--git-get-current-commit ()
   "Get the current commit SHA.
 Returns nil if not in a git repository."
-  (when-let* ((root (vc-root-dir))
-              (default-directory root))
-    (condition-case nil
-        (string-trim
-         (shell-command-to-string "git rev-parse HEAD"))
-      (error nil))))
+  (when-let ((root (vc-root-dir)))
+    (let ((default-directory root))
+      (condition-case nil
+          (let ((sha (string-trim
+                      (shell-command-to-string "git rev-parse HEAD"))))
+            (when (and sha (not (string-empty-p sha)))
+              sha))
+        (error nil)))))
 
 (defun d1--git-has-uncommitted-changes ()
   "Check if the current file or repository has uncommitted changes.
 Returns t if there are uncommitted changes, nil otherwise."
-  (when-let* ((root (vc-root-dir))
-              (default-directory root))
-    (condition-case nil
-        (not (zerop (call-process "git" nil nil nil
-                                  "diff-index" "--quiet" "HEAD" "--")))
-      (error nil))))
+  (when-let ((root (vc-root-dir)))
+    (let ((default-directory root))
+      (condition-case nil
+          (not (zerop (call-process "git" nil nil nil
+                                    "diff-index" "--quiet" "HEAD" "--")))
+        (error nil)))))
 
 (defun d1--git-get-line-range ()
   "Get the current line or line range if a region is selected.
