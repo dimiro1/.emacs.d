@@ -10,6 +10,10 @@
 ;;   Supports GitHub, GitLab, and Codeberg.  Opens the current file's path at the
 ;;   current line number when viewing a file buffer, or the repository root
 ;;   otherwise.  Uses the current branch name when available.
+;;   With prefix argument (C-u), copies the URL to kill ring instead of opening.
+;; - d1-git-copy-remote-url: Copy the git remote URL to the kill ring
+;;   Same behavior as d1-git-browse-remote with prefix argument, but as a
+;;   dedicated function that can be bound to its own keybinding.
 ;;
 
 ;;; Code:
@@ -123,11 +127,11 @@ Signals an error for unsupported platforms."
        (t
         (error "Unsupported git hosting platform: %s" host))))))
 
-(defun d1-git-browse-remote ()
-  "Open the git remote URL in the browser.
-Opens the 'origin' remote.  When viewing a file buffer, opens the current
-file's path on the hosting platform at the current line number.  Otherwise,
-opens the repository root.
+(defun d1-git-copy-remote-url ()
+  "Copy the git remote URL to the kill ring.
+Copies the 'origin' remote URL.  When viewing a file buffer, copies the
+current file's path on the hosting platform at the current line number.
+Otherwise, copies the repository root URL.
 
 Uses the current branch name when available, otherwise falls back to HEAD.
 
@@ -143,9 +147,39 @@ Supports GitHub, GitLab, and Codeberg."
     (let* ((relative-path (d1--git-get-relative-path))
            (branch (d1--git-get-current-branch))
            (line-number (d1--git-get-current-line))
-           (browse-url (d1--git-remote-to-browse-url remote-url relative-path branch line-number)))
-      (browse-url browse-url)
-      (message "Opening: %s" browse-url))))
+           (url (d1--git-remote-to-browse-url remote-url relative-path branch line-number)))
+      (kill-new url)
+      (message "Copied to kill ring: %s" url))))
+
+(defun d1-git-browse-remote (&optional copy-only)
+  "Open the git remote URL in the browser.
+Opens the 'origin' remote.  When viewing a file buffer, opens the current
+file's path on the hosting platform at the current line number.  Otherwise,
+opens the repository root.
+
+With prefix argument COPY-ONLY, copy the URL to the kill ring instead of
+opening it in the browser (calls `d1-git-copy-remote-url').
+
+Uses the current branch name when available, otherwise falls back to HEAD.
+
+Supports GitHub, GitLab, and Codeberg."
+  (interactive "P")
+  (if copy-only
+      (d1-git-copy-remote-url)
+    (progn
+      (unless (vc-root-dir)
+        (user-error "Not in a git repository"))
+
+      (let ((remote-url (d1--git-get-remote-url)))
+        (unless remote-url
+          (user-error "No 'origin' remote found"))
+
+        (let* ((relative-path (d1--git-get-relative-path))
+               (branch (d1--git-get-current-branch))
+               (line-number (d1--git-get-current-line))
+               (url (d1--git-remote-to-browse-url remote-url relative-path branch line-number)))
+          (browse-url url)
+          (message "Opening: %s" url))))))
 
 (provide 'd1-git)
 ;;; d1-git.el ends here
