@@ -54,6 +54,14 @@
 ;; Provides: Magit configuration, Git gutter, time machine, and workflow enhancements
 (use-package d1-git :load-path d1-modules-dir :demand t)
 
+;; Git Permalink - Generate permalinks to files on git hosting platforms
+;; Provides: Browse/copy permalinks to GitHub, GitLab, Codeberg with line numbers
+;; Usage: M-x d1-git-browse-permalink or C-c g o (browse)
+;;        M-x d1-git-copy-permalink or C-u C-c g o (copy to kill ring)
+(use-package d1-git-permalink
+  :load-path d1-modules-dir
+  :bind ("C-c g o" . d1-git-browse-permalink))
+
 ;;; Optional Features
 
 ;; Evil Mode - Vim-like editing experience
