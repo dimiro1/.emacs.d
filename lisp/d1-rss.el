@@ -12,7 +12,8 @@
   (elfeed-feeds '("https://kxsh.dev/index.xml"
                   "https://bitmaybewise.substack.com/feed"
                   "https://dimiro1.dev/feed/index.xml"
-                  "https://xenodium.com/feed")))
+                  "https://xenodium.com/feed"
+                  "https://addyosmani.com/rss.xml")))
 
 
 (provide 'd1-rss)
