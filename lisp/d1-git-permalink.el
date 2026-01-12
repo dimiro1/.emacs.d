@@ -101,7 +101,7 @@ Returns the matching config plist or nil if not found."
 (defun d1--git-get-remote-url ()
   "Get the URL for the 'origin' remote.
 Returns nil if not in a git repository or 'origin' remote doesn't exist."
-  (when-let ((root (vc-root-dir)))
+  (when-let* ((root (vc-root-dir)))
     (let ((default-directory root))
       (condition-case nil
           (let ((url (string-trim
@@ -120,7 +120,7 @@ Returns nil if not in a file buffer or not in a git repository."
 (defun d1--git-get-current-commit ()
   "Get the current commit SHA.
 Returns nil if not in a git repository."
-  (when-let ((root (vc-root-dir)))
+  (when-let* ((root (vc-root-dir)))
     (let ((default-directory root))
       (condition-case nil
           (let ((sha (string-trim
@@ -132,7 +132,7 @@ Returns nil if not in a git repository."
 (defun d1--git-has-uncommitted-changes ()
   "Check if the current file or repository has uncommitted changes.
 Returns t if there are uncommitted changes, nil otherwise."
-  (when-let ((root (vc-root-dir)))
+  (when-let* ((root (vc-root-dir)))
     (let ((default-directory root))
       (condition-case nil
           (not (zerop (call-process "git" nil nil nil
