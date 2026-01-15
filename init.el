@@ -121,4 +121,9 @@
   :bind
   ("C-c p n" . d1-npm-run))
 
+;; Homebrew Package Manager - Visual package management for Homebrew
+;; Provides: Tabulated list of packages, installation tracking, tap support
+;; Usage: M-x d1-homebrew
+(use-package d1-homebrew :load-path d1-modules-dir)
+
 ;;; init.el ends here
