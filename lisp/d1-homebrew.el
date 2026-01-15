@@ -22,11 +22,6 @@
 
 (require 'cl-lib)
 (require 'tabulated-list)
-(require 'spinner)
-
-(declare-function spinner-create "spinner")
-(declare-function spinner-start "spinner")
-(declare-function spinner-stop "spinner")
 
 ;;; Configuration Variables
 
@@ -84,8 +79,6 @@ Keys are formula names, values are status symbols:
 (defvar d1--homebrew-current-install nil
   "Currently installing package, or nil if none.")
 
-(defvar-local d1--homebrew-spinner nil
-  "Spinner instance for installation progress.")
 
 ;;; Faces
 
@@ -129,6 +122,17 @@ STATUS should be: pending, checking, installing, installed, or failed."
     ('installed  (propertize "installed"  'face 'd1-homebrew-installed))
     ('failed     (propertize "FAILED"     'face 'd1-homebrew-failed))
     (_           (propertize "unknown"    'face 'd1-homebrew-pending))))
+
+;;; Validation
+
+(defun d1--homebrew-valid-package-p (pkg)
+  "Return non-nil if PKG is a valid package plist.
+A valid package must have :name and :formula as non-empty strings."
+  (and (listp pkg)
+       (cl-typep (plist-get pkg :name) 'string)
+       (cl-typep (plist-get pkg :formula) 'string)
+       (not (string-empty-p (plist-get pkg :name)))
+       (not (string-empty-p (plist-get pkg :formula)))))
 
 ;;; Homebrew Check Functions
 
@@ -195,20 +199,20 @@ Updates the status hash table and refreshes the buffer."
 
 (defun d1--homebrew-build-entries ()
   "Build the list of entries for `tabulated-list-mode`."
-  (mapcar (lambda (pkg)
-            (let* ((name (plist-get pkg :name))
-                   (formula (plist-get pkg :formula))
-                   (cask (plist-get pkg :cask))
-                   (tap (plist-get pkg :tap))
-                   (status (d1--homebrew-get-status formula))
-                   (formula-display (concat formula
-                                            (when cask " (cask)")
-                                            (when tap (format " [%s]" tap)))))
-              (list formula
-                    (vector name
-                            (d1--homebrew-status-string status)
-                            formula-display))))
-          d1-homebrew-packages))
+  (cl-loop for pkg in d1-homebrew-packages
+           when (d1--homebrew-valid-package-p pkg)
+           collect (let* ((name (plist-get pkg :name))
+                          (formula (plist-get pkg :formula))
+                          (cask (plist-get pkg :cask))
+                          (tap (plist-get pkg :tap))
+                          (status (d1--homebrew-get-status formula))
+                          (formula-display (concat formula
+                                                   (when cask " (cask)")
+                                                   (when tap (format " [%s]" tap)))))
+                     (list formula
+                           (vector name
+                                   (d1--homebrew-status-string status)
+                                   formula-display)))))
 
 ;;; Installation Logic
 
@@ -263,10 +267,7 @@ Output is redirected to a temp file to avoid ANSI escape code issues."
       (goto-char (point-max))
       (insert (propertize (format "\n=== Installing %s ===\n" formula)
                           'face '(:weight bold)))
-      (insert (format "$ %s\n" command))
-      ;; Start spinner
-      (setq d1--homebrew-spinner (spinner-create 'progress-bar t))
-      (spinner-start d1--homebrew-spinner))
+      (insert (format "$ %s\n" command)))
 
     (display-buffer buf '(display-buffer-at-bottom (window-height . 15)))
 
@@ -276,10 +277,6 @@ Output is redirected to a temp file to avoid ANSI escape code issues."
      :command (list "sh" "-c" full-command)
      :sentinel (lambda (proc _event)
                  (when (memq (process-status proc) '(exit signal))
-                   ;; Stop spinner
-                   (when d1--homebrew-spinner
-                     (spinner-stop d1--homebrew-spinner)
-                     (setq d1--homebrew-spinner nil))
                    (let* ((exit-code (process-exit-status proc))
                           (success (= 0 exit-code))
                           (formula (replace-regexp-in-string

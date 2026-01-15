@@ -10,6 +10,8 @@ test:
 		-l ert \
 		-l d1-git-permalink.el \
 		-l d1-git-permalink-test.el \
+		-l d1-homebrew.el \
+		-l d1-homebrew-test.el \
 		-f ert-run-tests-batch-and-exit
 
 clean:
