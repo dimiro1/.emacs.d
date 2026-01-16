@@ -126,4 +126,9 @@
 ;; Usage: M-x d1-homebrew
 (use-package d1-homebrew :load-path d1-modules-dir)
 
+;; AI Coding Agents - Native agentic integrations for Claude Code, Gemini CLI, etc.
+;; Provides: Interactive shell buffers for AI coding agents
+;; Usage: M-x agent-shell, M-x agent-shell-new-shell, M-x agent-shell-toggle
+(use-package d1-ai :load-path d1-modules-dir)
+
 ;;; init.el ends here
