@@ -29,6 +29,7 @@
 (defvar d1-homebrew-packages
   '(;; Formulae
     (:name "Bun" :formula "bun")
+    (:name "Node" :formula "node")
     (:name "Deno" :formula "deno")
     (:name "Go" :formula "go")
     (:name "OpenCode" :formula "opencode")
