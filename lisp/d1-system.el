@@ -200,5 +200,11 @@ ARGS is a list of file paths to display."
   ;; Set the enhanced cat command.
   (advice-add 'eshell/cat :around #'d1-eshell-cat-with-images))
 
+;;;###autoload
+(defun d1-audible-tools ()
+  "Open Audible AAX to M4B conversion tool in browser."
+  (interactive)
+  (browse-url "https://audible-tools.kamsker.at/"))
+
 (provide 'd1-system)
 ;;; d1-system.el ends here
