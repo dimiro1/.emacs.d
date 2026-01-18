@@ -44,6 +44,8 @@
     (:name "rbenv" :formula "rbenv")
     (:name "Babashka" :formula "babashka")
     (:name "GitHub CLI" :formula "gh")
+    (:name "UV" :formula "uv")
+    (:name "ffmpeg" :formula "ffmpeg")
     ;; Casks
     (:name "Claude Code" :formula "claude-code" :cask t)
     (:name "Colemak-DH" :formula "colemak-dh" :cask t)
