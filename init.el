@@ -131,4 +131,9 @@
 ;; Usage: M-x agent-shell, M-x agent-shell-new-shell, M-x agent-shell-toggle
 (use-package d1-ai :load-path d1-modules-dir)
 
+;; Audible AAX to M4B Conversion
+;; Provides: Convert Audible AAX files to M4B format
+;; Usage: M-x d1-convert-aax-to-m4b or M-x d1-dired-convert-aax-to-m4b in dired
+(use-package d1-audible :load-path d1-modules-dir)
+
 ;;; init.el ends here
