@@ -138,16 +138,37 @@ Emacs to pick up the changes without restarting."
   ;; Zoxide integration - smart directory jumping
   (defun eshell/z (&rest args)
     "Jump to a directory using zoxide.
-Usage: z [keywords...]"
-    (if (null args)
-        (eshell/cd "~")
+Usage: z [keywords...]
+
+Mimics standard zoxide behavior:
+- No args: cd to home directory
+- Single arg '-': cd to previous directory
+- Single arg that is a valid directory: use regular cd
+- Otherwise: query zoxide database"
+    (cond
+     ;; No arguments - go home
+     ((null args)
+      (eshell/cd "~"))
+     ;; Single argument '-' - go to previous directory
+     ((and (= (length args) 1)
+           (string= (car args) "-"))
+      (eshell/cd "-"))
+     ;; Single argument that is a valid directory - use regular cd
+     ((and (= (length args) 1)
+           (file-directory-p (expand-file-name (car args))))
+      (eshell/cd (car args)))
+     ;; Otherwise - query zoxide database
+     (t
       (let* ((query (string-join args " "))
              (result (string-trim
                       (shell-command-to-string
-                       (concat "zoxide query -- " (shell-quote-argument query))))))
+                       (concat "zoxide query --exclude "
+                               (shell-quote-argument (eshell/pwd))
+                               " -- "
+                               (shell-quote-argument query))))))
         (if (string-empty-p result)
             (eshell-error (format "zoxide: no match found for '%s'" query))
-          (eshell/cd result)))))
+          (eshell/cd result))))))
 
   (defun eshell/zi (&rest args)
     "Interactively select a directory using zoxide and Emacs completion.
