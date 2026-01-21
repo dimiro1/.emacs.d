@@ -84,6 +84,10 @@
 ;; Atom and RSS feeds.
 (use-package d1-rss :load-path d1-modules-dir)
 
+;; Reading - EPUB and document reading
+;; Provides: nov.el for EPUB files
+(use-package d1-reading :load-path d1-modules-dir)
+
 ;; Utilities - General-purpose utility functions
 ;; Provides: Kill process by port, kill process with completion
 ;; Usage: M-x d1-kill-process-on-port or C-c x p
