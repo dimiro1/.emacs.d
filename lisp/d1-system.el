@@ -219,7 +219,24 @@ ARGS is a list of file paths to display."
       (apply orig-fun args)))
 
   ;; Set the enhanced cat command.
-  (advice-add 'eshell/cat :around #'d1-eshell-cat-with-images))
+  (advice-add 'eshell/cat :around #'d1-eshell-cat-with-images)
+
+  ;; File opening commands
+  (defun eshell/ff (&rest args)
+    "Open a file in the current window.
+Usage: ff FILE"
+    (if (null args)
+        (call-interactively #'find-file)
+      (mapc #'find-file (flatten-tree args))
+      nil))
+
+  (defun eshell/4f (&rest args)
+    "Open a file in the other window.
+Usage: 4f FILE"
+    (if (null args)
+        (call-interactively #'find-file-other-window)
+      (mapc #'find-file-other-window (flatten-tree args))
+      nil)))
 
 (provide 'd1-system)
 ;;; d1-system.el ends here
