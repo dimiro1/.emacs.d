@@ -35,6 +35,10 @@
 ;; authentication, and file persistence
 (use-package d1-system :load-path d1-modules-dir :demand t)
 
+;; Eshell - Shell configuration
+;; Provides: Prompt customization, aliases, zoxide integration, enhanced commands
+(use-package d1-eshell :load-path d1-modules-dir :demand t)
+
 ;; Completion System - Complete completion framework
 ;; Provides: In-buffer completion (Corfu), minibuffer completion (Vertico + Marginalia),
 ;; fuzzy matching (Orderless), and enhanced completion experience

@@ -5,84 +5,77 @@
 ;; System integration combining environment configuration (PATH, shell variables)
 ;; and file management (backups, auto-save, recent files).
 ;;
-;; This module handles all system-level integration and file persistence.
-;;
 
 ;;; Code:
 
-;;; Core System Configuration
-;; PATH, environment variables, and system integration
+;;;; ============================================================
+;;;; Environment & PATH
+;;;; ============================================================
+
+;;; Shell Environment Integration
+;; On macOS, GUI Emacs doesn't inherit shell environment variables.
+;; This package copies them from the shell at startup.
+(use-package exec-path-from-shell
+  :init
+  (exec-path-from-shell-initialize)
+  :custom
+  (exec-path-from-shell-variables
+   '("PATH" "GOPATH" "GOROOT" "CARGO_HOME" "RUSTUP_HOME")))
+
+;;; Environment Variables & GNU Tools
+(use-package emacs
+  :config
+  ;; Set default editor for git commits and other tools
+  (setenv "EDITOR" "emacsclient")
+  (setenv "VISUAL" "emacsclient")
+
+  ;; Use GNU ls if available (from coreutils)
+  ;; macOS ships with BSD ls which lacks --group-directories-first
+  ;; Install with: brew install coreutils
+  (if (executable-find "gls")
+      (progn
+        (setopt insert-directory-program "gls")
+        (when (eq 0 (call-process "gls" nil nil nil "--group-directories-first" "--version"))
+          (message "Using GNU ls (gls) for dired")))
+    (message "GNU ls (gls) not found. Install with: brew install coreutils")
+    (with-eval-after-load 'dired
+      (setopt dired-listing-switches "-alh"))))
+
+(defun d1-refresh-environment ()
+  "Refresh environment variables from shell.
+Useful after updating shell configuration."
+  (interactive)
+  (when (fboundp 'exec-path-from-shell-initialize)
+    (exec-path-from-shell-initialize)
+    (message "Environment refreshed from shell")))
+
+;;;; ============================================================
+;;;; File Management
+;;;; ============================================================
+
+;;; Backups & Auto-save
 (use-package emacs
   :custom
-  ;; no-littering package handles backup directory configuration
-  ;; Backups are stored in ~/.emacs.d/var/backup/
+  ;; Backup settings (stored in ~/.emacs.d/var/backup/ via no-littering)
   (backup-by-copying t)
   (delete-old-versions t)
   (kept-new-versions 6)
   (kept-old-versions 2)
   (version-control t)
-
-  ;; Store customize-generated settings in a separate file
-  ;; This keeps init.el clean and makes version control easier
-  (custom-file (no-littering-expand-etc-file-name "custom.el"))
-
-  ;; no-littering handles auto-save file locations
-  ;; Auto-saves are stored in ~/.emacs.d/var/auto-save/
+  ;; Auto-save settings (stored in ~/.emacs.d/var/auto-save/ via no-littering)
   (auto-save-interval 300)
-  (auto-save-timeout 30)
+  (auto-save-timeout 30))
 
+;;; Custom File
+;; Store customize-generated settings separately to keep init.el clean
+(use-package emacs
+  :custom
+  (custom-file (no-littering-expand-etc-file-name "custom.el"))
   :config
-  ;; Set default editor for git commits and other tools
-  ;; This ensures external tools that need an editor will use Emacs
-  (setenv "EDITOR" "emacsclient")
-  (setenv "VISUAL" "emacsclient")
-
-  ;; Use GNU ls if available (from coreutils)
-  ;;
-  ;; Why GNU ls (gls)?
-  ;; - macOS ships with BSD ls, which lacks many GNU ls features
-  ;; - Most importantly: BSD ls doesn't support --group-directories-first
-  ;; - --group-directories-first shows directories before files in dired
-  ;; - This makes file browsing much more organized and user-friendly
-  ;;
-  ;; Installation: brew install coreutils
-  ;; This installs GNU versions with 'g' prefix: gls, gcp, gmv, etc.
-  (when (executable-find "gls")
-    (setopt insert-directory-program "gls")
-    ;; Verify gls supports the options we want to use
-    (when (eq 0 (call-process "gls" nil nil nil "--group-directories-first" "--version"))
-      (message "Using GNU ls (gls) for dired with --group-directories-first")))
-
-  ;; Fallback: if gls is not available, adjust dired settings for BSD ls
-  (unless (executable-find "gls")
-    (message "GNU ls (gls) not found. Install with: brew install coreutils")
-    (message "Using BSD ls - directories and files will be mixed in dired")
-    ;; BSD ls doesn't support --group-directories-first, so use simpler options
-    ;; This setting will override the one in d1-navigation.el
-    (with-eval-after-load 'dired
-      (setopt dired-listing-switches "-alh")))
-
-  :config
-  ;; Load custom file if it exists
-  ;; no-littering sets custom-file to ~/.emacs.d/etc/custom.el
   (when (and custom-file (file-exists-p custom-file))
     (load custom-file)))
 
-;;; Shell Environment Integration
-;; On macOS, GUI Emacs doesn't inherit shell environment variables
-;; This package fixes that issue
-(use-package exec-path-from-shell
-  :init
-  ;; Copy environment variables from shell
-  ;; This ensures tools work the same in Emacs as in terminal
-  (exec-path-from-shell-initialize)
-  :custom
-  ;; Copy these specific environment variables
-  ;; Add more variables here if needed for your tools
-  (exec-path-from-shell-variables
-   '("PATH" "GOPATH" "GOROOT" "CARGO_HOME" "RUSTUP_HOME")))
-
-;;; Auto-revert Files
+;;; Auto-revert
 ;; Automatically reload files when they change on disk
 (use-package autorevert
   :config
@@ -92,7 +85,6 @@
   (auto-revert-verbose nil))
 
 ;;; Recent Files
-;; Track recently opened files for quick access
 (use-package recentf
   :custom
   (recentf-max-menu-items 100)
@@ -104,139 +96,7 @@
   (add-to-list 'recentf-exclude (regexp-quote (expand-file-name "var/" user-emacs-directory)))
   (add-to-list 'recentf-exclude (regexp-quote (expand-file-name "etc/" user-emacs-directory)))
   :bind
-  ;; Quick access to recent files
   ("C-c f r" . recentf-open-files))
-
-;;; Helper Functions
-(defun d1-refresh-environment ()
-  "Refresh environment variables from shell.
-Useful when you've updated your shell configuration and want
-Emacs to pick up the changes without restarting."
-  (interactive)
-  (when (fboundp 'exec-path-from-shell-initialize)
-    (exec-path-from-shell-initialize)
-    (message "Environment refreshed from shell")))
-
-;;; Eshell Configuration
-;; Minimalistic oh-my-zsh inspired prompt
-(use-package eshell
-  :config
-  (defun d1-eshell-prompt ()
-    "Minimalistic eshell prompt inspired by oh-my-zsh."
-    (let* ((path (abbreviate-file-name (eshell/pwd)))
-           (parts (split-string path "/" t))
-           (last-3 (last parts 3)))
-      (concat
-       (propertize (string-join last-3 "/") 'face '(:foreground "cyan"))
-       "\n"
-       (propertize "❯" 'face '(:foreground "magenta"))
-       " ")))
-
-  (setopt eshell-prompt-function #'d1-eshell-prompt)
-  (setopt eshell-prompt-regexp "^❯ ")
-
-  ;; Zoxide integration - smart directory jumping
-  (defun eshell/z (&rest args)
-    "Jump to a directory using zoxide.
-Usage: z [keywords...]
-
-Mimics standard zoxide behavior:
-- No args: cd to home directory
-- Single arg '-': cd to previous directory
-- Single arg that is a valid directory: use regular cd
-- Otherwise: query zoxide database"
-    (cond
-     ;; No arguments - go home
-     ((null args)
-      (eshell/cd "~"))
-     ;; Single argument '-' - go to previous directory
-     ((and (= (length args) 1)
-           (string= (car args) "-"))
-      (eshell/cd "-"))
-     ;; Single argument that is a valid directory - use regular cd
-     ((and (= (length args) 1)
-           (file-directory-p (expand-file-name (car args))))
-      (eshell/cd (car args)))
-     ;; Otherwise - query zoxide database
-     (t
-      (let* ((query (string-join args " "))
-             (result (string-trim
-                      (shell-command-to-string
-                       (concat "zoxide query --exclude "
-                               (shell-quote-argument (eshell/pwd))
-                               " -- "
-                               (shell-quote-argument query))))))
-        (if (string-empty-p result)
-            (eshell-error (format "zoxide: no match found for '%s'" query))
-          (eshell/cd result))))))
-
-  (defun eshell/zi (&rest args)
-    "Interactively select a directory using zoxide and Emacs completion.
-Usage: zi [keywords...]"
-    (let* ((query (if args (string-join args " ") ""))
-           (cmd (if (string-empty-p query)
-                    "zoxide query --list"
-                  (concat "zoxide query --list -- " (shell-quote-argument query))))
-           (output (shell-command-to-string cmd))
-           (dirs (split-string output "\n" t)))
-      (if (null dirs)
-          (eshell-error (format "zoxide: no matches found%s"
-                                (if (string-empty-p query) "" (format " for '%s'" query))))
-        (let ((selected (completing-read "Select directory: " dirs nil t)))
-          (when selected
-            (eshell/cd selected))))))
-
-  (defun d1-eshell-zoxide-add ()
-    "Add current directory to zoxide database."
-    (let ((dir (eshell/pwd)))
-      (call-process "zoxide" nil 0 nil "add" dir)))
-
-  ;; Update zoxide when changing directories in eshell
-  (add-hook 'eshell-directory-change-hook #'d1-eshell-zoxide-add)
-
-  ;; Enhanced cat command with image rendering using advice
-  ;; Inspired by https://xenodium.com/rinku-cli-link-previews
-  (defun d1-eshell-cat-with-images (orig-fun &rest args)
-    "Display images inline when using cat in eshell.
-ORIG-FUN is the original cat function.
-ARGS is a list of file paths to display."
-    (if (seq-every-p (lambda (arg)
-                       (and (stringp arg)
-                            (file-exists-p arg)
-                            (image-type-from-file-name arg)))
-                     args)
-        ;; All args are images - render them
-        (with-temp-buffer
-          (insert "\n")
-          (dolist (path args)
-            (let ((image (create-image (expand-file-name path)
-                                       (image-type-from-file-name path)
-                                       nil :max-width 800)))
-              (insert-image image))
-            (insert "\n"))
-          (buffer-string))
-      ;; Not all args are images - use original cat function
-      (apply orig-fun args)))
-
-  ;; Set the enhanced cat command.
-  (advice-add 'eshell/cat :around #'d1-eshell-cat-with-images)
-
-  ;; File opening commands
-  (defun eshell/ff (&rest args)
-    "Open a file in the current window.
-Usage: ff FILE"
-    (if (null args)
-        (call-interactively #'find-file)
-      (mapc #'find-file (flatten-tree args))
-      nil))
-
-  (defun eshell/4f (&rest args)
-    "Open a file in the other window.
-Usage: 4f FILE"
-    (if (null args)
-        (call-interactively #'find-file-other-window)
-      (mapc #'find-file-other-window (flatten-tree args))
-      nil)))
 
 (provide 'd1-system)
 ;;; d1-system.el ends here

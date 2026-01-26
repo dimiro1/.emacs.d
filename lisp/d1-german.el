@@ -240,7 +240,7 @@ Returns alist with keys: corrected, article, singular, plural, english, portugue
                            response)))
              (cleaned (string-trim json-str)))
         (json-parse-string cleaned :object-type 'alist))
-    (error 
+    (error
      (when d1-german-debug
        (message "JSON parse error: %S" err))
      nil)))
