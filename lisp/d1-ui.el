@@ -39,5 +39,12 @@
   ;; Avoids conflicts with other UI packages like which-key
   :hook (emacs-startup . spacious-padding-mode))
 
+;;; Terminal Mouse Support
+;; Enable mouse support when running in terminal mode
+(use-package xt-mouse
+  :unless (display-graphic-p)
+  :config
+  (xterm-mouse-mode 1))
+
 (provide 'd1-ui)
 ;;; d1-ui.el ends here
