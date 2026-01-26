@@ -46,6 +46,7 @@
     (:name "GitHub CLI" :formula "gh")
     (:name "UV" :formula "uv")
     (:name "ffmpeg" :formula "ffmpeg")
+    (:name "inetutils" :formula "inetutils")
     ;; Casks
     (:name "Claude Code" :formula "claude-code" :cask t)
     (:name "Colemak-DH" :formula "colemak-dh" :cask t)
