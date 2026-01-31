@@ -362,47 +362,59 @@ PKG is a plist from `d1-homebrew-packages'."
     (d1--homebrew-refresh-buffer)
     (d1--homebrew-run-command command formula)))
 
+(defun d1--homebrew-log-command (buf formula command)
+  "Insert a header and COMMAND into output buffer BUF for FORMULA."
+  (with-current-buffer buf
+    (read-only-mode -1)
+    (goto-char (point-max))
+    (insert (propertize (format "\n=== Installing %s ===\n" formula)
+                        'face '(:weight bold)))
+    (insert (format "$ %s\n" command))))
+
+(defun d1--homebrew-log-result (buf log-file exit-code)
+  "Insert contents of LOG-FILE and result banner into BUF.
+EXIT-CODE determines success or failure display."
+  (let* ((success (= 0 exit-code))
+         (output (with-temp-buffer
+                   (insert-file-contents log-file)
+                   (buffer-string))))
+    (delete-file log-file)
+    (with-current-buffer buf
+      (let ((inhibit-read-only t))
+        (goto-char (point-max))
+        (insert output)
+        (insert (if success
+                    (propertize "\n=== Done ===\n" 'face 'd1-homebrew-installed)
+                  (propertize (format "\n=== Failed (exit %d) ===\n" exit-code)
+                              'face 'd1-homebrew-failed)))))))
+
+(defun d1--homebrew-install-sentinel (proc _event)
+  "Handle completion of a brew install PROC."
+  (when (memq (process-status proc) '(exit signal))
+    (let* ((exit-code (process-exit-status proc))
+           (formula (process-get proc 'formula))
+           (log-file (process-get proc 'log-file))
+           (buf (process-get proc 'output-buffer)))
+      (d1--homebrew-log-result buf log-file exit-code)
+      (d1--homebrew-set-status formula (if (= 0 exit-code) 'installed 'failed))
+      (d1--homebrew-process-next-install))))
+
 (defun d1--homebrew-run-command (command formula)
   "Run COMMAND asynchronously and update status for FORMULA when done.
 Output is redirected to a temp file to avoid ANSI escape code issues."
   (let* ((buf (get-buffer-create d1--homebrew-output-buffer-name))
          (log-file (make-temp-file "brew-install-" nil ".log"))
          (full-command (format "%s > %s 2>&1" command log-file)))
-    (with-current-buffer buf
-      (read-only-mode -1)
-      (goto-char (point-max))
-      (insert (propertize (format "\n=== Installing %s ===\n" formula)
-                          'face '(:weight bold)))
-      (insert (format "$ %s\n" command)))
-
+    (d1--homebrew-log-command buf formula command)
     (display-buffer buf '(display-buffer-at-bottom (window-height . 15)))
-
     (let ((proc (make-process
                  :name (format "brew-install-%s" formula)
                  :buffer nil
                  :command (list "sh" "-c" full-command)
-                 :sentinel (lambda (proc _event)
-                             (when (memq (process-status proc) '(exit signal))
-                               (let* ((exit-code (process-exit-status proc))
-                                      (success (= 0 exit-code))
-                                      (formula (process-get proc 'formula))
-                                      (log-file (process-get proc 'log-file))
-                                      (output (with-temp-buffer
-                                                (insert-file-contents log-file)
-                                                (buffer-string))))
-                                 (delete-file log-file)
-                                 (with-current-buffer buf
-                                   (let ((inhibit-read-only t))
-                                     (goto-char (point-max))
-                                     (insert output)
-                                     (insert (if success
-                                                 (propertize "\n=== Done ===\n" 'face 'd1-homebrew-installed)
-                                               (propertize (format "\n=== Failed (exit %d) ===\n" exit-code)
-                                                           'face 'd1-homebrew-failed)))))
-                                 (d1--homebrew-set-status formula (if success 'installed 'failed))
-                                 (d1--homebrew-process-next-install)))))))
+                 :sentinel #'d1--homebrew-install-sentinel)))
       (process-put proc 'formula formula)
-      (process-put proc 'log-file log-file))))
+      (process-put proc 'log-file log-file)
+      (process-put proc 'output-buffer buf))))
 
 ;;; Tabulated List Mode
 
