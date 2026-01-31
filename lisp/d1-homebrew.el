@@ -265,8 +265,8 @@ that have newer versions available."
                        (latest (alist-get 'current_version entry)))
                    (when (member name known-formulas)
                      (d1--homebrew-set-status name 'outdated)
-                     (when current
-                       (puthash name current d1--homebrew-package-versions))
+                     (when (and current (> (length current) 0))
+                       (puthash name (aref current 0) d1--homebrew-package-versions))
                      (when latest
                        (puthash name latest d1--homebrew-package-latest-versions))))))
              (d1--homebrew-refresh-buffer))))))))
