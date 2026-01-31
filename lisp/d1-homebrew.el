@@ -7,8 +7,9 @@
 ;;
 ;; Usage:
 ;;   M-x d1-homebrew - Open the package manager
-;;   RET - Install package at point
+;;   RET - Install or upgrade package at point
 ;;   i   - Install all pending packages
+;;   u   - Upgrade all outdated packages
 ;;   I   - Show brew info for package at point
 ;;   r   - Refresh status check
 ;;   g   - Revert buffer
@@ -77,6 +78,17 @@ Each entry is a plist with:
 Keys are formula names, values are status symbols:
   pending, checking, installing, installed, failed")
 
+(defvar d1--homebrew-package-versions (make-hash-table :test 'equal)
+  "Hash table tracking installed version of each package.
+Keys are formula names, values are version strings.")
+
+(defvar d1--homebrew-package-latest-versions (make-hash-table :test 'equal)
+  "Hash table tracking latest available version of outdated packages.
+Keys are formula names, values are version strings.")
+
+(defvar d1--homebrew-check-remaining 0
+  "Counter tracking how many per-package checks are still running.")
+
 (defvar d1--homebrew-install-queue nil
   "Queue of packages waiting to be installed.")
 
@@ -91,19 +103,23 @@ Keys are formula names, values are status symbols:
   "Face for pending packages.")
 
 (defface d1-homebrew-checking
-  '((t :foreground "yellow"))
+  '((t :inherit warning))
   "Face for packages being checked.")
 
 (defface d1-homebrew-installing
-  '((t :foreground "cyan" :weight bold))
+  '((t :inherit font-lock-keyword-face :weight bold))
   "Face for packages being installed.")
 
 (defface d1-homebrew-installed
-  '((t :foreground "green"))
+  '((t :inherit success))
   "Face for installed packages.")
 
+(defface d1-homebrew-outdated
+  '((t :inherit warning :weight bold))
+  "Face for packages with available updates.")
+
 (defface d1-homebrew-failed
-  '((t :foreground "red" :weight bold))
+  '((t :inherit error :weight bold))
   "Face for failed installations.")
 
 ;;; Status and State Management
@@ -124,6 +140,7 @@ STATUS should be: pending, checking, installing, installed, or failed."
     ('checking   (propertize "checking"   'face 'd1-homebrew-checking))
     ('installing (propertize "installing" 'face 'd1-homebrew-installing))
     ('installed  (propertize "installed"  'face 'd1-homebrew-installed))
+    ('outdated   (propertize "outdated"   'face 'd1-homebrew-outdated))
     ('failed     (propertize "FAILED"     'face 'd1-homebrew-failed))
     (_           (propertize "unknown"    'face 'd1-homebrew-pending))))
 
@@ -160,34 +177,99 @@ If CASK is non-nil, check cask list instead of formula list."
 (defun d1--homebrew-check-all-packages ()
   "Check installation status of all packages asynchronously.
 Updates the status hash table and refreshes the buffer."
-  ;; Set all to checking first
+  (setq d1--homebrew-check-remaining (length d1-homebrew-packages))
+  (clrhash d1--homebrew-package-latest-versions)
   (dolist (pkg d1-homebrew-packages)
-    (let ((formula (plist-get pkg :formula)))
-      (d1--homebrew-set-status formula 'checking)))
+    (d1--homebrew-set-status (plist-get pkg :formula) 'checking))
   (d1--homebrew-refresh-buffer)
-
-  ;; Run checks asynchronously
   (dolist (pkg d1-homebrew-packages)
-    (let* ((formula (plist-get pkg :formula))
-           (cask (plist-get pkg :cask))
-           (quoted (shell-quote-argument formula)))
-      (make-process
-       :name (format "brew-check-%s" formula)
-       :command (list "sh" "-c"
-                      (if cask
-                          (format "brew list --cask %s >/dev/null 2>&1" quoted)
-                        (format "brew list --formula %s >/dev/null 2>&1" quoted)))
-       :sentinel (lambda (proc _event)
-                   (when (memq (process-status proc) '(exit signal))
-                     (let ((formula (replace-regexp-in-string
-                                     "^brew-check-" ""
-                                     (process-name proc))))
-                       (d1--homebrew-set-status
-                        formula
-                        (if (= 0 (process-exit-status proc))
-                            'installed
-                          'pending))
-                       (d1--homebrew-refresh-buffer))))))))
+    (d1--homebrew-check-package pkg)))
+
+(defun d1--homebrew-check-package (pkg)
+  "Check installation status of PKG asynchronously.
+PKG is a plist from `d1-homebrew-packages'."
+  (let* ((formula (plist-get pkg :formula))
+         (cask (plist-get pkg :cask))
+         (quoted (shell-quote-argument formula))
+         (proc (make-process
+                :name (format "brew-check-%s" formula)
+                :command (list "sh" "-c"
+                               (if cask
+                                   (format "brew list --cask --versions %s 2>/dev/null" quoted)
+                                 (format "brew list --formula --versions %s 2>/dev/null" quoted)))
+                :filter #'d1--homebrew-process-filter
+                :sentinel #'d1--homebrew-check-sentinel)))
+    (process-put proc 'formula formula)))
+
+(defun d1--homebrew-process-filter (proc output)
+  "Accumulate OUTPUT from PROC into the process property `output'."
+  (let ((prev (process-get proc 'output)))
+    (process-put proc 'output (concat (or prev "") output))))
+
+(defun d1--homebrew-check-sentinel (proc _event)
+  "Handle completion of a package check PROC.
+Updates the package status and version, then triggers the outdated
+check once all per-package checks have completed."
+  (when (memq (process-status proc) '(exit signal))
+    (let* ((formula (process-get proc 'formula))
+           (installed (= 0 (process-exit-status proc)))
+           (output (string-trim (or (process-get proc 'output) "")))
+           (version (when (and installed (not (string-empty-p output)))
+                      (car (last (split-string output))))))
+      (d1--homebrew-set-status formula (if installed 'installed 'pending))
+      (when version
+        (puthash formula version d1--homebrew-package-versions))
+      (d1--homebrew-refresh-buffer)
+      (cl-decf d1--homebrew-check-remaining)
+      (when (<= d1--homebrew-check-remaining 0)
+        (d1--homebrew-check-outdated)))))
+
+(defun d1--homebrew-check-outdated ()
+  "Check for outdated packages asynchronously.
+Runs `brew outdated --json=v2` and updates status for packages
+that have newer versions available."
+  (let ((known-formulas (mapcar (lambda (p) (plist-get p :formula))
+                                d1-homebrew-packages)))
+    (make-process
+     :name "brew-check-outdated"
+     :command (list "sh" "-c" "brew outdated --json=v2 2>/dev/null")
+     :filter (lambda (proc output)
+               (let ((prev (process-get proc 'output)))
+                 (process-put proc 'output (concat (or prev "") output))))
+     :sentinel
+     (lambda (proc _event)
+       (when (and (memq (process-status proc) '(exit signal))
+                  (= 0 (process-exit-status proc)))
+         (let* ((json-output (string-trim (or (process-get proc 'output) "")))
+                (json (condition-case nil
+                          (json-parse-string json-output :object-type 'alist)
+                        (error nil))))
+           (when json
+             ;; Process outdated formulae
+             (let ((formulae (alist-get 'formulae json)))
+               (seq-doseq (entry formulae)
+                 (let ((name (alist-get 'name entry))
+                       (current (alist-get 'installed_versions entry))
+                       (latest (alist-get 'current_version entry)))
+                   (when (member name known-formulas)
+                     (d1--homebrew-set-status name 'outdated)
+                     (when (and current (> (length current) 0))
+                       (puthash name (aref current 0) d1--homebrew-package-versions))
+                     (when latest
+                       (puthash name latest d1--homebrew-package-latest-versions))))))
+             ;; Process outdated casks
+             (let ((casks (alist-get 'casks json)))
+               (seq-doseq (entry casks)
+                 (let ((name (alist-get 'name entry))
+                       (current (alist-get 'installed_versions entry))
+                       (latest (alist-get 'current_version entry)))
+                   (when (member name known-formulas)
+                     (d1--homebrew-set-status name 'outdated)
+                     (when current
+                       (puthash name current d1--homebrew-package-versions))
+                     (when latest
+                       (puthash name latest d1--homebrew-package-latest-versions))))))
+             (d1--homebrew-refresh-buffer))))))))
 
 ;;; Buffer Management
 
@@ -216,6 +298,12 @@ Updates the status hash table and refreshes the buffer."
                      (list formula
                            (vector name
                                    (d1--homebrew-status-string status)
+                                   (let ((ver (gethash formula d1--homebrew-package-versions))
+                                         (latest (gethash formula d1--homebrew-package-latest-versions)))
+                                     (cond
+                                      ((and ver latest) (format "%s -> %s" ver latest))
+                                      (ver ver)
+                                      (t "")))
                                    formula-display)))))
 
 ;;; Installation Logic
@@ -260,6 +348,20 @@ Handles taps if needed, then runs install command asynchronously."
      (string-join (nreverse commands) " && ")
      formula)))
 
+(defun d1--homebrew-upgrade-package (pkg)
+  "Upgrade a single package PKG.
+PKG is a plist from `d1-homebrew-packages'."
+  (let* ((formula (plist-get pkg :formula))
+         (cask (plist-get pkg :cask))
+         (quoted (shell-quote-argument formula))
+         (command (if cask
+                      (format "brew upgrade --cask %s" quoted)
+                    (format "brew upgrade %s" quoted))))
+    (setq d1--homebrew-current-install pkg)
+    (d1--homebrew-set-status formula 'installing)
+    (d1--homebrew-refresh-buffer)
+    (d1--homebrew-run-command command formula)))
+
 (defun d1--homebrew-run-command (command formula)
   "Run COMMAND asynchronously and update status for FORMULA when done.
 Output is redirected to a temp file to avoid ANSI escape code issues."
@@ -275,31 +377,32 @@ Output is redirected to a temp file to avoid ANSI escape code issues."
 
     (display-buffer buf '(display-buffer-at-bottom (window-height . 15)))
 
-    (make-process
-     :name (format "brew-install-%s" formula)
-     :buffer nil
-     :command (list "sh" "-c" full-command)
-     :sentinel (lambda (proc _event)
-                 (when (memq (process-status proc) '(exit signal))
-                   (let* ((exit-code (process-exit-status proc))
-                          (success (= 0 exit-code))
-                          (formula (replace-regexp-in-string
-                                    "^brew-install-" ""
-                                    (process-name proc)))
-                          (output (with-temp-buffer
-                                    (insert-file-contents log-file)
-                                    (buffer-string))))
-                     (delete-file log-file)
-                     (with-current-buffer buf
-                       (let ((inhibit-read-only t))
-                         (goto-char (point-max))
-                         (insert output)
-                         (insert (if success
-                                     (propertize "\n=== Done ===\n" 'face 'd1-homebrew-installed)
-                                   (propertize (format "\n=== Failed (exit %d) ===\n" exit-code)
-                                               'face 'd1-homebrew-failed)))))
-                     (d1--homebrew-set-status formula (if success 'installed 'failed))
-                     (d1--homebrew-process-next-install)))))))
+    (let ((proc (make-process
+                 :name (format "brew-install-%s" formula)
+                 :buffer nil
+                 :command (list "sh" "-c" full-command)
+                 :sentinel (lambda (proc _event)
+                             (when (memq (process-status proc) '(exit signal))
+                               (let* ((exit-code (process-exit-status proc))
+                                      (success (= 0 exit-code))
+                                      (formula (process-get proc 'formula))
+                                      (log-file (process-get proc 'log-file))
+                                      (output (with-temp-buffer
+                                                (insert-file-contents log-file)
+                                                (buffer-string))))
+                                 (delete-file log-file)
+                                 (with-current-buffer buf
+                                   (let ((inhibit-read-only t))
+                                     (goto-char (point-max))
+                                     (insert output)
+                                     (insert (if success
+                                                 (propertize "\n=== Done ===\n" 'face 'd1-homebrew-installed)
+                                               (propertize (format "\n=== Failed (exit %d) ===\n" exit-code)
+                                                           'face 'd1-homebrew-failed)))))
+                                 (d1--homebrew-set-status formula (if success 'installed 'failed))
+                                 (d1--homebrew-process-next-install)))))))
+      (process-put proc 'formula formula)
+      (process-put proc 'log-file log-file))))
 
 ;;; Tabulated List Mode
 
@@ -307,6 +410,7 @@ Output is redirected to a temp file to avoid ANSI escape code issues."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'d1-homebrew-install-at-point)
     (define-key map (kbd "i") #'d1-homebrew-install-all-pending)
+    (define-key map (kbd "u") #'d1-homebrew-upgrade-all-outdated)
     (define-key map (kbd "I") #'d1-homebrew-info-at-point)
     (define-key map (kbd "r") #'d1-homebrew-refresh-status)
     (define-key map (kbd "g") #'revert-buffer)
@@ -322,6 +426,7 @@ Output is redirected to a temp file to avoid ANSI escape code issues."
   (setq tabulated-list-format
         [("Name"    25 t)
          ("Status"  12 t)
+         ("Version" 25 t)
          ("Formula" 30 t)])
   (setq tabulated-list-padding 2)
   (setq tabulated-list-sort-key '("Name" . nil))
@@ -342,22 +447,32 @@ Shows all configured packages with their installation status."
     (switch-to-buffer buf)))
 
 (defun d1-homebrew-install-at-point ()
-  "Install the package at point."
+  "Install or upgrade the package at point.
+If the package is pending or failed, install it.
+If the package is outdated, upgrade it."
   (interactive)
   (when-let* ((id (tabulated-list-get-id))
               (pkg (seq-find (lambda (p)
                                (string= (plist-get p :formula) id))
                              d1-homebrew-packages)))
     (let ((status (d1--homebrew-get-status id)))
-      (if (memq status '(installed installing))
-          (message "Package %s is already %s" id status)
-        (if d1--homebrew-current-install
-            ;; Add to queue if installation in progress
-            (progn
-              (add-to-list 'd1--homebrew-install-queue pkg t)
-              (message "Added %s to installation queue" (plist-get pkg :name)))
-          ;; Start installation immediately
-          (d1--homebrew-install-package pkg))))))
+      (pcase status
+        ('installed
+         (message "Package %s is already installed and up to date" id))
+        ('installing
+         (message "Package %s is already being installed" id))
+        ('outdated
+         (if d1--homebrew-current-install
+             (progn
+               (add-to-list 'd1--homebrew-install-queue pkg t)
+               (message "Added %s to upgrade queue" (plist-get pkg :name)))
+           (d1--homebrew-upgrade-package pkg)))
+        (_
+         (if d1--homebrew-current-install
+             (progn
+               (add-to-list 'd1--homebrew-install-queue pkg t)
+               (message "Added %s to installation queue" (plist-get pkg :name)))
+           (d1--homebrew-install-package pkg)))))))
 
 (defun d1-homebrew-install-all-pending ()
   "Install all packages with pending status."
@@ -372,6 +487,20 @@ Shows all configured packages with their installation status."
       (setq d1--homebrew-install-queue (cdr pending))
       (d1--homebrew-install-package (car pending))
       (message "Starting installation of %d packages" (length pending)))))
+
+(defun d1-homebrew-upgrade-all-outdated ()
+  "Upgrade all packages with outdated status."
+  (interactive)
+  (let ((outdated (seq-filter
+                   (lambda (pkg)
+                     (eq 'outdated (d1--homebrew-get-status
+                                    (plist-get pkg :formula))))
+                   d1-homebrew-packages)))
+    (if (null outdated)
+        (message "No outdated packages to upgrade")
+      (setq d1--homebrew-install-queue (cdr outdated))
+      (d1--homebrew-upgrade-package (car outdated))
+      (message "Starting upgrade of %d packages" (length outdated)))))
 
 (defun d1-homebrew-info-at-point ()
   "Display brew info for the package at point in a separate buffer."
