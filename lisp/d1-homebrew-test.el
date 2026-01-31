@@ -137,7 +137,7 @@
     (let ((entries (d1--homebrew-build-entries)))
       (should (= 1 (length entries)))
       ;; Check formula display includes (cask)
-      (should (string-match-p "(cask)" (aref (cadr (nth 0 entries)) 2))))))
+      (should (string-match-p "(cask)" (aref (cadr (nth 0 entries)) 3))))))
 
 (ert-deftest d1-homebrew-test-build-entries-with-tap ()
   "Test building entries for packages with taps."
@@ -146,7 +146,7 @@
     (let ((entries (d1--homebrew-build-entries)))
       (should (= 1 (length entries)))
       ;; Check formula display includes tap
-      (should (string-match-p "\\[user/repo\\]" (aref (cadr (nth 0 entries)) 2))))))
+      (should (string-match-p "\\[user/repo\\]" (aref (cadr (nth 0 entries)) 3))))))
 
 (ert-deftest d1-homebrew-test-build-entries-filters-invalid ()
   "Test that invalid packages are filtered out."
