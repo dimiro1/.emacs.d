@@ -53,7 +53,8 @@
     (:name "Colemak-DH" :formula "colemak-dh" :cask t)
     (:name "Ghostty" :formula "ghostty" :cask t)
     (:name "OrbStack" :formula "orbstack" :cask t)
-    (:name "Temurin JDK" :formula "temurin" :cask t))
+    (:name "Temurin JDK" :formula "temurin" :cask t)
+    (:name "Neovide" :formula "neovide-app" :cask t))
   "List of Homebrew packages to manage.
 Each entry is a plist with:
   :name     - Display name for the UI
@@ -224,53 +225,48 @@ check once all per-package checks have completed."
       (when (<= d1--homebrew-check-remaining 0)
         (d1--homebrew-check-outdated)))))
 
+(defun d1--homebrew-update-outdated-entry (entry known-formulas)
+  "Update status for a single outdated ENTRY if it is in KNOWN-FORMULAS.
+ENTRY is an alist from the `brew outdated --json=v2` output."
+  (let ((name (alist-get 'name entry))
+        (current (alist-get 'installed_versions entry))
+        (latest (alist-get 'current_version entry)))
+    (when (member name known-formulas)
+      (d1--homebrew-set-status name 'outdated)
+      (when (and current (> (length current) 0))
+        (puthash name (aref current 0) d1--homebrew-package-versions))
+      (when latest
+        (puthash name latest d1--homebrew-package-latest-versions)))))
+
+(defun d1--homebrew-outdated-sentinel (proc _event)
+  "Handle completion of the `brew outdated` process PROC.
+Parses the JSON output and marks outdated packages."
+  (when (and (memq (process-status proc) '(exit signal))
+             (= 0 (process-exit-status proc)))
+    (let* ((known-formulas (process-get proc 'known-formulas))
+           (json-output (string-trim (or (process-get proc 'output) "")))
+           (json (condition-case nil
+                     (json-parse-string json-output :object-type 'alist)
+                   (error nil))))
+      (when json
+        (seq-doseq (entry (alist-get 'formulae json))
+          (d1--homebrew-update-outdated-entry entry known-formulas))
+        (seq-doseq (entry (alist-get 'casks json))
+          (d1--homebrew-update-outdated-entry entry known-formulas))
+        (d1--homebrew-refresh-buffer)))))
+
 (defun d1--homebrew-check-outdated ()
   "Check for outdated packages asynchronously.
 Runs `brew outdated --json=v2` and updates status for packages
 that have newer versions available."
-  (let ((known-formulas (mapcar (lambda (p) (plist-get p :formula))
-                                d1-homebrew-packages)))
-    (make-process
-     :name "brew-check-outdated"
-     :command (list "sh" "-c" "brew outdated --json=v2 2>/dev/null")
-     :filter (lambda (proc output)
-               (let ((prev (process-get proc 'output)))
-                 (process-put proc 'output (concat (or prev "") output))))
-     :sentinel
-     (lambda (proc _event)
-       (when (and (memq (process-status proc) '(exit signal))
-                  (= 0 (process-exit-status proc)))
-         (let* ((json-output (string-trim (or (process-get proc 'output) "")))
-                (json (condition-case nil
-                          (json-parse-string json-output :object-type 'alist)
-                        (error nil))))
-           (when json
-             ;; Process outdated formulae
-             (let ((formulae (alist-get 'formulae json)))
-               (seq-doseq (entry formulae)
-                 (let ((name (alist-get 'name entry))
-                       (current (alist-get 'installed_versions entry))
-                       (latest (alist-get 'current_version entry)))
-                   (when (member name known-formulas)
-                     (d1--homebrew-set-status name 'outdated)
-                     (when (and current (> (length current) 0))
-                       (puthash name (aref current 0) d1--homebrew-package-versions))
-                     (when latest
-                       (puthash name latest d1--homebrew-package-latest-versions))))))
-             ;; Process outdated casks
-             (let ((casks (alist-get 'casks json)))
-               (seq-doseq (entry casks)
-                 (let ((name (alist-get 'name entry))
-                       (current (alist-get 'installed_versions entry))
-                       (latest (alist-get 'current_version entry)))
-                   (when (member name known-formulas)
-                     (d1--homebrew-set-status name 'outdated)
-                     (when (and current (> (length current) 0))
-                       (puthash name (aref current 0) d1--homebrew-package-versions))
-                     (when latest
-                       (puthash name latest d1--homebrew-package-latest-versions))))))
-             (d1--homebrew-refresh-buffer))))))))
-
+  (let* ((known-formulas (mapcar (lambda (p) (plist-get p :formula))
+                                 d1-homebrew-packages))
+         (proc (make-process
+                :name "brew-check-outdated"
+                :command (list "sh" "-c" "brew outdated --json=v2 2>/dev/null")
+                :filter #'d1--homebrew-process-filter
+                :sentinel #'d1--homebrew-outdated-sentinel)))
+    (process-put proc 'known-formulas known-formulas)))
 ;;; Buffer Management
 
 (defun d1--homebrew-refresh ()
