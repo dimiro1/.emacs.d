@@ -1,4 +1,4 @@
-;;; d1-german.el --- German language utilities using Ollama  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-german.el --- German language utilities using Ollama  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

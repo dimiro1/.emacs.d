@@ -1,4 +1,4 @@
-;;; d1-ai-apropos.el --- AI-powered function lookup using Ollama  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-ai-apropos.el --- AI-powered function lookup using Ollama  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

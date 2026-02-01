@@ -1,4 +1,4 @@
-;;; d1-utilities.el --- General utility functions  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-utilities.el --- General utility functions  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

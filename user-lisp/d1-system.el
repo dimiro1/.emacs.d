@@ -1,4 +1,4 @@
-;;; d1-system.el --- System integration (environment + file management)  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-system.el --- System integration (environment + file management)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -16,11 +16,11 @@
 ;; On macOS, GUI Emacs doesn't inherit shell environment variables.
 ;; This package copies them from the shell at startup.
 (use-package exec-path-from-shell
-  :init
-  (exec-path-from-shell-initialize)
   :custom
   (exec-path-from-shell-variables
-   '("PATH" "GOPATH" "GOROOT" "CARGO_HOME" "RUSTUP_HOME")))
+   '("PATH" "GOPATH" "GOROOT" "CARGO_HOME" "RUSTUP_HOME"))
+  :config
+  (exec-path-from-shell-initialize))
 
 ;;; Environment Variables & GNU Tools
 (use-package emacs
@@ -32,22 +32,15 @@
   ;; Use GNU ls if available (from coreutils)
   ;; macOS ships with BSD ls which lacks --group-directories-first
   ;; Install with: brew install coreutils
-  (if (executable-find "gls")
-      (progn
-        (setopt insert-directory-program "gls")
-        (when (eq 0 (call-process "gls" nil nil nil "--group-directories-first" "--version"))
-          (message "Using GNU ls (gls) for dired")))
-    (message "GNU ls (gls) not found. Install with: brew install coreutils")
-    (with-eval-after-load 'dired
-      (setopt dired-listing-switches "-alh"))))
+  (when (executable-find "gls")
+    (setopt insert-directory-program "gls")))
 
 (defun d1-refresh-environment ()
   "Refresh environment variables from shell.
 Useful after updating shell configuration."
   (interactive)
-  (when (fboundp 'exec-path-from-shell-initialize)
-    (exec-path-from-shell-initialize)
-    (message "Environment refreshed from shell")))
+  (exec-path-from-shell-initialize)
+  (message "Environment refreshed from shell"))
 
 ;;;; ============================================================
 ;;;; File Management

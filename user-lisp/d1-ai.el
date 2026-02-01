@@ -1,4 +1,4 @@
-;;; d1-ai.el --- AI coding agent integrations  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-ai.el --- AI coding agent integrations  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

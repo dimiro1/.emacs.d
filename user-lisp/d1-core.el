@@ -1,4 +1,4 @@
-;;; d1-core.el --- Core Emacs configuration (packages + editor)  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-core.el --- Core Emacs configuration (packages + editor)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
@@ -22,20 +22,11 @@
 					  ("gnu" . "https://elpa.gnu.org/packages/")
 					  ("nongnu" . "https://elpa.nongnu.org/nongnu/"))))
 
-;; Enable native compilation if available
-(use-package emacs
-  :if (native-comp-available-p)
-  :custom
-  (native-comp-deferred-compilation 1)
-  (package-native-compile 1))
-
 ;; Configure use-package for better debugging and performance monitoring
 (use-package use-package
   :custom
   ;; Always ensure packages are installed
   (use-package-always-ensure t)
-  ;; Compute statistics for debugging startup time
-  (use-package-compute-statistics t)
   ;; Expand use-package forms for debugging
   (use-package-expand-minimally nil)
   ;; Enable verbose loading for debugging (set to nil for normal use)
@@ -69,8 +60,8 @@
   ;; Use 4 spaces as default tab width
   ;; This matches common conventions for many languages
   (tab-width 4)
-  ;; Ensure consistent tab width in all modes
-  (default-tab-width 4)
+  ;; Prefer spaces over tabs for indentation
+  (indent-tabs-mode nil)
   ;; Enable multi-line comments
   (comment-multi-line t)
 
@@ -84,11 +75,6 @@
 
   ;; Set default fill column for auto-fill and visual indicators
   (fill-column 100)
-  ;; Disable scroll bar for cleaner appearance
-  (scroll-bar-mode nil)
-  ;; Disable tool bar for more screen space
-  (tool-bar-mode nil)
-
   ;; Preserve cursor screen position when scrolling
   (scroll-preserve-screen-position t)
   ;; Don't recenter point when scrolling
@@ -103,10 +89,6 @@
   (prefer-coding-system 'utf-8)
   ;; Explicitly set language environment
   (set-language-environment "UTF-8")
-
-  ;; Prefer spaces over tabs for indentation
-  ;; This ensures consistent display across different editors
-  (indent-tabs-mode nil)
 
   ;; Global subword mode for better navigation in compound words
   ;; M-f/M-b will stop at each part of CamelCase or snake_case words
@@ -147,9 +129,8 @@
   ;; This wraps lines at fill-column automatically while typing
   (auto-fill-mode t)
 
-  ;; Enable pixel-level scrolling for smoother experience (Emacs 29+)
-  (when (fboundp 'pixel-scroll-precision-mode)
-    (pixel-scroll-precision-mode t))
+  ;; Enable pixel-level scrolling for smoother experience
+  (pixel-scroll-precision-mode t)
 
   ;; Enable repeat mode
   ;; This allows repeating commands like C-x o with just 'o'
@@ -161,7 +142,7 @@
 						:family "JetBrains Mono"
 						:height 140  ; 14pt font size
 						:weight 'regular)
-	(setq-default line-spacing 0.3))
+	(setq-default line-spacing 0.2))
 
   :hook
   ;; Remove trailing whitespace on save for all files

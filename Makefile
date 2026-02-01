@@ -6,7 +6,7 @@ BATCH = $(EMACS) -batch -Q
 .PHONY: test clean
 
 test:
-	@$(BATCH) -L lisp \
+	@$(BATCH) -L user-lisp -L user-lisp/test \
 		-l ert \
 		-l d1-git-permalink.el \
 		-l d1-git-permalink-test.el \
@@ -15,4 +15,4 @@ test:
 		-f ert-run-tests-batch-and-exit
 
 clean:
-	@rm -f lisp/*.elc
+	@rm -f user-lisp/*.elc

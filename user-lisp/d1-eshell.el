@@ -1,4 +1,4 @@
-;;; d1-eshell.el --- Eshell configuration  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-eshell.el --- Eshell configuration  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

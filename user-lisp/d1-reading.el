@@ -1,4 +1,4 @@
-;;; d1-reading.el --- EPUB and document reading  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-reading.el --- EPUB and document reading  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

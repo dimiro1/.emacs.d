@@ -1,4 +1,4 @@
-;;; d1-git.el --- Git integration with Magit  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-git.el --- Git integration with Magit  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

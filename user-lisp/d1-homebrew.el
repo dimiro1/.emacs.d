@@ -1,4 +1,4 @@
-;;; d1-homebrew.el --- Homebrew package manager for Emacs  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-homebrew.el --- Homebrew package manager for Emacs  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

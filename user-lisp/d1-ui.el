@@ -1,4 +1,4 @@
-;;; d1-ui.el --- User interface configuration (themes + modeline + file tree)  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-ui.el --- User interface configuration (themes + modeline + file tree)  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

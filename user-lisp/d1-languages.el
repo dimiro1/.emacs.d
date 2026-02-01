@@ -1,4 +1,4 @@
-;;; d1-languages.el --- Programming language support with LSP  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-languages.el --- Programming language support with LSP  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

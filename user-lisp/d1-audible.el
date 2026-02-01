@@ -1,4 +1,4 @@
-;;; d1-audible.el --- Audible AAX to M4B conversion  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-audible.el --- Audible AAX to M4B conversion  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

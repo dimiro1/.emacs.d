@@ -67,3 +67,4 @@ Temporary Items
 /packages/
 parinfer-rust/
 .agent-shell/
+.user-lisp-autoloads.el

@@ -1,4 +1,4 @@
-;;; d1-keybindings.el --- Custom keybindings and shortcuts  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-keybindings.el --- Custom keybindings and shortcuts  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

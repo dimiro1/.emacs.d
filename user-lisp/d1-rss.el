@@ -1,4 +1,4 @@
-;;; d1-rss.el --- Atom and RSS feeds  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-rss.el --- Atom and RSS feeds  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

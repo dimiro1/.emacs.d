@@ -1,4 +1,4 @@
-;;; d1-navigation.el --- File and project navigation tools  -*- lexical-binding: t; no-byte-compile: t; -*-
+;;; d1-navigation.el --- File and project navigation tools  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;

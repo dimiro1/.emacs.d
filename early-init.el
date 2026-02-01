@@ -22,23 +22,11 @@
 ;; Enable package.el at startup
 (setopt package-enable-at-startup t)
 
-;; Disable file-name-handler-alist during startup for performance
-(defvar d1--file-name-handler-alist file-name-handler-alist)
-(setopt file-name-handler-alist nil)
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setopt file-name-handler-alist d1--file-name-handler-alist)))
-
 ;;; UI Performance
 ;; Disable unnecessary UI elements before they're loaded
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
-
-;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early
-(setopt tool-bar-mode nil
-		menu-bar-mode nil
-		scroll-bar-mode nil)
 
 ;;; Startup Time Measurement
 
@@ -47,15 +35,11 @@
 (setopt use-package-compute-statistics t)
 
 ;;; Native Compilation
-;; Configure native compilation if available
-(when (featurep 'native-compile)
-  ;; Silence compiler warnings as they can be pretty disruptive
-  (setopt native-comp-async-report-warnings-errors nil))
+;; Silence compiler warnings as they can be pretty disruptive
+(setopt native-comp-async-report-warnings-errors nil)
 
-;; Redirect native compilation cache to no-littering var directory
-(when (and (fboundp 'startup-redirect-eln-cache)
-           (fboundp 'native-comp-available-p)
-           (native-comp-available-p))
+;; Redirect native compilation cache to var directory
+(when (native-comp-available-p)
   (startup-redirect-eln-cache
    (convert-standard-filename
     (expand-file-name "var/eln-cache/" user-emacs-directory))))
