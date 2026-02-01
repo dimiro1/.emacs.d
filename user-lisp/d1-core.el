@@ -150,9 +150,7 @@
   (before-save . delete-trailing-whitespace)
 
   :bind
-  ;; C-c i for "init" - easy to remember
-  (("C-c i" . d1-open-init-file)
-   ;; Package management keybindings
+  (;; Package management keybindings
    ("C-c P r" . d1-package-refresh)
    ("C-c P u" . d1-package-update-all)
    ("C-c P a" . d1-package-autoremove)

@@ -2,25 +2,15 @@
 
 ;;; Commentary:
 ;;
-;; System integration combining environment configuration (PATH, shell variables)
+;; System integration combining environment configuration
 ;; and file management (backups, auto-save, recent files).
 ;;
 
 ;;; Code:
 
 ;;;; ============================================================
-;;;; Environment & PATH
+;;;; Environment
 ;;;; ============================================================
-
-;;; Shell Environment Integration
-;; On macOS, GUI Emacs doesn't inherit shell environment variables.
-;; This package copies them from the shell at startup.
-(use-package exec-path-from-shell
-  :custom
-  (exec-path-from-shell-variables
-   '("PATH" "GOPATH" "GOROOT" "CARGO_HOME" "RUSTUP_HOME"))
-  :config
-  (exec-path-from-shell-initialize))
 
 ;;; Environment Variables & GNU Tools
 (use-package emacs
@@ -34,13 +24,6 @@
   ;; Install with: brew install coreutils
   (when (executable-find "gls")
     (setopt insert-directory-program "gls")))
-
-(defun d1-refresh-environment ()
-  "Refresh environment variables from shell.
-Useful after updating shell configuration."
-  (interactive)
-  (exec-path-from-shell-initialize)
-  (message "Environment refreshed from shell"))
 
 ;;;; ============================================================
 ;;;; File Management

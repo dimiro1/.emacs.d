@@ -12,9 +12,6 @@
   :custom
   (project-mode-line 1))
 
-;; Ripgrep integration for fast project searches
-(use-package rg)
-
 (use-package consult
   :bind
   (;; C-c bindings (mode-specific-map)
@@ -64,14 +61,10 @@
    ("C-c p r" . consult-recent-file))
   ;; use consult for completion
   :hook (completion-list-mode . consult-preview-at-point-mode)
-  :init
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
   :custom
-  ;; integrate with xref.
-  (xref-show-xrefs-function #'consult-xref
-							xref-show-definitions-function #'consult-xref)
+  ;; Integrate with xref.
+  (xref-show-xrefs-function #'consult-xref)
+  (xref-show-definitions-function #'consult-xref)
   ;; Optionally configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
@@ -84,10 +77,12 @@
   ;; Both < and C-+ work reasonably well.
   (consult-narrow-key "<") ;; "C-+"
   :config
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; Tweak the register preview window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Make narrowing help available in the minibuffer.
   (keymap-set consult-narrow-map "?" #'consult-narrow-help)
-  
+
   (consult-customize
    consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
@@ -127,7 +122,9 @@
   (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
   (dired-dwim-target t)
-  (dired-listing-switches "-alh --group-directories-first")
+  (dired-listing-switches (if (executable-find "gls")
+                              "-alh --group-directories-first"
+                            "-alh"))
   (dired-auto-revert-buffer t)
   (large-file-warning-threshold nil)
   (trash-directory (when (eq system-type 'darwin) "~/.Trash"))
