@@ -10,28 +10,6 @@
 
 ;;; Code:
 
-;;; Package Management
-;;; Initialize package.el and use-package
-
-;; Initialize package.el
-(use-package package
-  :custom
-  ;; Configure package archives
-  ;; Add MELPA and other repositories for more package options
-  (package-archives '(("melpa" . "https://melpa.org/packages/")
-					  ("gnu" . "https://elpa.gnu.org/packages/")
-					  ("nongnu" . "https://elpa.nongnu.org/nongnu/"))))
-
-;; Configure use-package for better debugging and performance monitoring
-(use-package use-package
-  :custom
-  ;; Always ensure packages are installed
-  (use-package-always-ensure t)
-  ;; Expand use-package forms for debugging
-  (use-package-expand-minimally nil)
-  ;; Enable verbose loading for debugging (set to nil for normal use)
-  (use-package-verbose nil))
-
 ;;; Flymake Configuration
 ;; Disable byte-compile checking for elisp files
 (use-package flymake
