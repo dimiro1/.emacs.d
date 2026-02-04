@@ -30,7 +30,7 @@
   :config
   ;; Auto-install missing grammars
   (dolist (grammar treesit-language-source-alist)
-    (unless (treesit-ready-p (car grammar))
+    (unless (treesit-ready-p (car grammar) t)
       (treesit-install-language-grammar (car grammar))))
 
   ;; Configure auto-mode-alist for Tree-sitter modes
