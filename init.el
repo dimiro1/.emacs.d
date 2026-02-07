@@ -120,6 +120,10 @@
 ;; Usage: M-x agent-shell, M-x agent-shell-new-shell, M-x agent-shell-toggle
 (use-package d1-ai :ensure nil)
 
+;; Org-mode - Notes, agenda, and task management
+;; Provides: org-directory, default notes file, agenda files
+(use-package d1-org :ensure nil :demand t)
+
 ;; Audible AAX to M4B Conversion
 ;; Provides: Convert Audible AAX files to M4B format
 ;; Usage: M-x d1-convert-aax-to-m4b or M-x d1-dired-convert-aax-to-m4b in dired
