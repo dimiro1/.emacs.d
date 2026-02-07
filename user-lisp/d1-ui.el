@@ -30,6 +30,20 @@
 ;; Doom emacs themes
 (use-package doom-themes)
 
+;;; Heading Sizes for Org-mode
+;; Must be set before loading themes so they generate the correct faces.
+(setopt modus-themes-headings
+        '((1 . (bold 1.2))
+          (2 . (bold 1.15))
+          (3 . (bold 1.1))
+          (4 . (bold 1.05))))
+
+(setopt ef-themes-headings
+        '((1 . (bold 1.2))
+          (2 . (bold 1.15))
+          (3 . (bold 1.1))
+          (4 . (bold 1.05))))
+
 ;;; Load Default Theme
 (load-theme 'ef-elea-dark :no-confirm)
 
