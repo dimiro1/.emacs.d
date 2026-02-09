@@ -1,3 +1,5 @@
+# Moved to https://codeberg.org/dimiro1/.emacs.d
+
 # D1 Emacs Configuration
 
 My personal Emacs configuration with a modular architecture.
